@@ -10,7 +10,7 @@ import java.util.Set;
 
 import org.xmlpull.v1.XmlPullParserException;
 
-import com.alexgilleran.icesoap.annotation.FindByXPath;
+import com.alexgilleran.icesoap.annotation.SOAPField;
 import com.alexgilleran.icesoap.exception.ClassDefException;
 import com.alexgilleran.icesoap.xpath.XPath;
 import com.alexgilleran.icesoap.xpath.XPathRepository;
@@ -40,7 +40,7 @@ public class AnnotationParser<T> extends BaseAnnotationParser<T> {
 		XPathRepository<Field> fieldXPaths = new XPathRepository<Field>();
 
 		for (Field field : targetClass.getDeclaredFields()) {
-			FindByXPath xPath = field.getAnnotation(FindByXPath.class);
+			SOAPField xPath = field.getAnnotation(SOAPField.class);
 
 			if (xPath != null) {
 				fieldXPaths.put(new XPath(compileXPath(xPath)), field);

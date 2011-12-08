@@ -1,6 +1,5 @@
 package test;
 
-import org.jaxen.expr.XPathExpr;
 import org.jaxen.saxpath.SAXPathException;
 import org.jaxen.saxpath.XPathHandler;
 import org.jaxen.saxpath.XPathReader;

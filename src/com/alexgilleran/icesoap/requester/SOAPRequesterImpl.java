@@ -101,10 +101,6 @@ public class SOAPRequesterImpl implements SOAPRequester {
 
 		schemeRegistry.register(new Scheme("http", PlainSocketFactory
 				.getSocketFactory(), 80));
-		schemeRegistry.register(new Scheme("https", new EasySSLSocketFactory(),
-				8006));
-		// schemeRegistry.register(new Scheme("https",
-		// new CustomSSLSocketFactory(), 443));
 
 		ThreadSafeClientConnManager cm = new ThreadSafeClientConnManager(
 				httpParameters, schemeRegistry);

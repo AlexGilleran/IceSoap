@@ -6,8 +6,8 @@ import org.jaxen.saxpath.SAXPathException;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
-import com.alexgilleran.icesoap.annotation.FindByXPath;
-import com.alexgilleran.icesoap.annotation.RootXPath;
+import com.alexgilleran.icesoap.annotation.SOAPField;
+import com.alexgilleran.icesoap.annotation.SOAPObject;
 import com.alexgilleran.icesoap.exception.ClassDefException;
 import com.alexgilleran.icesoap.observer.ObserverRegistry;
 import com.alexgilleran.icesoap.observer.SOAPObserver;
@@ -108,7 +108,7 @@ public abstract class BaseAnnotationParser<T> implements Parser<T> {
 	 * @return Root xpath or null if none is specified
 	 */
 	private XPath retrieveRootXPath(Class<?> targetClass) {
-		RootXPath xPathAnnot = targetClass.getAnnotation(RootXPath.class);
+		SOAPObject xPathAnnot = targetClass.getAnnotation(SOAPObject.class);
 
 		if (xPathAnnot != null) {
 			return compileXPath(xPathAnnot);
@@ -116,25 +116,25 @@ public abstract class BaseAnnotationParser<T> implements Parser<T> {
 			throw new ClassDefException("Class to create with "
 					+ this.getClass().getSimpleName()
 					+ " was not annotated with the "
-					+ FindByXPath.class.getSimpleName()
+					+ SOAPField.class.getSimpleName()
 					+ " annotation - please add this annotation");
 		}
 	}
 
-	protected XPath compileXPath(FindByXPath xPathAnnot) {
+	protected XPath compileXPath(SOAPField xPathAnnot) {
 		if (xPathAnnot.value() != null) {
 			return compileXPath(xPathAnnot.value());
 		} else {
 			throw new ClassDefException(
 					"The "
-							+ FindByXPath.class.getSimpleName()
+							+ SOAPField.class.getSimpleName()
 							+ " annotation on class "
 							+ this.getClass().getSimpleName()
 							+ " did not specify a mandatory XPath expression for a value.");
 		}
 	}
 
-	protected XPath compileXPath(RootXPath xPathAnnot) {
+	protected XPath compileXPath(SOAPObject xPathAnnot) {
 		if (xPathAnnot.value() != null) {
 			return compileXPath(xPathAnnot.value());
 		}
@@ -147,7 +147,7 @@ public abstract class BaseAnnotationParser<T> implements Parser<T> {
 			return XPathFactory.getInstance().compile(xPathString);
 		} catch (SAXPathException e) {
 			throw new ClassDefException("The "
-					+ FindByXPath.class.getSimpleName()
+					+ SOAPField.class.getSimpleName()
 					+ " annotation on class " + this.getClass().getSimpleName()
 					+ " was an invalid XPath expression");
 		}
