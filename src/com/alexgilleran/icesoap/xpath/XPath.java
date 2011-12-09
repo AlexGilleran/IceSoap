@@ -72,7 +72,7 @@ public class XPath {
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 
-		for (XPathElement element : elements) {
+		for (BasicXPathElement element : elements) {
 			builder.append("/").append(element.toString());
 		}
 

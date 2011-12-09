@@ -1,47 +1,42 @@
 package com.alexgilleran.icesoap.xpath;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
-// TODO: Do this more cleverly and quicker.
 public class XPathRepository<T> {
-	private List<XPathPair> list = new ArrayList<XPathPair>();
+	private Map<BasicXPathElement, Set<XPathElement>> lookupMap = new HashMap<BasicXPathElement, Set<XPathElement>>();
+	private Map<XPathElement, T> valueMap = new HashMap<XPathElement, T>();
 
-	public void put(XPath key, T value) {
-		list.add(new XPathPair(key, value));
+	public void put(XPathElement element) {
+		Set<XPathElement> existingSet = lookupMap.get(element.getBasic());
+
+		if (existingSet == null) {
+			lookupMap.put(element.getBasic(), newElementSet(element));
+		} else {
+			existingSet.add(element);
+		}
 	}
 
-	public boolean containsKey(XPath xPath) {
-		return (get(xPath) != null);
+	private Set<XPathElement> newElementSet(XPathElement element) {
+		Set<XPathElement> elementSet = new HashSet<XPathElement>();
+		elementSet.add(element);
+		return elementSet;
 	}
 
-	public T get(XPath xpath) {
-		T returnItem = null;
+	public T get(XPathElement endElement) {
+		Set<XPathElement> possibleElements = lookupMap.get(endElement
+				.getBasic());
 
-		for (XPathPair item : list) {
-			if (item.getXPath().matches(xpath)) {
-				returnItem = item.getValue();
+		if (possibleElements != null) {
+			for (XPathElement possElement : possibleElements) {
+				if (possElement.matches(endElement)) {
+					return valueMap.get(endElement);
+				}
 			}
 		}
 
-		return returnItem;
-	}
-
-	private class XPathPair {
-		private XPath xpath;
-		private T value;
-
-		public XPathPair(XPath key, T value) {
-			this.xpath = key;
-			this.value = value;
-		}
-
-		public XPath getXPath() {
-			return xpath;
-		}
-
-		public T getValue() {
-			return value;
-		}
+		return null;
 	}
 }

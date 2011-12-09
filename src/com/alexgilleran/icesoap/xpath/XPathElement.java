@@ -5,11 +5,20 @@ import java.util.Iterator;
 import java.util.Map;
 
 public class XPathElement {
-	private String name;
+	private BasicXPathElement basicElement;
+	private XPathElement previousElement;
+	private boolean startsWithDoubleSlash;
 	private Map<String, String> predicates = new HashMap<String, String>();
 
-	public XPathElement(String element) {
-		this.name = element;
+	// private boolean
+
+	public XPathElement(String name, boolean isAllNode,
+			XPathElement previousElement) {
+		basicElement = new BasicXPathElement(name);
+	}
+
+	public BasicXPathElement getBasic() {
+		return basicElement;
 	}
 
 	public void addPredicate(String name, String value) {
@@ -17,7 +26,13 @@ public class XPathElement {
 	}
 
 	public boolean matches(XPathElement otherElement) {
-		if (!this.name.equals(otherElement.name)) {
+		// TODO: This is procedural (and bad) - make it more OO
+
+		// Explanation: Basically this goes through and finds any reason that
+		// two xpaths *won't* match, in order of most likely reason to least
+		// likely - if none of these reasons are present, returns true
+
+		if (!this.basicElement.equals(otherElement.basicElement)) {
 			return false;
 		}
 
@@ -32,12 +47,60 @@ public class XPathElement {
 			}
 		}
 
+		if (this.isFirstElement()) {
+			if (!startsWithDoubleSlash && !otherElement.isFirstElement()) {
+				// This element is the beginning element of a non-doubleslash
+				// xpath, but the other xpath has previous elements still.
+				return false;
+			}
+		} else {
+			if (startsWithDoubleSlash) {
+				// This element starts with '//' and has previous elements -
+				// loop through all the previous elements that the other element
+				// has, to see if any of them match this node's previous element
+				XPathElement thisPrevElement = otherElement.previousElement;
+
+				while (thisPrevElement != null) {
+					if (thisPrevElement.matches(otherElement.previousElement)) {
+						return true;
+					} else {
+						thisPrevElement = thisPrevElement.previousElement;
+					}
+				}
+
+				return false;
+			} else {
+				// Previous element is not null and this isn't a '//' element -
+				// see if the previous elements of both xpaths match
+				return previousElement.matches(otherElement.previousElement);
+			}
+		}
+
 		return true;
 	}
 
-	@Override
-	public String toString() {
-		StringBuilder builder = new StringBuilder().append(name);
+	public boolean isFirstElement() {
+		return previousElement == null;
+	}
+
+	public StringBuilder toStringBuilder() {
+		StringBuilder builder;
+
+		// If this isn't the first element, the string representation of this
+		// will build on that of previous elements in the whole xpath
+		if (isFirstElement()) {
+			builder = new StringBuilder();
+		} else {
+			builder = previousElement.toStringBuilder();
+		}
+
+		if (startsWithDoubleSlash) {
+			builder.append("//");
+		} else {
+			builder.append("/");
+		}
+
+		builder.append(basicElement.getName());
 
 		if (!predicates.isEmpty()) {
 			builder.append("[");
@@ -57,39 +120,12 @@ public class XPathElement {
 			builder.append("]");
 		}
 
-		return builder.toString();
+		return builder;
 	}
 
 	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result
-				+ ((predicates == null) ? 0 : predicates.hashCode());
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		XPathElement other = (XPathElement) obj;
-		if (predicates == null) {
-			if (other.predicates != null)
-				return false;
-		} else if (!predicates.equals(other.predicates))
-			return false;
-		if (name == null) {
-			if (other.name != null)
-				return false;
-		} else if (!name.equals(other.name))
-			return false;
-		return true;
+	public String toString() {
+		return toStringBuilder().toString();
 	}
 
 }
