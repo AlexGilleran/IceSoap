@@ -1,11 +1,15 @@
 package com.alexgilleran.icesoap.xpath;
 
+import org.jaxen.saxpath.Axis;
 import org.jaxen.saxpath.SAXPathException;
 import org.jaxen.saxpath.XPathHandler;
 import org.jaxen.saxpath.XPathReader;
 import org.jaxen.saxpath.helpers.XPathReaderFactory;
 
 import android.util.Log;
+
+import com.alexgilleran.icesoap.exception.XPathParsingException;
+
 
 public class XPathFactory {
 	private static XPathFactory INSTANCE = null;
@@ -22,15 +26,19 @@ public class XPathFactory {
 		return INSTANCE;
 	}
 
-	public XPath compile(String xPathString) throws SAXPathException {
-		XPathReader reader = XPathReaderFactory.createReader();
+	public XPath compile(String xPathString) throws XPathParsingException {
+		XPathReader reader;
+		try {
+			reader = XPathReaderFactory.createReader();
 
-		AndroidXPathHandler handler = new AndroidXPathHandler();
-		reader.setXPathHandler(handler);
+			AndroidXPathHandler handler = new AndroidXPathHandler();
+			reader.setXPathHandler(handler);
 
-		reader.parse(xPathString);
-
-		return handler.getXPath();
+			reader.parse(xPathString);
+			return handler.getXPath();
+		} catch (SAXPathException e) {
+			throw new XPathParsingException(e);
+		}
 	}
 
 	private class AndroidXPathHandler implements XPathHandler {
@@ -52,16 +60,23 @@ public class XPathFactory {
 		@Override
 		public void startNameStep(int axis, String prefix, String localName)
 				throws SAXPathException {
-			if (currentlyParsingPredicate) {
-				currentPredicateKey = localName;
-			} else {
-				currentElement = new XPathElement(localName);
+			switch (axis) {
+			case Axis.ATTRIBUTE:
+				if (currentlyParsingPredicate) {
+					currentPredicateKey = localName;
+				} else {
+//					xPath.getLastElement().setAttribute(localName);
+				}
+				break;
+			default:
+				currentElement = new XPathElement(localName, false, currentElement);
+				break;
 			}
 		}
 
 		@Override
 		public void endNameStep() throws SAXPathException {
-			if (!currentlyParsingPredicate) {
+			if (!currentlyParsingPredicate && currentElement != null) {
 				xPath.addElement(currentElement);
 				currentElement = null;
 			}
@@ -123,13 +138,10 @@ public class XPathFactory {
 
 		@Override
 		public void endEqualityExpr(int arg0) throws SAXPathException {
-			Log.d("hello", "hello");
 		}
 
 		@Override
 		public void endFilterExpr() throws SAXPathException {
-			// TODO Auto-generated method stub
-
 		}
 
 		@Override
@@ -236,19 +248,18 @@ public class XPathFactory {
 
 		@Override
 		public void startEqualityExpr() throws SAXPathException {
-			Log.d("hello", "hello");
+
 		}
 
 		@Override
 		public void startFilterExpr() throws SAXPathException {
-			// TODO Auto-generated method stub
+			Log.d("blah", "blah");
 
 		}
 
 		@Override
 		public void startFunction(String arg0, String arg1)
 				throws SAXPathException {
-			Log.d("hello", "hello");
 		}
 
 		@Override
@@ -272,7 +283,6 @@ public class XPathFactory {
 		@Override
 		public void startProcessingInstructionNodeStep(int arg0, String arg1)
 				throws SAXPathException {
-			Log.d("hello", "hello");
 		}
 
 		@Override
@@ -314,7 +324,7 @@ public class XPathFactory {
 		@Override
 		public void variableReference(String arg0, String arg1)
 				throws SAXPathException {
-			Log.d("hello", "hello");
+
 		}
 
 	}

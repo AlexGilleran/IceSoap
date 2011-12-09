@@ -4,10 +4,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-public class XPathElement {
-	private BasicXPathElement basicElement;
+public class XPathElement extends BasicXPathElement {
 	private XPathElement previousElement;
-	private String attribute;
 	private boolean startsWithDoubleSlash;
 	private Map<String, String> predicates = new HashMap<String, String>();
 
@@ -15,19 +13,14 @@ public class XPathElement {
 
 	public XPathElement(String name, boolean isAllNode,
 			XPathElement previousElement) {
-		basicElement = new BasicXPathElement(name);
+		super(name);
 	}
-
-	public void setAttribute(String attributeName) {
-		this.attribute = attributeName;
+	
+	public void setAttribute(String string)
+	{
+		
 	}
-
-	public String getAttribute() {
-		return attribute;
-	}
-	public BasicXPathElement getBasic() {
-		return basicElement;
-	}
+	public String getAttribute(){return null;}
 
 	public void addPredicate(String name, String value) {
 		predicates.put(name, value);
@@ -40,7 +33,7 @@ public class XPathElement {
 		// two xpaths *won't* match, in order of most likely reason to least
 		// likely - if none of these reasons are present, returns true
 
-		if (!this.basicElement.equals(otherElement.basicElement)) {
+		if (!this.getName().equals(otherElement.getName())) {
 			return false;
 		}
 
@@ -108,7 +101,7 @@ public class XPathElement {
 			builder.append("/");
 		}
 
-		builder.append(basicElement.getName());
+		builder.append(getName());
 
 		if (!predicates.isEmpty()) {
 			builder.append("[");

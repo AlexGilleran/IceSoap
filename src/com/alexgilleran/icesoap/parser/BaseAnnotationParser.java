@@ -6,9 +6,8 @@ import java.lang.reflect.Field;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
-
-import com.alexgilleran.icesoap.annotation.FindByXPath;
-import com.alexgilleran.icesoap.annotation.RootXPath;
+import com.alexgilleran.icesoap.annotation.SOAPField;
+import com.alexgilleran.icesoap.annotation.SOAPObject;
 import com.alexgilleran.icesoap.exception.ClassDefException;
 import com.alexgilleran.icesoap.exception.XPathParsingException;
 import com.alexgilleran.icesoap.observer.ObserverRegistry;
@@ -112,7 +111,7 @@ public abstract class BaseAnnotationParser<T> implements Parser<T> {
 	 * @return Root xpath or null if none is specified
 	 */
 	protected XPath retrieveRootXPath(Class<?> targetClass) {
-		RootXPath xPathAnnot = targetClass.getAnnotation(RootXPath.class);
+		SOAPObject xPathAnnot = targetClass.getAnnotation(SOAPObject.class);
 
 		if (xPathAnnot != null) {
 			return compileXPath(xPathAnnot, targetClass);
@@ -120,25 +119,25 @@ public abstract class BaseAnnotationParser<T> implements Parser<T> {
 			throw new ClassDefException("Class " + targetClass.getName()
 					+ " to be created with " + this.getClass().getSimpleName()
 					+ " was not annotated with the "
-					+ FindByXPath.class.getSimpleName()
+					+ SOAPField.class.getSimpleName()
 					+ " annotation - please add this annotation");
 		}
 	}
 
-	protected XPath compileXPath(FindByXPath xPathAnnot, Field sourceField) {
+	protected XPath compileXPath(SOAPField xPathAnnot, Field sourceField) {
 		if (xPathAnnot.value() != null) {
 			return compileXPath(xPathAnnot.value(), sourceField.toString());
 		} else {
 			throw new ClassDefException(
 					"The "
-							+ FindByXPath.class.getSimpleName()
+							+ SOAPField.class.getSimpleName()
 							+ " annotation on field "
 							+ sourceField.toString()
 							+ " did not specify a mandatory XPath expression for a value.");
 		}
 	}
 
-	protected XPath compileXPath(RootXPath xPathAnnot, Class<?> sourceClass) {
+	protected XPath compileXPath(SOAPObject xPathAnnot, Class<?> sourceClass) {
 		if (xPathAnnot.value() != null) {
 			return compileXPath(xPathAnnot.value(), sourceClass.getSimpleName());
 		}

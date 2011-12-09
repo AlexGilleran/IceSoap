@@ -101,8 +101,8 @@ public class XPathXmlPullParser {
 		}
 
 		switch (getEventType()) {
-		case XmlPullParser.START_TAG:
-			XPathElement currentElement = new XPathElement(parser.getName());
+		case XmlPullParser.START_TAG://TODO:
+			XPathElement currentElement = new XPathElement(parser.getName(), false, null);
 
 			int attributeCount = parser.getAttributeCount();
 			if (attributeCount > 0) {

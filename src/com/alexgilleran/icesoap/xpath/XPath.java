@@ -48,8 +48,8 @@ public class XPath {
 	public XPath getWithoutPredicates() {
 		XPath xpath = new XPath();
 
-		for (XPathElement element : elements) {
-			xpath.addElement(new XPathElement(element.getName()));
+		for (XPathElement element : elements) {//TODO:
+			xpath.addElement(new XPathElement(element.getName(), false, null));
 		}
 
 		return xpath;

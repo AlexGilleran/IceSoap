@@ -6,14 +6,16 @@ import java.util.Map;
 import java.util.Set;
 
 public class XPathRepository<T> {
-	private Map<BasicXPathElement, Set<XPathElement>> lookupMap = new HashMap<BasicXPathElement, Set<XPathElement>>();
+	private Map<String, Set<XPathElement>> lookupMap = new HashMap<String, Set<XPathElement>>();
 	private Map<XPathElement, T> valueMap = new HashMap<XPathElement, T>();
 
-	public void put(XPathElement element) {
-		Set<XPathElement> existingSet = lookupMap.get(element.getBasic());
+	public void put(XPathElement element, T value) {
+		valueMap.put(element, value);
+		
+		Set<XPathElement> existingSet = lookupMap.get(element.getName());
 
 		if (existingSet == null) {
-			lookupMap.put(element.getBasic(), newElementSet(element));
+			lookupMap.put(element.getName(), newElementSet(element));
 		} else {
 			existingSet.add(element);
 		}
@@ -27,7 +29,7 @@ public class XPathRepository<T> {
 
 	public T get(XPathElement endElement) {
 		Set<XPathElement> possibleElements = lookupMap.get(endElement
-				.getBasic());
+				.getName());
 
 		if (possibleElements != null) {
 			for (XPathElement possElement : possibleElements) {

@@ -15,14 +15,14 @@ public class XPathTest {
 		blankXPath = new XPath();
 		testXPath = new XPath();
 
-		testXPath.addElement(new XPathElement("Test1"));
-		testXPath.addElement(new XPathElement("Test2"));
-		testXPath.addElement(new XPathElement("Test3"));
+//		testXPath.addElement(new XPathElement("Test1"));
+//		testXPath.addElement(new XPathElement("Test2"));
+//		testXPath.addElement(new XPathElement("Test3"));
 	}
 
 	@Test
-	public void testAddElement() {
-		blankXPath.addElement(new XPathElement("Hello"));
+	public void testAddElement() {//TODO
+		blankXPath.addElement(new XPathElement("Hello", false, null));
 		assertEquals("/Hello", blankXPath.toString());
 	}
 
@@ -40,17 +40,17 @@ public class XPathTest {
 	@Test
 	public void testMatchesBasic() {
 		XPath matchingTestXPath = new XPath();
-		matchingTestXPath.addElement(new XPathElement("Test1"));
-		matchingTestXPath.addElement(new XPathElement("Test2"));
-		matchingTestXPath.addElement(new XPathElement("Test3"));
+//		matchingTestXPath.addElement(new XPathElement("Test1"));
+//		matchingTestXPath.addElement(new XPathElement("Test2"));
+//		matchingTestXPath.addElement(new XPathElement("Test3"));
 
 		assertTrue(testXPath.matches(matchingTestXPath));
 		assertTrue(matchingTestXPath.matches(testXPath));
 
 		XPath notMatchingTestXPath = new XPath();
-		notMatchingTestXPath.addElement(new XPathElement("Test1"));
-		notMatchingTestXPath.addElement(new XPathElement("Test5"));
-		notMatchingTestXPath.addElement(new XPathElement("Test3"));
+//		notMatchingTestXPath.addElement(new XPathElement("Test1"));
+//		notMatchingTestXPath.addElement(new XPathElement("Test5"));
+//		notMatchingTestXPath.addElement(new XPathElement("Test3"));
 
 		assertFalse(testXPath.matches(notMatchingTestXPath));
 		assertFalse(notMatchingTestXPath.matches(testXPath));
