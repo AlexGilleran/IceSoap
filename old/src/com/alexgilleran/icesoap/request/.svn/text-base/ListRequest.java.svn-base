@@ -1,0 +1,11 @@
+package com.ibm.au.pcm.android.soap.request;
+
+import java.util.List;
+
+import com.ibm.au.pcm.android.soap.observer.SOAPObserver;
+
+public interface ListRequest<T> extends Request<List<T>> {
+	void addItemListener(SOAPObserver<T> parserListener);
+
+	void removeItemListener(SOAPObserver<T> parserListener);
+}

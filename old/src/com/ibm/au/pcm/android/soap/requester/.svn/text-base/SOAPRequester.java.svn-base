@@ -1,0 +1,10 @@
+package com.ibm.au.pcm.android.soap.requester;
+
+import java.io.IOException;
+import java.io.InputStream;
+
+import com.ibm.au.pcm.android.soap.envelope.SOAPEnv;
+
+public interface SOAPRequester {
+	public InputStream doSoapRequest(SOAPEnv envelope, String soapAction) throws IOException;
+}

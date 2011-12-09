@@ -1,0 +1,12 @@
+package com.ibm.au.pcm.android.soap.parser;
+
+import java.util.List;
+
+import com.ibm.au.pcm.android.soap.observer.SOAPObserver;
+
+public interface ListParser<T> extends Parser<List<T>> {
+
+	void addItemListener(SOAPObserver<T> listener);
+
+	void removeItemListener(SOAPObserver<T> listener);
+}

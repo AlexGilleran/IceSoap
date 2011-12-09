@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/svn/kamboville_justgroupandroidmobile/!svn/ver/71/SOAP/src/com/ibm/au/pcm/android/soap/requester
+END
+SOAPRequester.java
+K 25
+svn:wc:ra_dav:version-url
+V 116
+/svn/kamboville_justgroupandroidmobile/!svn/ver/55/SOAP/src/com/ibm/au/pcm/android/soap/requester/SOAPRequester.java
+END
+SOAPRequesterImpl.java
+K 25
+svn:wc:ra_dav:version-url
+V 120
+/svn/kamboville_justgroupandroidmobile/!svn/ver/71/SOAP/src/com/ibm/au/pcm/android/soap/requester/SOAPRequesterImpl.java
+END
+EasySSLSocketFactory.java
+K 25
+svn:wc:ra_dav:version-url
+V 123
+/svn/kamboville_justgroupandroidmobile/!svn/ver/61/SOAP/src/com/ibm/au/pcm/android/soap/requester/EasySSLSocketFactory.java
+END
+EasyX509TrustManager.java
+K 25
+svn:wc:ra_dav:version-url
+V 123
+/svn/kamboville_justgroupandroidmobile/!svn/ver/61/SOAP/src/com/ibm/au/pcm/android/soap/requester/EasyX509TrustManager.java
+END
