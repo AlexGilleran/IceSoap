@@ -1,0 +1,5 @@
+package com.ibm.au.pcm.android.soap.observer;
+
+public interface SOAPObserver<E> {
+	public void onNewDaoItem(E item);
+}

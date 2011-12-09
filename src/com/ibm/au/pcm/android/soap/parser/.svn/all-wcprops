@@ -1,0 +1,65 @@
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/kamboville_justgroupandroidmobile/!svn/ver/71/SOAP/src/com/ibm/au/pcm/android/soap/parser
+END
+XPathXmlPullParser.java
+K 25
+svn:wc:ra_dav:version-url
+V 118
+/svn/kamboville_justgroupandroidmobile/!svn/ver/70/SOAP/src/com/ibm/au/pcm/android/soap/parser/XPathXmlPullParser.java
+END
+BaseAnnotationParser.java
+K 25
+svn:wc:ra_dav:version-url
+V 120
+/svn/kamboville_justgroupandroidmobile/!svn/ver/71/SOAP/src/com/ibm/au/pcm/android/soap/parser/BaseAnnotationParser.java
+END
+SkipParser.java
+K 25
+svn:wc:ra_dav:version-url
+V 110
+/svn/kamboville_justgroupandroidmobile/!svn/ver/70/SOAP/src/com/ibm/au/pcm/android/soap/parser/SkipParser.java
+END
+StringParser.java
+K 25
+svn:wc:ra_dav:version-url
+V 112
+/svn/kamboville_justgroupandroidmobile/!svn/ver/70/SOAP/src/com/ibm/au/pcm/android/soap/parser/StringParser.java
+END
+AnnotationListParser.java
+K 25
+svn:wc:ra_dav:version-url
+V 120
+/svn/kamboville_justgroupandroidmobile/!svn/ver/71/SOAP/src/com/ibm/au/pcm/android/soap/parser/AnnotationListParser.java
+END
+BaseParser.java
+K 25
+svn:wc:ra_dav:version-url
+V 110
+/svn/kamboville_justgroupandroidmobile/!svn/ver/70/SOAP/src/com/ibm/au/pcm/android/soap/parser/BaseParser.java
+END
+AnnotationParser.java
+K 25
+svn:wc:ra_dav:version-url
+V 116
+/svn/kamboville_justgroupandroidmobile/!svn/ver/71/SOAP/src/com/ibm/au/pcm/android/soap/parser/AnnotationParser.java
+END
+OldListParser.java
+K 25
+svn:wc:ra_dav:version-url
+V 113
+/svn/kamboville_justgroupandroidmobile/!svn/ver/70/SOAP/src/com/ibm/au/pcm/android/soap/parser/OldListParser.java
+END
+ListParser.java
+K 25
+svn:wc:ra_dav:version-url
+V 110
+/svn/kamboville_justgroupandroidmobile/!svn/ver/67/SOAP/src/com/ibm/au/pcm/android/soap/parser/ListParser.java
+END
+Parser.java
+K 25
+svn:wc:ra_dav:version-url
+V 106
+/svn/kamboville_justgroupandroidmobile/!svn/ver/67/SOAP/src/com/ibm/au/pcm/android/soap/parser/Parser.java
+END
