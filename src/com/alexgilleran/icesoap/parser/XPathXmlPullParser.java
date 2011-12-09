@@ -18,12 +18,54 @@ import com.alexgilleran.icesoap.xpath.XPathElement;
  * @author Alex Gilleran
  * 
  */
-public class XPathXmlPullParser implements XmlPullParser {
+public class XPathXmlPullParser {
+	public static int START_DOCUMENT = XmlPullParser.START_DOCUMENT;
+	public static int END_DOCUMENT = XmlPullParser.END_DOCUMENT;
+	public static int START_TAG = XmlPullParser.START_TAG;
+	public static int END_TAG = XmlPullParser.END_TAG;
+	public static int TEXT = XmlPullParser.TEXT;
+	public static int ATTRIBUTE = 5;
+
 	private XmlPullParser parser = Xml.newPullParser();
 	private XPath currentXPath = new XPath();
+	private boolean removeLastXPathElement;
+	private int currentAttribute = 0;
 
 	public XPathXmlPullParser() {
 
+	}
+
+	// TODO: More professional/less fun javadoc comment
+	/**
+	 * ONLY USE THIS IF YOU'RE SURE THERE'S A TEXT NODE NEXT OR YOU'RE ON AN
+	 * ATTRIBUTE, OTHERWISE I'M NOT ENTIRELY SURE WHAT'LL HAPPEN BUT I'M SURE
+	 * IT'LL BE BAD!!11
+	 * 
+	 * Get the String value of the current node, whether attribute or text.
+	 * 
+	 * @return The string value of the current node.
+	 * @throws IOException
+	 * @throws XmlPullParserException
+	 */
+	public String getCurrentValue() throws XmlPullParserException, IOException {
+		if (currentXPath.targetsAttribute()) {
+			return this.getCurrentAttributeValue();
+		} else {
+			return parser.nextText();
+		}
+	}
+
+	/**
+	 * 
+	 * @return The value of the attribute currently pointed at - if there is no
+	 *         current attribute, null.
+	 */
+	private String getCurrentAttributeValue() {
+		if ((parser.getAttributeCount() - 1) >= (currentAttribute - 1)) {
+			return parser.getAttributeValue(currentAttribute - 1);
+		} else {
+			return null;
+		}
 	}
 
 	/**
@@ -33,15 +75,32 @@ public class XPathXmlPullParser implements XmlPullParser {
 	 * @see org.xmlpull.v1.XmlPullParser#next()
 	 */
 	public int next() throws XmlPullParserException, IOException {
-		int result = parser.next();
+		int next;
 
-		updateXPath();
+		if (parser.getEventType() == XmlPullParser.START_TAG
+				&& currentAttribute <= parser.getAttributeCount() - 1) {
+			next = ATTRIBUTE;
 
-		return result;
-	}
+			currentXPath.getLastElement().setAttribute(
+					parser.getAttributeName(currentAttribute));
 
-	private void updateXPath() throws XmlPullParserException {
-		switch (parser.getEventType()) {
+			currentAttribute++;
+		} else {
+			next = parser.next();
+
+			if (currentXPath.getLastElement() != null) {
+				currentXPath.getLastElement().setAttribute(null);
+			}
+
+			currentAttribute = 0;
+		}
+
+		if (removeLastXPathElement) {
+			currentXPath.removeElement();
+			removeLastXPathElement = false;
+		}
+
+		switch (getEventType()) {
 		case XmlPullParser.START_TAG:
 			XPathElement currentElement = new XPathElement(parser.getName());
 
@@ -57,23 +116,11 @@ public class XPathXmlPullParser implements XmlPullParser {
 
 			break;
 		case XmlPullParser.END_TAG:
-			currentXPath.removeElement();
+			removeLastXPathElement = true;
 			break;
 		}
-	}
 
-	/**
-	 * @return
-	 * @throws XmlPullParserException
-	 * @throws IOException
-	 * @see org.xmlpull.v1.XmlPullParser#nextText()
-	 */
-	public String nextText() throws XmlPullParserException, IOException {
-		String result = parser.nextText();
-
-		updateXPath();
-
-		return result;
+		return next;
 	}
 
 	/**
@@ -85,27 +132,15 @@ public class XPathXmlPullParser implements XmlPullParser {
 
 	/**
 	 * @return
-	 * @see org.xmlpull.v1.XmlPullParser#getDepth()
-	 */
-	public int getDepth() {
-		return parser.getDepth();
-	}
-
-	/**
-	 * @return
 	 * @throws XmlPullParserException
 	 * @see org.xmlpull.v1.XmlPullParser#getEventType()
 	 */
 	public int getEventType() throws XmlPullParserException {
-		return parser.getEventType();
-	}
-
-	/**
-	 * @return
-	 * @see org.xmlpull.v1.XmlPullParser#getName()
-	 */
-	public String getName() {
-		return parser.getName();
+		if (currentAttribute == 0) {
+			return parser.getEventType();
+		} else {
+			return ATTRIBUTE;
+		}
 	}
 
 	/**
@@ -118,297 +153,6 @@ public class XPathXmlPullParser implements XmlPullParser {
 	public void setInput(InputStream arg0, String arg1)
 			throws XmlPullParserException {
 		parser.setInput(arg0, arg1);
-	}
-
-	/**
-	 * @param arg0
-	 * @param arg1
-	 * @throws XmlPullParserException
-	 * @see org.xmlpull.v1.XmlPullParser#defineEntityReplacementText(java.lang.String,
-	 *      java.lang.String)
-	 */
-	public void defineEntityReplacementText(String arg0, String arg1)
-			throws XmlPullParserException {
-		parser.defineEntityReplacementText(arg0, arg1);
-	}
-
-	/**
-	 * @return
-	 * @see org.xmlpull.v1.XmlPullParser#getAttributeCount()
-	 */
-	public int getAttributeCount() {
-		return parser.getAttributeCount();
-	}
-
-	/**
-	 * @param arg0
-	 * @return
-	 * @see org.xmlpull.v1.XmlPullParser#getAttributeName(int)
-	 */
-	public String getAttributeName(int arg0) {
-		return parser.getAttributeName(arg0);
-	}
-
-	/**
-	 * @param arg0
-	 * @return
-	 * @see org.xmlpull.v1.XmlPullParser#getAttributeNamespace(int)
-	 */
-	public String getAttributeNamespace(int arg0) {
-		return parser.getAttributeNamespace(arg0);
-	}
-
-	/**
-	 * @param arg0
-	 * @return
-	 * @see org.xmlpull.v1.XmlPullParser#getAttributePrefix(int)
-	 */
-	public String getAttributePrefix(int arg0) {
-		return parser.getAttributePrefix(arg0);
-	}
-
-	/**
-	 * @param arg0
-	 * @return
-	 * @see org.xmlpull.v1.XmlPullParser#getAttributeType(int)
-	 */
-	public String getAttributeType(int arg0) {
-		return parser.getAttributeType(arg0);
-	}
-
-	/**
-	 * @param arg0
-	 * @return
-	 * @see org.xmlpull.v1.XmlPullParser#getAttributeValue(int)
-	 */
-	public String getAttributeValue(int arg0) {
-		return parser.getAttributeValue(arg0);
-	}
-
-	/**
-	 * @param arg0
-	 * @param arg1
-	 * @return
-	 * @see org.xmlpull.v1.XmlPullParser#getAttributeValue(java.lang.String,
-	 *      java.lang.String)
-	 */
-	public String getAttributeValue(String arg0, String arg1) {
-		return parser.getAttributeValue(arg0, arg1);
-	}
-
-	/**
-	 * @return
-	 * @see org.xmlpull.v1.XmlPullParser#getColumnNumber()
-	 */
-	public int getColumnNumber() {
-		return parser.getColumnNumber();
-	}
-
-	/**
-	 * @param arg0
-	 * @return
-	 * @see org.xmlpull.v1.XmlPullParser#getFeature(java.lang.String)
-	 */
-	public boolean getFeature(String arg0) {
-		return parser.getFeature(arg0);
-	}
-
-	/**
-	 * @return
-	 * @see org.xmlpull.v1.XmlPullParser#getInputEncoding()
-	 */
-	public String getInputEncoding() {
-		return parser.getInputEncoding();
-	}
-
-	/**
-	 * @return
-	 * @see org.xmlpull.v1.XmlPullParser#getLineNumber()
-	 */
-	public int getLineNumber() {
-		return parser.getLineNumber();
-	}
-
-	/**
-	 * @return
-	 * @see org.xmlpull.v1.XmlPullParser#getNamespace()
-	 */
-	public String getNamespace() {
-		return parser.getNamespace();
-	}
-
-	/**
-	 * @param arg0
-	 * @return
-	 * @see org.xmlpull.v1.XmlPullParser#getNamespace(java.lang.String)
-	 */
-	public String getNamespace(String arg0) {
-		return parser.getNamespace(arg0);
-	}
-
-	/**
-	 * @param arg0
-	 * @return
-	 * @throws XmlPullParserException
-	 * @see org.xmlpull.v1.XmlPullParser#getNamespaceCount(int)
-	 */
-	public int getNamespaceCount(int arg0) throws XmlPullParserException {
-		return parser.getNamespaceCount(arg0);
-	}
-
-	/**
-	 * @param arg0
-	 * @return
-	 * @throws XmlPullParserException
-	 * @see org.xmlpull.v1.XmlPullParser#getNamespacePrefix(int)
-	 */
-	public String getNamespacePrefix(int arg0) throws XmlPullParserException {
-		return parser.getNamespacePrefix(arg0);
-	}
-
-	/**
-	 * @param arg0
-	 * @return
-	 * @throws XmlPullParserException
-	 * @see org.xmlpull.v1.XmlPullParser#getNamespaceUri(int)
-	 */
-	public String getNamespaceUri(int arg0) throws XmlPullParserException {
-		return parser.getNamespaceUri(arg0);
-	}
-
-	/**
-	 * @return
-	 * @see org.xmlpull.v1.XmlPullParser#getPositionDescription()
-	 */
-	public String getPositionDescription() {
-		return parser.getPositionDescription();
-	}
-
-	/**
-	 * @return
-	 * @see org.xmlpull.v1.XmlPullParser#getPrefix()
-	 */
-	public String getPrefix() {
-		return parser.getPrefix();
-	}
-
-	/**
-	 * @param arg0
-	 * @return
-	 * @see org.xmlpull.v1.XmlPullParser#getProperty(java.lang.String)
-	 */
-	public Object getProperty(String arg0) {
-		return parser.getProperty(arg0);
-	}
-
-	/**
-	 * @return
-	 * @see org.xmlpull.v1.XmlPullParser#getText()
-	 */
-	public String getText() {
-		return parser.getText();
-	}
-
-	/**
-	 * @param arg0
-	 * @return
-	 * @see org.xmlpull.v1.XmlPullParser#getTextCharacters(int[])
-	 */
-	public char[] getTextCharacters(int[] arg0) {
-		return parser.getTextCharacters(arg0);
-	}
-
-	/**
-	 * @param arg0
-	 * @return
-	 * @see org.xmlpull.v1.XmlPullParser#isAttributeDefault(int)
-	 */
-	public boolean isAttributeDefault(int arg0) {
-		return parser.isAttributeDefault(arg0);
-	}
-
-	/**
-	 * @return
-	 * @throws XmlPullParserException
-	 * @see org.xmlpull.v1.XmlPullParser#isEmptyElementTag()
-	 */
-	public boolean isEmptyElementTag() throws XmlPullParserException {
-		return parser.isEmptyElementTag();
-	}
-
-	/**
-	 * @return
-	 * @throws XmlPullParserException
-	 * @see org.xmlpull.v1.XmlPullParser#isWhitespace()
-	 */
-	public boolean isWhitespace() throws XmlPullParserException {
-		return parser.isWhitespace();
-	}
-
-	/**
-	 * @return
-	 * @throws XmlPullParserException
-	 * @throws IOException
-	 * @see org.xmlpull.v1.XmlPullParser#nextTag()
-	 */
-	public int nextTag() throws XmlPullParserException, IOException {
-		return parser.nextTag();
-	}
-
-	/**
-	 * @return
-	 * @throws XmlPullParserException
-	 * @throws IOException
-	 * @see org.xmlpull.v1.XmlPullParser#nextToken()
-	 */
-	public int nextToken() throws XmlPullParserException, IOException {
-		return parser.nextToken();
-	}
-
-	/**
-	 * @param arg0
-	 * @param arg1
-	 * @param arg2
-	 * @throws XmlPullParserException
-	 * @throws IOException
-	 * @see org.xmlpull.v1.XmlPullParser#require(int, java.lang.String,
-	 *      java.lang.String)
-	 */
-	public void require(int arg0, String arg1, String arg2)
-			throws XmlPullParserException, IOException {
-		parser.require(arg0, arg1, arg2);
-	}
-
-	/**
-	 * @param arg0
-	 * @param arg1
-	 * @throws XmlPullParserException
-	 * @see org.xmlpull.v1.XmlPullParser#setFeature(java.lang.String, boolean)
-	 */
-	public void setFeature(String arg0, boolean arg1)
-			throws XmlPullParserException {
-		parser.setFeature(arg0, arg1);
-	}
-
-	/**
-	 * @param arg0
-	 * @throws XmlPullParserException
-	 * @see org.xmlpull.v1.XmlPullParser#setInput(java.io.Reader)
-	 */
-	public void setInput(Reader arg0) throws XmlPullParserException {
-		parser.setInput(arg0);
-	}
-
-	/**
-	 * @param arg0
-	 * @param arg1
-	 * @throws XmlPullParserException
-	 * @see org.xmlpull.v1.XmlPullParser#setProperty(java.lang.String,
-	 *      java.lang.Object)
-	 */
-	public void setProperty(String arg0, Object arg1)
-			throws XmlPullParserException {
-		parser.setProperty(arg0, arg1);
 	}
 
 }

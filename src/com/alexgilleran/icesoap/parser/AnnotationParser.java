@@ -2,6 +2,8 @@ package com.alexgilleran.icesoap.parser;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -10,7 +12,8 @@ import java.util.Set;
 
 import org.xmlpull.v1.XmlPullParserException;
 
-import com.alexgilleran.icesoap.annotation.SOAPField;
+
+import com.alexgilleran.icesoap.annotation.FindByXPath;
 import com.alexgilleran.icesoap.exception.ClassDefException;
 import com.alexgilleran.icesoap.xpath.XPath;
 import com.alexgilleran.icesoap.xpath.XPathRepository;
@@ -19,7 +22,7 @@ public class AnnotationParser<T> extends BaseAnnotationParser<T> {
 	private XPathRepository<Field> fieldXPaths;
 	private Class<T> targetClass;
 	private Set<Class<?>> textNodeClasses = new HashSet<Class<?>>(
-			Arrays.asList(long.class, int.class, double.class,
+			Arrays.asList(long.class, float.class, int.class, double.class,
 					BigDecimal.class, String.class));
 
 	public AnnotationParser(Class<T> targetClass) {
@@ -40,10 +43,10 @@ public class AnnotationParser<T> extends BaseAnnotationParser<T> {
 		XPathRepository<Field> fieldXPaths = new XPathRepository<Field>();
 
 		for (Field field : targetClass.getDeclaredFields()) {
-			SOAPField xPath = field.getAnnotation(SOAPField.class);
+			FindByXPath xPath = field.getAnnotation(FindByXPath.class);
 
 			if (xPath != null) {
-				fieldXPaths.put(new XPath(compileXPath(xPath)), field);
+				fieldXPaths.put(new XPath(compileXPath(xPath, field)), field);
 			}
 		}
 
@@ -82,12 +85,16 @@ public class AnnotationParser<T> extends BaseAnnotationParser<T> {
 				setField(
 						objectToModify,
 						fieldToSet,
-						convertToFieldType(fieldToSet, xmlPullParser.nextText()));
+						convertToFieldType(fieldToSet,
+								xmlPullParser.getCurrentValue()));
 
 			} else {
-				Class<?> fieldType = fieldToSet.getType();
-				setField(objectToModify, fieldToSet,
-						parseComplexField(fieldType, xmlPullParser));
+				Type fieldType = fieldToSet.getGenericType();
+				setField(
+						objectToModify,
+						fieldToSet,
+						getParserForClass(fieldType, fieldToSet.getType(),
+								xmlPullParser).parse(xmlPullParser));
 
 			}
 		}
@@ -95,31 +102,31 @@ public class AnnotationParser<T> extends BaseAnnotationParser<T> {
 		return objectToModify;
 	}
 
-	private <TypeOfField> TypeOfField parseComplexField(
-			Class<TypeOfField> fieldType, XPathXmlPullParser xmlPullParser)
-			throws XmlPullParserException, IOException {
-		Parser<TypeOfField> complexFieldParser = null;
+	private <E> Parser<?> getParserForClass(Type typeToParse,
+			Class<E> classToParse, XPathXmlPullParser xmlPullParser) {
+		// TODO: Caching these will make things a bunch quicker. Probably.
 
-		if (List.class.isAssignableFrom(fieldType)) {
-			Class<?> listItemType = fieldType.getTypeParameters()[0]
-					.getGenericDeclaration();
+		if (List.class.isAssignableFrom(classToParse)) {
+			ParameterizedType paramType = (ParameterizedType) typeToParse;
+			Type listItemType = paramType.getActualTypeArguments()[0];
+
+			// if (!(typeToParse instanceof Class)) {
+			// // TODO: Unchecked Exc. with good message here
+			// return null;
+			// }
+
+			Class<?> listItemClass = (Class<?>) listItemType;
+
 			Parser<?> itemParser = getParserForClass(listItemType,
-					xmlPullParser.getCurrentXPath());
+					listItemClass, xmlPullParser);
 
-			complexFieldParser = new AnnotationListParser(listItemType,
-					itemParser);
+			return new AnnotationListParser(listItemClass,
+					xmlPullParser.getCurrentXPath(), itemParser);
 		} else {
-			complexFieldParser = getParserForClass(fieldType,
-					xmlPullParser.getCurrentXPath());
+			return new AnnotationParser<E>(classToParse,
+					retrieveRootXPath(classToParse));
 		}
 
-		return complexFieldParser.parse(xmlPullParser);
-	}
-
-	private <TypeOfField> Parser<TypeOfField> getParserForClass(
-			Class<TypeOfField> typeToParse, XPath rootXPath) {
-		// TODO: Caching these will make things a bunch quicker. Probably.
-		return new AnnotationParser<TypeOfField>(typeToParse, rootXPath);
 	}
 
 	private void setField(T objectToModify, Field fieldToSet, Object valueToSet) {
@@ -142,6 +149,8 @@ public class AnnotationParser<T> extends BaseAnnotationParser<T> {
 			return Integer.parseInt(valueString);
 		} else if (long.class.isAssignableFrom(field.getType())) {
 			return Long.parseLong(valueString);
+		} else if (float.class.isAssignableFrom(field.getType())) {
+			return Float.parseFloat(valueString);
 		} else if (double.class.isAssignableFrom(field.getType())) {
 			return Double.parseDouble(valueString);
 		} else if (boolean.class.isAssignableFrom(field.getType())) {

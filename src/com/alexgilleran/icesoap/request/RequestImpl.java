@@ -8,8 +8,6 @@ import java.util.concurrent.TimeoutException;
 
 import org.xmlpull.v1.XmlPullParserException;
 
-import android.os.AsyncTask;
-
 import com.alexgilleran.icesoap.envelope.SOAPEnv;
 import com.alexgilleran.icesoap.exception.SOAPException;
 import com.alexgilleran.icesoap.observer.ObserverRegistry;
@@ -17,6 +15,11 @@ import com.alexgilleran.icesoap.observer.SOAPObserver;
 import com.alexgilleran.icesoap.parser.Parser;
 import com.alexgilleran.icesoap.parser.XPathXmlPullParser;
 import com.alexgilleran.icesoap.requester.SOAPRequesterImpl;
+
+import android.os.AsyncTask;
+import android.os.Debug;
+import android.util.Log;
+
 
 public class RequestImpl<T> implements Request<T> {
 	private ObserverRegistry<T> registry = new ObserverRegistry<T>();
@@ -86,6 +89,7 @@ public class RequestImpl<T> implements Request<T> {
 
 		@Override
 		protected T doInBackground(Void... arg0) {
+			Log.d("debug", "doInBackground started");
 			XPathXmlPullParser xmlParser = new XPathXmlPullParser();
 
 			// auto-detect the encoding from the stream
@@ -93,6 +97,7 @@ public class RequestImpl<T> implements Request<T> {
 				if (!isCancelled()) {
 					xmlParser.setInput(getResponse(), null);
 
+					Log.d("debug", "doInBackground finished");
 					return getParser().parse(xmlParser);
 				}
 			} catch (XmlPullParserException e) {
@@ -101,6 +106,7 @@ public class RequestImpl<T> implements Request<T> {
 				throw new SOAPException(e);
 			}
 
+			Log.d("debug", "doInBackground finished");
 			return null;
 		}
 	}

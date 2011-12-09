@@ -7,6 +7,7 @@ import java.util.Map;
 public class XPathElement {
 	private BasicXPathElement basicElement;
 	private XPathElement previousElement;
+	private String attribute;
 	private boolean startsWithDoubleSlash;
 	private Map<String, String> predicates = new HashMap<String, String>();
 
@@ -17,6 +18,13 @@ public class XPathElement {
 		basicElement = new BasicXPathElement(name);
 	}
 
+	public void setAttribute(String attributeName) {
+		this.attribute = attributeName;
+	}
+
+	public String getAttribute() {
+		return attribute;
+	}
 	public BasicXPathElement getBasic() {
 		return basicElement;
 	}

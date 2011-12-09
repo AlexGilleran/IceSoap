@@ -2,13 +2,14 @@ package com.alexgilleran.icesoap.request;
 
 import java.util.List;
 
-import android.os.AsyncTask;
-
 import com.alexgilleran.icesoap.envelope.SOAPEnv;
 import com.alexgilleran.icesoap.observer.ObserverRegistry;
 import com.alexgilleran.icesoap.observer.SOAPObserver;
 import com.alexgilleran.icesoap.parser.ListParser;
-import com.alexgilleran.icesoap.parser.OldListParser;
+
+import android.os.AsyncTask;
+import android.util.Log;
+
 
 public class ListRequestImpl<T> extends RequestImpl<List<T>> implements
 		ListRequest<T> {
@@ -36,10 +37,10 @@ public class ListRequestImpl<T> extends RequestImpl<List<T>> implements
 		return new ListRequestTask();
 	}
 
-	private class ListRequestTask extends RequestTask<T> {
-		public ListRequestTask() {
-			super();
-
+	private class ListRequestTask extends RequestTask<T> {	
+		@Override
+		protected void onPreExecute() {
+			Log.d("debug", "onPreExecute executed");
 			parser.addItemListener(itemListener);
 		}
 

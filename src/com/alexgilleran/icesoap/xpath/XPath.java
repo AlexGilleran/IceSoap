@@ -28,6 +28,14 @@ public class XPath {
 		}
 	}
 
+	public XPathElement getLastElement() {
+		if (!elements.isEmpty()) {
+			return elements.get(elements.size() - 1);
+		} else {
+			return null;
+		}
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -35,6 +43,20 @@ public class XPath {
 		result = prime * result
 				+ ((elements == null) ? 0 : elements.hashCode());
 		return result;
+	}
+
+	public XPath getWithoutPredicates() {
+		XPath xpath = new XPath();
+
+		for (XPathElement element : elements) {
+			xpath.addElement(new XPathElement(element.getName()));
+		}
+
+		return xpath;
+	}
+
+	public boolean targetsAttribute() {
+		return getLastElement().getAttribute() != null;
 	}
 
 	@Override
@@ -59,7 +81,7 @@ public class XPath {
 			return false;
 		}
 
-		for (int i = 0; i < this.elements.size(); i++) {
+		for (int i = elements.size() - 1; i >= 0; i--) {
 			if (!elements.get(i).matches(otherXPath.elements.get(i))) {
 				return false;
 			}

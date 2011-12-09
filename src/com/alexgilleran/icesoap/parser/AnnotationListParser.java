@@ -6,18 +6,31 @@ import java.util.List;
 
 import org.xmlpull.v1.XmlPullParserException;
 
+
 import com.alexgilleran.icesoap.observer.SOAPObserver;
+import com.alexgilleran.icesoap.xpath.XPath;
 
 public class AnnotationListParser<T> extends BaseAnnotationParser<List<T>>
 		implements ListParser<T> {
 	private Parser<T> parser;
+	private XPath objectXPath;
 
 	public AnnotationListParser(Class<T> clazz) {
-		this(clazz, new AnnotationParser<T>(clazz));
+		super(clazz);
+
+		this.parser = new AnnotationParser<T>(clazz);
 	}
 
-	public AnnotationListParser(Class<T> clazz, Parser<T> parser) {
-		super(clazz);
+	public AnnotationListParser(Class<T> clazz, XPath containingXPath) {
+		this(clazz, containingXPath, new AnnotationParser<T>(clazz,
+				containingXPath));
+	}
+
+	public AnnotationListParser(Class<T> clazz, XPath containingXPath,
+			Parser<T> parser) {
+		super(containingXPath);
+
+		objectXPath = super.retrieveRootXPath(clazz);
 
 		this.parser = parser;
 	}
@@ -40,10 +53,13 @@ public class AnnotationListParser<T> extends BaseAnnotationParser<List<T>>
 	@Override
 	protected List<T> onNewTag(XPathXmlPullParser xmlPullParser,
 			List<T> listSoFar) throws XmlPullParserException, IOException {
-		T object = parser.parse(xmlPullParser);
+		if (objectXPath == null
+				|| objectXPath.matches(xmlPullParser.getCurrentXPath())) {
+			T object = parser.parse(xmlPullParser);
 
-		if (object != null) {
-			listSoFar.add(object);
+			if (object != null) {
+				listSoFar.add(object);
+			}
 		}
 
 		return listSoFar;

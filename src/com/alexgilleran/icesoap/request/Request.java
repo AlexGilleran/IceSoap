@@ -4,6 +4,7 @@ import java.util.concurrent.ExecutionException;
 
 import com.alexgilleran.icesoap.observer.SOAPObserver;
 
+
 public interface Request<T> {
 	void execute();
 

@@ -6,6 +6,7 @@ import java.util.List;
 import com.alexgilleran.icesoap.observer.ObserverRegistry;
 import com.alexgilleran.icesoap.observer.SOAPObserver;
 
+
 public abstract class CompoundRequest<T> implements Request<T>, SOAPObserver {
 	private ObserverRegistry<T> registry = new ObserverRegistry<T>();
 	private List<Request<?>> requests = new ArrayList<Request<?>>();

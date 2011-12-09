@@ -24,9 +24,10 @@ import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 
+import com.alexgilleran.icesoap.envelope.SOAPEnv;
+
 import android.util.Log;
 
-import com.alexgilleran.icesoap.envelope.SOAPEnv;
 
 public class SOAPRequesterImpl implements SOAPRequester {
 	private static final int HTTP_OK_STATUS = 200;
@@ -35,7 +36,7 @@ public class SOAPRequesterImpl implements SOAPRequester {
 	private static final String HEADER_KEY_SOAP_ACTION = "SOAPAction";
 
 	private static int connectionTimeout = 5000;
-	private static int soTimeout = 6000;
+	private static int soTimeout = 20000;
 
 	private static SOAPRequester INSTANCE;
 
@@ -101,6 +102,10 @@ public class SOAPRequesterImpl implements SOAPRequester {
 
 		schemeRegistry.register(new Scheme("http", PlainSocketFactory
 				.getSocketFactory(), 80));
+		schemeRegistry.register(new Scheme("https", new EasySSLSocketFactory(),
+				8006));
+		// schemeRegistry.register(new Scheme("https",
+		// new CustomSSLSocketFactory(), 443));
 
 		ThreadSafeClientConnManager cm = new ThreadSafeClientConnManager(
 				httpParameters, schemeRegistry);

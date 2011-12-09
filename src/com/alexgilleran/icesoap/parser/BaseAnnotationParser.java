@@ -1,14 +1,16 @@
 package com.alexgilleran.icesoap.parser;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 
-import org.jaxen.saxpath.SAXPathException;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
-import com.alexgilleran.icesoap.annotation.SOAPField;
-import com.alexgilleran.icesoap.annotation.SOAPObject;
+
+import com.alexgilleran.icesoap.annotation.FindByXPath;
+import com.alexgilleran.icesoap.annotation.RootXPath;
 import com.alexgilleran.icesoap.exception.ClassDefException;
+import com.alexgilleran.icesoap.exception.XPathParsingException;
 import com.alexgilleran.icesoap.observer.ObserverRegistry;
 import com.alexgilleran.icesoap.observer.SOAPObserver;
 import com.alexgilleran.icesoap.xpath.XPath;
@@ -63,9 +65,11 @@ public abstract class BaseAnnotationParser<T> implements Parser<T> {
 						&& parser.getEventType() == XmlPullParser.END_TAG
 						&& rootXPath.matches(parser.getCurrentXPath())) {
 					isInRootElement = false;
+					break;
 				}
 
-				if (parser.getEventType() == XmlPullParser.START_TAG
+				if ((parser.getEventType() == XPathXmlPullParser.START_TAG || parser
+						.getEventType() == XPathXmlPullParser.ATTRIBUTE)
 						&& isInRootElement) {
 					objectToModify = parseElement(parser, objectToModify);
 				}
@@ -100,55 +104,55 @@ public abstract class BaseAnnotationParser<T> implements Parser<T> {
 			T objectToModify) throws XmlPullParserException, IOException;
 
 	/**
-	 * Retrieves the root xpath from the annotation on the task. Note that this
+	 * Retrieves the root xpath from the annotation on the class. Note that this
 	 * may return null.
 	 * 
 	 * @param targetClass
 	 *            Class to retrieve from
 	 * @return Root xpath or null if none is specified
 	 */
-	private XPath retrieveRootXPath(Class<?> targetClass) {
-		SOAPObject xPathAnnot = targetClass.getAnnotation(SOAPObject.class);
+	protected XPath retrieveRootXPath(Class<?> targetClass) {
+		RootXPath xPathAnnot = targetClass.getAnnotation(RootXPath.class);
 
 		if (xPathAnnot != null) {
-			return compileXPath(xPathAnnot);
+			return compileXPath(xPathAnnot, targetClass);
 		} else {
-			throw new ClassDefException("Class to create with "
-					+ this.getClass().getSimpleName()
+			throw new ClassDefException("Class " + targetClass.getName()
+					+ " to be created with " + this.getClass().getSimpleName()
 					+ " was not annotated with the "
-					+ SOAPField.class.getSimpleName()
+					+ FindByXPath.class.getSimpleName()
 					+ " annotation - please add this annotation");
 		}
 	}
 
-	protected XPath compileXPath(SOAPField xPathAnnot) {
+	protected XPath compileXPath(FindByXPath xPathAnnot, Field sourceField) {
 		if (xPathAnnot.value() != null) {
-			return compileXPath(xPathAnnot.value());
+			return compileXPath(xPathAnnot.value(), sourceField.toString());
 		} else {
 			throw new ClassDefException(
 					"The "
-							+ SOAPField.class.getSimpleName()
-							+ " annotation on class "
-							+ this.getClass().getSimpleName()
+							+ FindByXPath.class.getSimpleName()
+							+ " annotation on field "
+							+ sourceField.toString()
 							+ " did not specify a mandatory XPath expression for a value.");
 		}
 	}
 
-	protected XPath compileXPath(SOAPObject xPathAnnot) {
+	protected XPath compileXPath(RootXPath xPathAnnot, Class<?> sourceClass) {
 		if (xPathAnnot.value() != null) {
-			return compileXPath(xPathAnnot.value());
+			return compileXPath(xPathAnnot.value(), sourceClass.getSimpleName());
 		}
 
+		// Root xpath is not mandatory except for list parser.
 		return null;
 	}
 
-	private XPath compileXPath(String xPathString) {
+	private XPath compileXPath(String xPathString, String source) {
 		try {
 			return XPathFactory.getInstance().compile(xPathString);
-		} catch (SAXPathException e) {
-			throw new ClassDefException("The "
-					+ SOAPField.class.getSimpleName()
-					+ " annotation on class " + this.getClass().getSimpleName()
+		} catch (XPathParsingException e) {
+			throw new ClassDefException("The xpath expression " + xPathString
+					+ " specified for " + source
 					+ " was an invalid XPath expression");
 		}
 	}
