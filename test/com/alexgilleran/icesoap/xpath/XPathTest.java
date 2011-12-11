@@ -6,6 +6,8 @@ import static org.junit.Assert.fail;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.alexgilleran.icesoap.xpath.elements.SingleSlashXPElement;
+
 public class XPathTest {
 	XPath blankXPath;
 	XPath testXPath;
@@ -22,7 +24,7 @@ public class XPathTest {
 
 	@Test
 	public void testAddElement() {//TODO
-		blankXPath.addElement(new XPathElement("Hello", false, null));
+		blankXPath.addElement(new SingleSlashXPElement("Hello", false, null));
 		assertEquals("/Hello", blankXPath.toString());
 	}
 

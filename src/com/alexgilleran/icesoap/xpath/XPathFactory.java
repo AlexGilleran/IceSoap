@@ -9,6 +9,7 @@ import org.jaxen.saxpath.helpers.XPathReaderFactory;
 import android.util.Log;
 
 import com.alexgilleran.icesoap.exception.XPathParsingException;
+import com.alexgilleran.icesoap.xpath.elements.SingleSlashXPElement;
 
 
 public class XPathFactory {
@@ -43,7 +44,7 @@ public class XPathFactory {
 
 	private class AndroidXPathHandler implements XPathHandler {
 		XPath xPath;
-		XPathElement currentElement;
+		SingleSlashXPElement currentElement;
 
 		boolean currentlyParsingPredicate = false;;
 
@@ -69,7 +70,7 @@ public class XPathFactory {
 				}
 				break;
 			default:
-				currentElement = new XPathElement(localName, false, currentElement);
+				currentElement = new SingleSlashXPElement(localName, currentElement);
 				break;
 			}
 		}

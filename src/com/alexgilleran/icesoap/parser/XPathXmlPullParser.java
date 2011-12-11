@@ -10,7 +10,7 @@ import org.xmlpull.v1.XmlPullParserException;
 import android.util.Xml;
 
 import com.alexgilleran.icesoap.xpath.XPath;
-import com.alexgilleran.icesoap.xpath.XPathElement;
+import com.alexgilleran.icesoap.xpath.elements.SingleSlashXPElement;
 
 /**
  * Wrapper for XMLPullParser for XPath operations.
@@ -102,7 +102,7 @@ public class XPathXmlPullParser {
 
 		switch (getEventType()) {
 		case XmlPullParser.START_TAG://TODO:
-			XPathElement currentElement = new XPathElement(parser.getName(), false, null);
+			SingleSlashXPElement currentElement = new SingleSlashXPElement(parser.getName(), false, null);
 
 			int attributeCount = parser.getAttributeCount();
 			if (attributeCount > 0) {

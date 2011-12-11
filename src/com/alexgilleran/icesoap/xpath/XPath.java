@@ -3,8 +3,12 @@ package com.alexgilleran.icesoap.xpath;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.alexgilleran.icesoap.xpath.elements.BaseXPElement;
+import com.alexgilleran.icesoap.xpath.elements.NodeXPElement;
+import com.alexgilleran.icesoap.xpath.elements.SingleSlashXPElement;
+
 public class XPath {
-	private List<XPathElement> elements = new ArrayList<XPathElement>();
+	private List<SingleSlashXPElement> elements = new ArrayList<SingleSlashXPElement>();
 
 	public XPath() {
 
@@ -12,13 +16,13 @@ public class XPath {
 
 	public XPath(XPath... xpaths) {
 		for (XPath xpath : xpaths) {
-			for (XPathElement element : xpath.elements) {
+			for (SingleSlashXPElement element : xpath.elements) {
 				elements.add(element);
 			}
 		}
 	}
 
-	public void addElement(XPathElement node) {
+	public void addElement(SingleSlashXPElement node) {
 		elements.add(node);
 	}
 
@@ -28,7 +32,7 @@ public class XPath {
 		}
 	}
 
-	public XPathElement getLastElement() {
+	public SingleSlashXPElement getLastElement() {
 		if (!elements.isEmpty()) {
 			return elements.get(elements.size() - 1);
 		} else {
@@ -48,8 +52,8 @@ public class XPath {
 	public XPath getWithoutPredicates() {
 		XPath xpath = new XPath();
 
-		for (XPathElement element : elements) {//TODO:
-			xpath.addElement(new XPathElement(element.getName(), false, null));
+		for (NodeXPElement element : elements) {//TODO:
+			xpath.addElement(new SingleSlashXPElement(element.getName(), null));
 		}
 
 		return xpath;
@@ -94,7 +98,7 @@ public class XPath {
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 
-		for (BasicXPathElement element : elements) {
+		for (BaseXPElement element : elements) {
 			builder.append("/").append(element.toString());
 		}
 
