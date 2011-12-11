@@ -1,7 +1,6 @@
 package com.alexgilleran.icesoap.xpath.elements;
 
-
-public abstract class BaseXPElement {
+public abstract class BaseXPElement implements XPElement {
 
 	private String name;
 	private BaseXPElement previousElement;
@@ -19,11 +18,10 @@ public abstract class BaseXPElement {
 		return name;
 	}
 
-	public boolean matches(BaseXPElement otherElement) {
+	public boolean matches(XPElement otherElement) {
 		return equals(otherElement);
 	}
 
-	public abstract String getPredicate(String predicateName);
 
 	public boolean isFirstElement() {
 		return previousElement == null;

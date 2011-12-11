@@ -7,31 +7,32 @@ public class AttributeXPElement extends SingleSlashXPElement {
 	}
 
 	@Override
-	public boolean matches(BaseXPElement otherElement)
-	{
-		if (!super.matches(otherElement))
-		{
+	public boolean matches(XPElement otherElement) {
+		if (!super.matches(otherElement)) {
 			return false;
 		}
-		
-		if (!otherElement.getClass().isAssignableFrom(this.getClass()))
-		{
+
+		if (!otherElement.getClass().isAssignableFrom(this.getClass())) {
 			return false;
 		}
-		
+
 		return true;
 	}
-	
+
 	@Override
 	public String getPredicate(String predicateName) {
-		// TODO Auto-generated method stub
+		// Do nothing
+
 		return null;
 	}
 
 	@Override
-	public StringBuilder toStringBuilder() {
-		// TODO Auto-generated method stub
-		return null;
+	public void addPredicate(String name, String value) {
+		// Do nothing
 	}
 
+	@Override
+	public String getName() {
+		return "@" + super.getName();
+	}
 }

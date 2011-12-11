@@ -7,7 +7,7 @@ public class SingleSlashXPElement extends NodeXPElement {
 	}
 
 	@Override
-	public boolean matches(BaseXPElement otherElement) {
+	public boolean matches(XPElement otherElement) {
 		if (!super.matches(otherElement))
 		{
 			return false;
