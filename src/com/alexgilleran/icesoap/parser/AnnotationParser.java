@@ -14,8 +14,9 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import com.alexgilleran.icesoap.annotation.SOAPField;
 import com.alexgilleran.icesoap.exception.ClassDefException;
-import com.alexgilleran.icesoap.xpath.XPath;
+import com.alexgilleran.icesoap.xpath.XPathFactory;
 import com.alexgilleran.icesoap.xpath.XPathRepository;
+import com.alexgilleran.icesoap.xpath.elements.XPathElement;
 
 public class AnnotationParser<T> extends BaseAnnotationParser<T> {
 	private XPathRepository<Field> fieldXPaths;
@@ -31,7 +32,7 @@ public class AnnotationParser<T> extends BaseAnnotationParser<T> {
 		fieldXPaths = getFieldXPaths(targetClass);
 	}
 
-	public AnnotationParser(Class<T> targetClass, XPath rootXPath) {
+	public AnnotationParser(Class<T> targetClass, XPathElement rootXPath) {
 		super(rootXPath);
 
 		this.targetClass = targetClass;
@@ -45,7 +46,10 @@ public class AnnotationParser<T> extends BaseAnnotationParser<T> {
 			SOAPField xPath = field.getAnnotation(SOAPField.class);
 
 			if (xPath != null) {
-				fieldXPaths.put(new XPath(compileXPath(xPath, field)).getLastElement(), field);
+				XPathElement fieldElement = compileXPath(xPath, field);
+				fieldElement.setPreviousElement(getRootXPath());
+
+				fieldXPaths.put(fieldElement, field);
 			}
 		}
 
@@ -77,7 +81,7 @@ public class AnnotationParser<T> extends BaseAnnotationParser<T> {
 	@Override
 	protected T onNewTag(XPathXmlPullParser xmlPullParser, T objectToModify)
 			throws XmlPullParserException, IOException {
-		Field fieldToSet = fieldXPaths.get(xmlPullParser.getCurrentElement().getLastElement());
+		Field fieldToSet = fieldXPaths.get(xmlPullParser.getCurrentElement());
 
 		if (fieldToSet != null) {
 			if (textNodeClasses.contains(fieldToSet.getType())) {

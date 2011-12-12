@@ -18,6 +18,10 @@ public abstract class BaseXPathElement implements XPathElement {
 		return previousElement;
 	}
 
+	public void setPreviousElement(XPathElement element) {
+		previousElement = element;
+	}
+
 	public String getName() {
 		return name;
 	}

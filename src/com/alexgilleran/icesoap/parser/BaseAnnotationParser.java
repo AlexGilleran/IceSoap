@@ -12,22 +12,22 @@ import com.alexgilleran.icesoap.exception.ClassDefException;
 import com.alexgilleran.icesoap.exception.XPathParsingException;
 import com.alexgilleran.icesoap.observer.ObserverRegistry;
 import com.alexgilleran.icesoap.observer.SOAPObserver;
-import com.alexgilleran.icesoap.xpath.XPath;
 import com.alexgilleran.icesoap.xpath.XPathFactory;
+import com.alexgilleran.icesoap.xpath.elements.XPathElement;
 
 public abstract class BaseAnnotationParser<T> implements Parser<T> {
-	private XPath rootXPath;
+	private XPathElement rootXPath;
 	private ObserverRegistry<T> registry = new ObserverRegistry<T>();
 
 	protected BaseAnnotationParser(Class<?> targetClass) {
 		rootXPath = retrieveRootXPath(targetClass);
 	}
 
-	protected BaseAnnotationParser(XPath rootXPath) {
+	protected BaseAnnotationParser(XPathElement rootXPath) {
 		this.rootXPath = rootXPath;
 	}
 
-	protected XPath getRootXPath() {
+	protected XPathElement getRootXPath() {
 		return rootXPath;
 	}
 
@@ -110,7 +110,7 @@ public abstract class BaseAnnotationParser<T> implements Parser<T> {
 	 *            Class to retrieve from
 	 * @return Root xpath or null if none is specified
 	 */
-	protected XPath retrieveRootXPath(Class<?> targetClass) {
+	protected XPathElement retrieveRootXPath(Class<?> targetClass) {
 		SOAPObject xPathAnnot = targetClass.getAnnotation(SOAPObject.class);
 
 		if (xPathAnnot != null) {
@@ -124,7 +124,7 @@ public abstract class BaseAnnotationParser<T> implements Parser<T> {
 		}
 	}
 
-	protected XPath compileXPath(SOAPField xPathAnnot, Field sourceField) {
+	protected XPathElement compileXPath(SOAPField xPathAnnot, Field sourceField) {
 		if (xPathAnnot.value() != null) {
 			return compileXPath(xPathAnnot.value(), sourceField.toString());
 		} else {
@@ -137,7 +137,8 @@ public abstract class BaseAnnotationParser<T> implements Parser<T> {
 		}
 	}
 
-	protected XPath compileXPath(SOAPObject xPathAnnot, Class<?> sourceClass) {
+	protected XPathElement compileXPath(SOAPObject xPathAnnot,
+			Class<?> sourceClass) {
 		if (xPathAnnot.value() != null) {
 			return compileXPath(xPathAnnot.value(), sourceClass.getSimpleName());
 		}
@@ -146,7 +147,7 @@ public abstract class BaseAnnotationParser<T> implements Parser<T> {
 		return null;
 	}
 
-	private XPath compileXPath(String xPathString, String source) {
+	private XPathElement compileXPath(String xPathString, String source) {
 		try {
 			return XPathFactory.getInstance().compile(xPathString);
 		} catch (XPathParsingException e) {

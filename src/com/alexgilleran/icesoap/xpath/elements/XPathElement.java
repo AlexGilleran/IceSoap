@@ -11,13 +11,15 @@ public interface XPathElement {
 
 	XPathElement getPreviousElement();
 
+	void setPreviousElement(XPathElement element);
+
 	boolean isFirstElement();
 
 	StringBuilder toStringBuilder();
 
 	boolean isAttribute();
-	
+
 	int hashCode();
-	
+
 	boolean equals(Object obj);
 }
