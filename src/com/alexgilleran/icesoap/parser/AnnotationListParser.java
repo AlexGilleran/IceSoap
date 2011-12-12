@@ -54,7 +54,7 @@ public class AnnotationListParser<T> extends BaseAnnotationParser<List<T>>
 	protected List<T> onNewTag(XPathXmlPullParser xmlPullParser,
 			List<T> listSoFar) throws XmlPullParserException, IOException {
 		if (objectXPath == null
-				|| objectXPath.matches(xmlPullParser.getCurrentXPath())) {
+				|| objectXPath.matches(xmlPullParser.getCurrentElement())) {
 			T object = parser.parse(xmlPullParser);
 
 			if (object != null) {

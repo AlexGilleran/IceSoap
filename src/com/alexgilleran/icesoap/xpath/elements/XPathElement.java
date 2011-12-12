@@ -1,14 +1,18 @@
 package com.alexgilleran.icesoap.xpath.elements;
 
-public interface XPElement {
+public interface XPathElement {
 
 	void addPredicate(String name, String value);
 
-	boolean matches(XPElement otherElement);
+	boolean matches(XPathElement otherElement);
 
 	String getPredicate(String predicateName);
 
-	XPElement getPreviousElement();
+	XPathElement getPreviousElement();
 
 	boolean isFirstElement();
+
+	StringBuilder toStringBuilder();
+	
+	boolean isAttribute();
 }

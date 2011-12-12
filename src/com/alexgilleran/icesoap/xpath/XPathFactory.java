@@ -6,16 +6,16 @@ import org.jaxen.saxpath.XPathHandler;
 import org.jaxen.saxpath.XPathReader;
 import org.jaxen.saxpath.helpers.XPathReaderFactory;
 
-import android.util.Log;
-
 import com.alexgilleran.icesoap.exception.XPathParsingException;
+import com.alexgilleran.icesoap.xpath.elements.AttributeXPElement;
+import com.alexgilleran.icesoap.xpath.elements.DoubleSlashXPElement;
 import com.alexgilleran.icesoap.xpath.elements.SingleSlashXPElement;
-
+import com.alexgilleran.icesoap.xpath.elements.XPathElement;
 
 public class XPathFactory {
 	private static XPathFactory INSTANCE = null;
 
-	private void XPathFactory() {
+	private XPathFactory() {
 
 	}
 
@@ -27,8 +27,9 @@ public class XPathFactory {
 		return INSTANCE;
 	}
 
-	public XPath compile(String xPathString) throws XPathParsingException {
+	public XPathElement compile(String xPathString) throws XPathParsingException {
 		XPathReader reader;
+
 		try {
 			reader = XPathReaderFactory.createReader();
 
@@ -43,19 +44,14 @@ public class XPathFactory {
 	}
 
 	private class AndroidXPathHandler implements XPathHandler {
-		XPath xPath;
-		SingleSlashXPElement currentElement;
+		private XPathElement currentElement;
+		private boolean currentlyParsingPredicate = false;
+		private boolean allNodeStep = false;
 
-		boolean currentlyParsingPredicate = false;;
+		private String currentPredicateKey;
 
-		String currentPredicateKey;
-
-		public AndroidXPathHandler() {
-			xPath = new XPath();
-		}
-
-		public XPath getXPath() {
-			return xPath;
+		public XPathElement getXPath() {
+			return currentElement;
 		}
 
 		@Override
@@ -66,21 +62,28 @@ public class XPathFactory {
 				if (currentlyParsingPredicate) {
 					currentPredicateKey = localName;
 				} else {
-//					xPath.getLastElement().setAttribute(localName);
+					currentElement = new AttributeXPElement(localName, currentElement);
 				}
 				break;
 			default:
-				currentElement = new SingleSlashXPElement(localName, currentElement);
+				if (allNodeStep) {
+					currentElement = new DoubleSlashXPElement(localName,
+							currentElement);
+					allNodeStep = false;
+				} else {
+					currentElement = new SingleSlashXPElement(localName,
+							currentElement);
+				}
 				break;
 			}
 		}
 
 		@Override
 		public void endNameStep() throws SAXPathException {
-			if (!currentlyParsingPredicate && currentElement != null) {
-				xPath.addElement(currentElement);
-				currentElement = null;
-			}
+//			if (!currentlyParsingPredicate && currentElement != null) {
+//				xPath.addElement(currentElement);
+//				currentElement = null;
+//			}
 		}
 
 		@Override
@@ -121,8 +124,6 @@ public class XPathFactory {
 
 		@Override
 		public void endAllNodeStep() throws SAXPathException {
-			// TODO Auto-generated method stub
-
 		}
 
 		@Override
@@ -231,8 +232,7 @@ public class XPathFactory {
 
 		@Override
 		public void startAllNodeStep(int arg0) throws SAXPathException {
-			// TODO Auto-generated method stub
-
+			allNodeStep = true;
 		}
 
 		@Override
@@ -254,7 +254,6 @@ public class XPathFactory {
 
 		@Override
 		public void startFilterExpr() throws SAXPathException {
-			Log.d("blah", "blah");
 
 		}
 

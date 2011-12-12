@@ -1,20 +1,21 @@
 package com.alexgilleran.icesoap.xpath.elements;
 
 public class SingleSlashXPElement extends NodeXPElement {
-	public SingleSlashXPElement(String name,
-			BaseXPElement previousElement) {
+	public SingleSlashXPElement(String name, XPathElement previousElement) {
 		super(name, previousElement);
 	}
 
 	@Override
-	public boolean matches(XPElement otherElement) {
-		if (!super.matches(otherElement))
-		{
+	public boolean matches(XPathElement otherElement) {
+		if (!super.matches(otherElement)) {
 			return false;
 		}
 
-		if (this.isFirstElement()) {
+		if (this.isFirstElement() != otherElement.isFirstElement()) {
+			return false;
+		}
 
+		if (!this.isFirstElement()) {
 			// Previous element is not null and this isn't a '//' element -
 			// see if the previous elements of both xpaths match
 			return getPreviousElement().matches(

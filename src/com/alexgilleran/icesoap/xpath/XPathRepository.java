@@ -7,7 +7,7 @@ import java.util.Set;
 
 import com.alexgilleran.icesoap.xpath.elements.NodeXPElement;
 import com.alexgilleran.icesoap.xpath.elements.SingleSlashXPElement;
-import com.alexgilleran.icesoap.xpath.elements.XPElement;
+import com.alexgilleran.icesoap.xpath.elements.XPathElement;
 
 public class XPathRepository<T> {
 	private Map<String, Set<SingleSlashXPElement>> lookupMap = new HashMap<String, Set<SingleSlashXPElement>>();
@@ -36,7 +36,7 @@ public class XPathRepository<T> {
 				.getName());
 
 		if (possibleElements != null) {
-			for (XPElement possElement : possibleElements) {
+			for (XPathElement possElement : possibleElements) {
 				if (possElement.matches(endElement)) {
 					return valueMap.get(endElement);
 				}

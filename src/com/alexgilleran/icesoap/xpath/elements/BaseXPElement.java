@@ -1,16 +1,16 @@
 package com.alexgilleran.icesoap.xpath.elements;
 
-public abstract class BaseXPElement implements XPElement {
+public abstract class BaseXPElement implements XPathElement {
 
 	private String name;
-	private BaseXPElement previousElement;
+	private XPathElement previousElement;
 
-	public BaseXPElement(String name, BaseXPElement previousElement) {
+	public BaseXPElement(String name, XPathElement previousElement) {
 		this.name = name;
 		this.previousElement = previousElement;
 	}
 
-	public BaseXPElement getPreviousElement() {
+	public XPathElement getPreviousElement() {
 		return previousElement;
 	}
 
@@ -18,7 +18,12 @@ public abstract class BaseXPElement implements XPElement {
 		return name;
 	}
 
-	public boolean matches(XPElement otherElement) {
+	@Override
+	public boolean isAttribute() {
+		return false;
+	}
+	
+	public boolean matches(XPathElement otherElement) {
 		return equals(otherElement);
 	}
 

@@ -58,11 +58,11 @@ public abstract class BaseAnnotationParser<T> implements Parser<T> {
 			} else {
 				if (isInRootElement == false
 						&& parser.getEventType() == XmlPullParser.START_TAG
-						&& rootXPath.matches(parser.getCurrentXPath())) {
+						&& rootXPath.matches(parser.getCurrentElement())) {
 					isInRootElement = true;
 				} else if (isInRootElement == true
 						&& parser.getEventType() == XmlPullParser.END_TAG
-						&& rootXPath.matches(parser.getCurrentXPath())) {
+						&& rootXPath.matches(parser.getCurrentElement())) {
 					isInRootElement = false;
 					break;
 				}

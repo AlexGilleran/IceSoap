@@ -2,8 +2,7 @@ package com.alexgilleran.icesoap.xpath.elements;
 
 public class DoubleSlashXPElement extends NodeXPElement {
 
-	public DoubleSlashXPElement(String name,
-			SingleSlashXPElement previousElement) {
+	public DoubleSlashXPElement(String name, XPathElement previousElement) {
 		super(name, previousElement);
 	}
 
@@ -13,7 +12,7 @@ public class DoubleSlashXPElement extends NodeXPElement {
 	}
 
 	@Override
-	public boolean matches(XPElement otherElement) {
+	public boolean matches(XPathElement otherElement) {
 		if (!super.matches(otherElement)) {
 			return false;
 		}
@@ -28,7 +27,7 @@ public class DoubleSlashXPElement extends NodeXPElement {
 			// This element starts with '//' and has previous elements -
 			// loop through all the previous elements that the other element
 			// has, to see if any of them match this node's previous element
-			XPElement thisPrevElement = otherElement.getPreviousElement();
+			XPathElement thisPrevElement = otherElement.getPreviousElement();
 
 			while (thisPrevElement != null) {
 				if (thisPrevElement.matches(otherElement.getPreviousElement())) {
@@ -40,7 +39,7 @@ public class DoubleSlashXPElement extends NodeXPElement {
 
 			return false;
 		}
-		
+
 		return true;
 	}
 }

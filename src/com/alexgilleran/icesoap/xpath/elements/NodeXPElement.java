@@ -7,7 +7,7 @@ import java.util.Map;
 public abstract class NodeXPElement extends BaseXPElement {
 	private Map<String, String> predicates = new HashMap<String, String>();
 
-	public NodeXPElement(String name, BaseXPElement previousElement) {
+	public NodeXPElement(String name, XPathElement previousElement) {
 		super(name, previousElement);
 	}
 
@@ -31,7 +31,7 @@ public abstract class NodeXPElement extends BaseXPElement {
 	 * .icesoap.xpath.elements.BaseXPElement)
 	 */
 	@Override
-	public boolean matches(XPElement otherElement) {
+	public boolean matches(XPathElement otherElement) {
 		if (!super.matches(otherElement)) {
 			return false;
 		}
@@ -76,8 +76,8 @@ public abstract class NodeXPElement extends BaseXPElement {
 
 			while (it.hasNext()) {
 				String key = it.next();
-				builder.append("@").append(key).append("=")
-						.append(predicates.get(key));
+				builder.append("@").append(key).append("=").append("\"")
+						.append(predicates.get(key)).append("\"");
 
 				if (it.hasNext()) {
 					builder.append(" and ");

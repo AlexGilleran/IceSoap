@@ -77,7 +77,7 @@ public class AnnotationParser<T> extends BaseAnnotationParser<T> {
 	@Override
 	protected T onNewTag(XPathXmlPullParser xmlPullParser, T objectToModify)
 			throws XmlPullParserException, IOException {
-		Field fieldToSet = fieldXPaths.get(xmlPullParser.getCurrentXPath().getLastElement());
+		Field fieldToSet = fieldXPaths.get(xmlPullParser.getCurrentElement().getLastElement());
 
 		if (fieldToSet != null) {
 			if (textNodeClasses.contains(fieldToSet.getType())) {
@@ -120,7 +120,7 @@ public class AnnotationParser<T> extends BaseAnnotationParser<T> {
 					listItemClass, xmlPullParser);
 
 			return new AnnotationListParser(listItemClass,
-					xmlPullParser.getCurrentXPath(), itemParser);
+					xmlPullParser.getCurrentElement(), itemParser);
 		} else {
 			return new AnnotationParser<E>(classToParse,
 					retrieveRootXPath(classToParse));

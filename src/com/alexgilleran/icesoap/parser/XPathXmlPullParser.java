@@ -2,15 +2,15 @@ package com.alexgilleran.icesoap.parser;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Reader;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import android.util.Xml;
 
-import com.alexgilleran.icesoap.xpath.XPath;
+import com.alexgilleran.icesoap.xpath.elements.AttributeXPElement;
 import com.alexgilleran.icesoap.xpath.elements.SingleSlashXPElement;
+import com.alexgilleran.icesoap.xpath.elements.XPathElement;
 
 /**
  * Wrapper for XMLPullParser for XPath operations.
@@ -27,7 +27,7 @@ public class XPathXmlPullParser {
 	public static int ATTRIBUTE = 5;
 
 	private XmlPullParser parser = Xml.newPullParser();
-	private XPath currentXPath = new XPath();
+	private XPathElement currentElement;
 	private boolean removeLastXPathElement;
 	private int currentAttribute = 0;
 
@@ -35,11 +35,7 @@ public class XPathXmlPullParser {
 
 	}
 
-	// TODO: More professional/less fun javadoc comment
 	/**
-	 * ONLY USE THIS IF YOU'RE SURE THERE'S A TEXT NODE NEXT OR YOU'RE ON AN
-	 * ATTRIBUTE, OTHERWISE I'M NOT ENTIRELY SURE WHAT'LL HAPPEN BUT I'M SURE
-	 * IT'LL BE BAD!!11
 	 * 
 	 * Get the String value of the current node, whether attribute or text.
 	 * 
@@ -48,7 +44,7 @@ public class XPathXmlPullParser {
 	 * @throws XmlPullParserException
 	 */
 	public String getCurrentValue() throws XmlPullParserException, IOException {
-		if (currentXPath.targetsAttribute()) {
+		if (currentElement.isAttribute()) {
 			return this.getCurrentAttributeValue();
 		} else {
 			return parser.nextText();
@@ -79,30 +75,33 @@ public class XPathXmlPullParser {
 
 		if (parser.getEventType() == XmlPullParser.START_TAG
 				&& currentAttribute <= parser.getAttributeCount() - 1) {
+			// There are attributes here - process them in turn before we get to
+			// the value
 			next = ATTRIBUTE;
 
-			currentXPath.getLastElement().setAttribute(
-					parser.getAttributeName(currentAttribute));
+			currentElement = new AttributeXPElement(
+					parser.getAttributeName(currentAttribute), currentElement);
 
 			currentAttribute++;
 		} else {
 			next = parser.next();
 
-			if (currentXPath.getLastElement() != null) {
-				currentXPath.getLastElement().setAttribute(null);
+			if (currentElement.isAttribute()) {
+				currentElement = currentElement.getPreviousElement();
 			}
 
 			currentAttribute = 0;
 		}
 
 		if (removeLastXPathElement) {
-			currentXPath.removeElement();
+			currentElement = currentElement.getPreviousElement();
 			removeLastXPathElement = false;
 		}
 
 		switch (getEventType()) {
-		case XmlPullParser.START_TAG://TODO:
-			SingleSlashXPElement currentElement = new SingleSlashXPElement(parser.getName(), false, null);
+		case XmlPullParser.START_TAG:// TODO:
+			currentElement = new SingleSlashXPElement(
+					parser.getName(), currentElement);
 
 			int attributeCount = parser.getAttributeCount();
 			if (attributeCount > 0) {
@@ -111,8 +110,6 @@ public class XPathXmlPullParser {
 							parser.getAttributeValue(i));
 				}
 			}
-
-			currentXPath.addElement(currentElement);
 
 			break;
 		case XmlPullParser.END_TAG:
@@ -126,8 +123,8 @@ public class XPathXmlPullParser {
 	/**
 	 * @return the currentXPath
 	 */
-	public XPath getCurrentXPath() {
-		return currentXPath;
+	public XPathElement getCurrentElement() {
+		return currentElement;
 	}
 
 	/**
