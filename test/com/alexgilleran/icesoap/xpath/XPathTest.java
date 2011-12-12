@@ -11,6 +11,7 @@ public class XPathTest {
 		"/example",//
 				"/example1/example2",//
 				"/example1/example2/example3",//
+				"/example/example/example",//
 				"//example1",//
 				"//example1/example2",//
 				"//example1/example2/example3",//
@@ -20,7 +21,7 @@ public class XPathTest {
 				"/example1/example2/@attribute",//
 				"/example1//example2/@attribute",//
 				"/example1[@predicate=\"value\"]",//
-				"/example1/example2[@predicate=\"value\"]" };
+				"/example1/example2[@predicate=\"value\"]"};
 	}
 
 	protected void testAgainstSelf(String xpathString)

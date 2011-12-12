@@ -29,7 +29,7 @@ public class JaxenTest {
 				new Class<?>[] { XPathHandler.class }, methodTracker);
 		reader.setXPathHandler(handler);
 
-		reader.parse("//example1");
+		reader.parse("example1/example2");
 
 		System.out.print(methodTracker.getLog());
 	}

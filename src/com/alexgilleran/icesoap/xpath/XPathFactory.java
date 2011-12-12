@@ -9,6 +9,7 @@ import org.jaxen.saxpath.helpers.XPathReaderFactory;
 import com.alexgilleran.icesoap.exception.XPathParsingException;
 import com.alexgilleran.icesoap.xpath.elements.AttributeXPathElement;
 import com.alexgilleran.icesoap.xpath.elements.DoubleSlashXPathElement;
+import com.alexgilleran.icesoap.xpath.elements.RelativeXPathElement;
 import com.alexgilleran.icesoap.xpath.elements.SingleSlashXPathElement;
 import com.alexgilleran.icesoap.xpath.elements.XPathElement;
 
@@ -27,7 +28,8 @@ public class XPathFactory {
 		return INSTANCE;
 	}
 
-	public XPathElement compile(String xPathString) throws XPathParsingException {
+	public XPathElement compile(String xPathString)
+			throws XPathParsingException {
 		XPathReader reader;
 
 		try {
@@ -47,6 +49,7 @@ public class XPathFactory {
 		private XPathElement currentElement;
 		private boolean currentlyParsingPredicate = false;
 		private boolean allNodeStep = false;
+		private boolean relativeElement = false;
 
 		private String currentPredicateKey;
 
@@ -62,7 +65,8 @@ public class XPathFactory {
 				if (currentlyParsingPredicate) {
 					currentPredicateKey = localName;
 				} else {
-					currentElement = new AttributeXPathElement(localName, currentElement);
+					currentElement = new AttributeXPathElement(localName,
+							currentElement);
 				}
 				break;
 			default:
@@ -70,6 +74,10 @@ public class XPathFactory {
 					currentElement = new DoubleSlashXPathElement(localName,
 							currentElement);
 					allNodeStep = false;
+				} else if (relativeElement) {
+					currentElement = new RelativeXPathElement(localName,
+							currentElement);
+					relativeElement = false;
 				} else {
 					currentElement = new SingleSlashXPathElement(localName,
 							currentElement);
@@ -80,10 +88,10 @@ public class XPathFactory {
 
 		@Override
 		public void endNameStep() throws SAXPathException {
-//			if (!currentlyParsingPredicate && currentElement != null) {
-//				xPath.addElement(currentElement);
-//				currentElement = null;
-//			}
+			// if (!currentlyParsingPredicate && currentElement != null) {
+			// xPath.addElement(currentElement);
+			// currentElement = null;
+			// }
 		}
 
 		@Override
@@ -106,7 +114,6 @@ public class XPathFactory {
 
 		@Override
 		public void startAbsoluteLocationPath() throws SAXPathException {
-			// TODO Auto-generated method stub
 
 		}
 
@@ -293,8 +300,7 @@ public class XPathFactory {
 
 		@Override
 		public void startRelativeLocationPath() throws SAXPathException {
-			// TODO Auto-generated method stub
-
+			relativeElement = true;
 		}
 
 		@Override
