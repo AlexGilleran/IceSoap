@@ -1,8 +1,8 @@
 package com.alexgilleran.icesoap.xpath.elements;
 
-public class AttributeXPElement extends SingleSlashXPElement {
+public class AttributeXPathElement extends SingleSlashXPathElement {
 
-	public AttributeXPElement(String name, XPathElement previousElement) {
+	public AttributeXPathElement(String name, XPathElement previousElement) {
 		super(name, previousElement);
 	}
 

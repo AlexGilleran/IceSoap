@@ -5,18 +5,16 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import com.alexgilleran.icesoap.xpath.elements.NodeXPElement;
-import com.alexgilleran.icesoap.xpath.elements.SingleSlashXPElement;
 import com.alexgilleran.icesoap.xpath.elements.XPathElement;
 
 public class XPathRepository<T> {
-	private Map<String, Set<SingleSlashXPElement>> lookupMap = new HashMap<String, Set<SingleSlashXPElement>>();
-	private Map<SingleSlashXPElement, T> valueMap = new HashMap<SingleSlashXPElement, T>();
+	private Map<String, Set<XPathElement>> lookupMap = new HashMap<String, Set<XPathElement>>();
+	private Map<XPathElement, T> valueMap = new HashMap<XPathElement, T>();
 
-	public void put(SingleSlashXPElement element, T value) {
+	public void put(XPathElement element, T value) {
 		valueMap.put(element, value);
 		
-		Set<SingleSlashXPElement> existingSet = lookupMap.get(element.getName());
+		Set<XPathElement> existingSet = lookupMap.get(element.getName());
 
 		if (existingSet == null) {
 			lookupMap.put(element.getName(), newElementSet(element));
@@ -25,14 +23,14 @@ public class XPathRepository<T> {
 		}
 	}
 
-	private Set<SingleSlashXPElement> newElementSet(SingleSlashXPElement element) {
-		Set<SingleSlashXPElement> elementSet = new HashSet<SingleSlashXPElement>();
+	private Set<XPathElement> newElementSet(XPathElement element) {
+		Set<XPathElement> elementSet = new HashSet<XPathElement>();
 		elementSet.add(element);
 		return elementSet;
 	}
 
-	public T get(NodeXPElement endElement) {
-		Set<SingleSlashXPElement> possibleElements = lookupMap.get(endElement
+	public T get(XPathElement endElement) {
+		Set<XPathElement> possibleElements = lookupMap.get(endElement
 				.getName());
 
 		if (possibleElements != null) {

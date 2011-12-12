@@ -1,6 +1,7 @@
 package com.alexgilleran.icesoap.xpath.elements;
 
 public interface XPathElement {
+	String getName();
 
 	void addPredicate(String name, String value);
 
@@ -13,6 +14,10 @@ public interface XPathElement {
 	boolean isFirstElement();
 
 	StringBuilder toStringBuilder();
-	
+
 	boolean isAttribute();
+	
+	int hashCode();
+	
+	boolean equals(Object obj);
 }

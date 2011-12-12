@@ -4,35 +4,41 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-public abstract class NodeXPElement extends BaseXPElement {
+public abstract class BaseXPathElement implements XPathElement {
+	private String name;
+	private XPathElement previousElement;
 	private Map<String, String> predicates = new HashMap<String, String>();
 
-	public NodeXPElement(String name, XPathElement previousElement) {
-		super(name, previousElement);
+	public BaseXPathElement(String name, XPathElement previousElement) {
+		this.name = name;
+		this.previousElement = previousElement;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.alexgilleran.icesoap.xpath.elements.XPElement#addPredicate(java.lang
-	 * .String, java.lang.String)
-	 */
+	public XPathElement getPreviousElement() {
+		return previousElement;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	@Override
+	public boolean isAttribute() {
+		return false;
+	}
+
+	public boolean isFirstElement() {
+		return previousElement == null;
+	}
+
 	@Override
 	public void addPredicate(String name, String value) {
 		predicates.put(name, value);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.alexgilleran.icesoap.xpath.elements.XPElement#matches(com.alexgilleran
-	 * .icesoap.xpath.elements.BaseXPElement)
-	 */
 	@Override
 	public boolean matches(XPathElement otherElement) {
-		if (!super.matches(otherElement)) {
+		if (!getName().equals(otherElement.getName())) {
 			return false;
 		}
 
@@ -95,16 +101,48 @@ public abstract class NodeXPElement extends BaseXPElement {
 		return toStringBuilder().toString();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.alexgilleran.icesoap.xpath.elements.XPElement#getPredicate(java.lang
-	 * .String)
-	 */
 	@Override
 	public String getPredicate(String predicateName) {
 		return predicates.get(predicateName);
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result
+				+ ((predicates == null) ? 0 : predicates.hashCode());
+		result = prime * result
+				+ ((previousElement == null) ? 0 : previousElement.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		BaseXPathElement other = (BaseXPathElement) obj;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
+		if (predicates == null) {
+			if (other.predicates != null)
+				return false;
+		} else if (!predicates.equals(other.predicates))
+			return false;
+		if (previousElement == null) {
+			if (other.previousElement != null)
+				return false;
+		} else if (!previousElement.equals(other.previousElement))
+			return false;
+		return true;
 	}
 
 }

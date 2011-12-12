@@ -1,7 +1,7 @@
 package com.alexgilleran.icesoap.xpath.elements;
 
-public class SingleSlashXPElement extends NodeXPElement {
-	public SingleSlashXPElement(String name, XPathElement previousElement) {
+public class SingleSlashXPathElement extends BaseXPathElement {
+	public SingleSlashXPathElement(String name, XPathElement previousElement) {
 		super(name, previousElement);
 	}
 

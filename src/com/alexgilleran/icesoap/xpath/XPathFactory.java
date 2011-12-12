@@ -7,9 +7,9 @@ import org.jaxen.saxpath.XPathReader;
 import org.jaxen.saxpath.helpers.XPathReaderFactory;
 
 import com.alexgilleran.icesoap.exception.XPathParsingException;
-import com.alexgilleran.icesoap.xpath.elements.AttributeXPElement;
-import com.alexgilleran.icesoap.xpath.elements.DoubleSlashXPElement;
-import com.alexgilleran.icesoap.xpath.elements.SingleSlashXPElement;
+import com.alexgilleran.icesoap.xpath.elements.AttributeXPathElement;
+import com.alexgilleran.icesoap.xpath.elements.DoubleSlashXPathElement;
+import com.alexgilleran.icesoap.xpath.elements.SingleSlashXPathElement;
 import com.alexgilleran.icesoap.xpath.elements.XPathElement;
 
 public class XPathFactory {
@@ -62,16 +62,16 @@ public class XPathFactory {
 				if (currentlyParsingPredicate) {
 					currentPredicateKey = localName;
 				} else {
-					currentElement = new AttributeXPElement(localName, currentElement);
+					currentElement = new AttributeXPathElement(localName, currentElement);
 				}
 				break;
 			default:
 				if (allNodeStep) {
-					currentElement = new DoubleSlashXPElement(localName,
+					currentElement = new DoubleSlashXPathElement(localName,
 							currentElement);
 					allNodeStep = false;
 				} else {
-					currentElement = new SingleSlashXPElement(localName,
+					currentElement = new SingleSlashXPathElement(localName,
 							currentElement);
 				}
 				break;
