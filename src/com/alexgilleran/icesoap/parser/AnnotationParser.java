@@ -15,8 +15,8 @@ import org.xmlpull.v1.XmlPullParserException;
 import com.alexgilleran.icesoap.annotation.SOAPField;
 import com.alexgilleran.icesoap.exception.ClassDefException;
 import com.alexgilleran.icesoap.xpath.XPathRepository;
-import com.alexgilleran.icesoap.xpath.elements.RelativeXPathElement;
 import com.alexgilleran.icesoap.xpath.elements.XPathElement;
+import com.alexgilleran.icesoap.xpath.elements.impl.RelativeXPathElement;
 
 public class AnnotationParser<T> extends BaseAnnotationParser<T> {
 	private XPathRepository<Field> fieldXPaths;

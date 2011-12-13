@@ -1,4 +1,6 @@
-package com.alexgilleran.icesoap.xpath.elements;
+package com.alexgilleran.icesoap.xpath.elements.impl;
+
+import com.alexgilleran.icesoap.xpath.elements.XPathElement;
 
 /**
  * Represents XPath elements that start with a double-slash ("//").

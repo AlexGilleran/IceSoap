@@ -1,8 +1,10 @@
-package com.alexgilleran.icesoap.xpath.elements;
+package com.alexgilleran.icesoap.xpath.elements.impl;
 
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+
+import com.alexgilleran.icesoap.xpath.elements.XPathElement;
 
 /**
  * Represents base logic that applies to all XPathElement implementations unless

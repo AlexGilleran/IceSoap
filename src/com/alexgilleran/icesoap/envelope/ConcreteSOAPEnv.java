@@ -5,7 +5,7 @@ import java.io.StringWriter;
 
 import org.xmlpull.v1.XmlSerializer;
 
-import com.alexgilleran.icesoap.xml.XMLNode;
+import com.alexgilleran.icesoap.xml.impl.XMLNode;
 
 
 import android.util.Xml;

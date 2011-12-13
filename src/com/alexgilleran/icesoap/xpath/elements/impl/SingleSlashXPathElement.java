@@ -1,4 +1,6 @@
-package com.alexgilleran.icesoap.xpath.elements;
+package com.alexgilleran.icesoap.xpath.elements.impl;
+
+import com.alexgilleran.icesoap.xpath.elements.XPathElement;
 
 /**
  * Represents an XPath element that starts with a single slash ("/").

@@ -1,4 +1,4 @@
-package com.alexgilleran.icesoap.xml;
+package com.alexgilleran.icesoap.xml.impl;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -6,16 +6,18 @@ import java.util.LinkedList;
 
 import org.xmlpull.v1.XmlSerializer;
 
-public class XMLNode extends XMLElement {
-	private Collection<XMLElement> subElements;
+import com.alexgilleran.icesoap.xml.XMLElement;
+
+public class XMLNode extends XMLElementBase {
+	private Collection<XMLElementBase> subElements;
 	
 	public XMLNode(String namespace, String name) {
 		super(namespace, name);
 		
-		subElements = new LinkedList<XMLElement>();
+		subElements = new LinkedList<XMLElementBase>();
 	}
 	
-	public Collection<XMLElement> getSubElements() {
+	public Collection<XMLElementBase> getSubElements() {
 		return subElements;
 	}
 
@@ -27,14 +29,14 @@ public class XMLNode extends XMLElement {
 		return newNode;
 	}
 	
-	public XMLElement addElement(XMLElement element) {
+	public XMLElement addElement(XMLElementBase element) {
 		subElements.add(element);
 		
 		return element;
 	}
 	
-	public XMLLeaf addElement(String namespace, String name, String value) {
-		XMLLeaf newLeaf = new XMLLeaf(namespace, name, value);
+	public XMLTextElement addElement(String namespace, String name, String value) {
+		XMLTextElement newLeaf = new XMLTextElement(namespace, name, value);
 		
 		subElements.add(newLeaf);
 		

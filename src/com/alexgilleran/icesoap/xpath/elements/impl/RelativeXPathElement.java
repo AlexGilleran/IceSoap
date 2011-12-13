@@ -1,4 +1,6 @@
-package com.alexgilleran.icesoap.xpath.elements;
+package com.alexgilleran.icesoap.xpath.elements.impl;
+
+import com.alexgilleran.icesoap.xpath.elements.XPathElement;
 
 /**
  * Represents a relative XPath element - i.e. one preceeded by no slash.

@@ -1,82 +1,84 @@
+/**
+ * 
+ */
 package com.alexgilleran.icesoap.xml;
 
 import java.io.IOException;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 
 import org.xmlpull.v1.XmlSerializer;
 
-import com.alexgilleran.icesoap.envelope.SOAPEnv;
+import com.alexgilleran.icesoap.xml.impl.XMLAttributeImpl;
 
-public abstract class XMLElement {
-	private Map<String, String> declaredPrefixes;
-	private String namespace;
-	private Set<XMLAttribute> attributes;
-	private String name;
+/**
+ * Interface that represents a single XML Element within an XML document.
+ * 
+ * @author Alex Gilleran
+ * 
+ */
+public interface XMLElement {
+	/**
+	 * Get all the attributes of this element.
+	 * 
+	 * @return The attributes as a collection of {@link XMLAttributeImpl} objects.
+	 */
+	Collection<XMLAttributeImpl> getAttributes();
 
-	public XMLElement(String namespace, String name) {
-		this.name = name;
-		this.namespace = namespace;
+	/**
+	 * Adds an attribute to the element.
+	 * 
+	 * @param namespace
+	 *            The namespace of the element as a URI - can be null if no
+	 *            namespace is to be set.
+	 * @param name
+	 *            The name of the attribute.
+	 * @param value
+	 *            The value of the attribute.
+	 */
+	void addAttribute(String namespace, String name, String value);
 
-		declaredPrefixes = new HashMap<String, String>();
-		attributes = new HashSet<XMLAttribute>();
-	}
+	/**
+	 * Sets the <code>xsi:type</code> attribute for the element.
+	 * 
+	 * @param type
+	 *            The type, as a string.
+	 */
+	void setType(String type);
 
-	public Collection<XMLAttribute> getAttributes() {
-		return attributes;
-	}
+	/**
+	 * Declare a prefix for a namespace URI.
+	 * 
+	 * @param prefix
+	 *            The prefix name (e.g. "xsi").
+	 * @param namespace
+	 *            The namespace URI, as a String.
+	 */
+	void declarePrefix(String prefix, String namespace);
 
-	public void addAttribute(String namespace, String name, String value) {
-		XMLAttribute att = new XMLAttribute(namespace, name, value);
-		attributes.add(att);
-	}
+	/**
+	 * Get the namespace URI for this element.
+	 * 
+	 * @return The namespace URI, as a String.
+	 */
+	String getNamespace();
 
-	public void setType(String type) {
-		this.addAttribute(SOAPEnv.NS_URI_XSI, "type", type);
-	}
+	/**
+	 * Sets the namespace of this element.
+	 * 
+	 * @param namespace
+	 *            The namespace URI as a String.
+	 */
+	void setNamespace(String namespace);
 
-	public void declarePrefix(String prefix, String namespace) {
-		declaredPrefixes.put(prefix, namespace);
-	}
-
-	public String getNamespace() {
-		return namespace;
-	}
-
-	public void setNamespace(String namespace) {
-		this.namespace = namespace;
-	}
-
-	public void serialize(XmlSerializer cereal)
-			throws IllegalArgumentException, IllegalStateException, IOException {
-		serializePrefixes(cereal);
-
-		cereal.startTag(namespace, name);
-		serializeAttributes(cereal);
-
-		serializeContent(cereal);
-
-		cereal.endTag(namespace, name);
-	}
-
-	protected void serializeAttributes(XmlSerializer cereal)
-			throws IllegalArgumentException, IllegalStateException, IOException {
-		for (XMLAttribute attribute : attributes) {
-			cereal.attribute(attribute.getNamespace(), attribute.getName(),
-					attribute.getValue());
-		}
-	}
-
-	protected void serializePrefixes(XmlSerializer cereal)
-			throws IllegalArgumentException, IllegalStateException, IOException {
-		for (String key : declaredPrefixes.keySet()) {
-			cereal.setPrefix(key, declaredPrefixes.get(key));
-		}
-	}
-
-	protected abstract void serializeContent(XmlSerializer cereal)
-			throws IllegalArgumentException, IllegalStateException, IOException;
+	/**
+	 * Serializes the contents of this element and any elements it contains.
+	 * 
+	 * @param serializer
+	 *            An XmlPull serializer
+	 * @throws IllegalArgumentException
+	 * @throws IllegalStateException
+	 * @throws IOException
+	 */
+	void serialize(XmlSerializer serializer) throws IllegalArgumentException,
+			IllegalStateException, IOException;
 }

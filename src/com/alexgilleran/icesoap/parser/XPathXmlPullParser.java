@@ -8,9 +8,9 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import android.util.Xml;
 
-import com.alexgilleran.icesoap.xpath.elements.AttributeXPathElement;
-import com.alexgilleran.icesoap.xpath.elements.SingleSlashXPathElement;
 import com.alexgilleran.icesoap.xpath.elements.XPathElement;
+import com.alexgilleran.icesoap.xpath.elements.impl.AttributeXPathElement;
+import com.alexgilleran.icesoap.xpath.elements.impl.SingleSlashXPathElement;
 
 /**
  * Wrapper for XMLPullParser for XPath operations.

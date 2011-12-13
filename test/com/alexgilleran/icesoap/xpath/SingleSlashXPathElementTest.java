@@ -7,8 +7,8 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 import com.alexgilleran.icesoap.exception.XPathParsingException;
-import com.alexgilleran.icesoap.xpath.elements.SingleSlashXPathElement;
 import com.alexgilleran.icesoap.xpath.elements.XPathElement;
+import com.alexgilleran.icesoap.xpath.elements.impl.SingleSlashXPathElement;
 
 public class SingleSlashXPathElementTest extends XPathTest {
 	@Test

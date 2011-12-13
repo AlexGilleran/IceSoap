@@ -7,11 +7,11 @@ import org.jaxen.saxpath.XPathReader;
 import org.jaxen.saxpath.helpers.XPathReaderFactory;
 
 import com.alexgilleran.icesoap.exception.XPathParsingException;
-import com.alexgilleran.icesoap.xpath.elements.AttributeXPathElement;
-import com.alexgilleran.icesoap.xpath.elements.DoubleSlashXPathElement;
-import com.alexgilleran.icesoap.xpath.elements.RelativeXPathElement;
-import com.alexgilleran.icesoap.xpath.elements.SingleSlashXPathElement;
 import com.alexgilleran.icesoap.xpath.elements.XPathElement;
+import com.alexgilleran.icesoap.xpath.elements.impl.AttributeXPathElement;
+import com.alexgilleran.icesoap.xpath.elements.impl.DoubleSlashXPathElement;
+import com.alexgilleran.icesoap.xpath.elements.impl.RelativeXPathElement;
+import com.alexgilleran.icesoap.xpath.elements.impl.SingleSlashXPathElement;
 
 /**
  * Used to compile XPaths represented as Strings into IceSoap java

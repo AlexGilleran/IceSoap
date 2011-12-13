@@ -1,75 +1,59 @@
+/**
+ * 
+ */
 package com.alexgilleran.icesoap.xml;
 
-public class XMLAttribute {
-	String namespace;
-	String name;
-	String value;
-	
-	public XMLAttribute(String namespace, String name, String value) {
-		this.namespace = namespace;
-		this.name = name;
-		this.value = value;
-	}
+/**
+ * Represents an attribute on an XML element.
+ * 
+ * @author Alex Gilleran
+ * 
+ */
+public interface XMLAttribute {
 
-	public String getNamespace() {
-		return namespace;
-	}
+	/**
+	 * Gets the namespace URI of the attribute as a string.
+	 * 
+	 * @return
+	 */
+	String getNamespace();
 
-	public void setNamespace(String namespace) {
-		this.namespace = namespace;
-	}
+	/**
+	 * Sets the namespace URI of an attribute.
+	 * 
+	 * @param namespace
+	 *            Namespace URI as a string.
+	 */
+	void setNamespace(String namespace);
 
-	public String getName() {
-		return name;
-	}
+	/**
+	 * Gets the name of the attribute.
+	 * 
+	 * @return The attribute name as a String.
+	 */
+	String getName();
 
-	public void setName(String name) {
-		this.name = name;
-	}
+	/**
+	 * Sets the name of the attribute.
+	 * 
+	 * @param name
+	 *            The new name for the attribute.
+	 */
+	void setName(String name);
 
-	public String getValue() {
-		return value;
-	}
+	/**
+	 * Gets the value of the attribute.
+	 * 
+	 * @return The value of the attribute in String format.
+	 */
+	String getValue();
 
-	public void setValue(String value) {
-		this.value = value;
-	}
+	/**
+	 * Set the value of the attribute
+	 * 
+	 * @param value
+	 *            The new value as a String.
+	 */
+	void setValue(String value);
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		result = prime * result
-				+ ((namespace == null) ? 0 : namespace.hashCode());
-		result = prime * result + ((value == null) ? 0 : value.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		XMLAttribute other = (XMLAttribute) obj;
-		if (name == null) {
-			if (other.name != null)
-				return false;
-		} else if (!name.equals(other.name))
-			return false;
-		if (namespace == null) {
-			if (other.namespace != null)
-				return false;
-		} else if (!namespace.equals(other.namespace))
-			return false;
-		if (value == null) {
-			if (other.value != null)
-				return false;
-		} else if (!value.equals(other.value))
-			return false;
-		return true;
-	}
 }

@@ -1,7 +1,7 @@
 package com.alexgilleran.icesoap.envelope;
 
-import com.alexgilleran.icesoap.xml.XMLLeaf;
-import com.alexgilleran.icesoap.xml.XMLNode;
+import com.alexgilleran.icesoap.xml.impl.XMLTextElement;
+import com.alexgilleran.icesoap.xml.impl.XMLNode;
 
 /**
  * Example envelope - adds a WSSE Security tag that specifies a username and
@@ -53,7 +53,7 @@ public class PasswordSOAPEnv extends BaseSOAPEnvDecorator {
 		XMLNode usernameToken = new XMLNode(NS_URI_WSSE, "UsernameToken");
 		usernameToken.addElement(NS_URI_WSSE, "Username", username);
 
-		XMLLeaf passwordLeaf = usernameToken.addElement(NS_URI_WSSE,
+		XMLTextElement passwordLeaf = usernameToken.addElement(NS_URI_WSSE,
 				"Password", password);
 		passwordLeaf
 				.addAttribute(
