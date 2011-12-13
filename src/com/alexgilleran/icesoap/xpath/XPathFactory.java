@@ -13,14 +13,33 @@ import com.alexgilleran.icesoap.xpath.elements.RelativeXPathElement;
 import com.alexgilleran.icesoap.xpath.elements.SingleSlashXPathElement;
 import com.alexgilleran.icesoap.xpath.elements.XPathElement;
 
+/**
+ * Used to compile XPaths represented as Strings into IceSoap java
+ * representations, using the Jaxen XPathHandler.
+ * 
+ * Note that this is a singleton - call getInstance() to get an instance rather
+ * than constructing it.
+ * 
+ * @author Alex Gilleran
+ * 
+ */
 public class XPathFactory {
+	/** Instance of the Singleton class */
 	private static XPathFactory INSTANCE = null;
 
+	/**
+	 * Only used by getInstance() as this is a singleton.
+	 */
 	private XPathFactory() {
-
 	}
 
+	/**
+	 * Gets an instance of the XPathFactory.
+	 * 
+	 * @return the Singleton instance of the XPathFactory.
+	 */
 	public static XPathFactory getInstance() {
+		// Lazily initialize the instance.
 		if (INSTANCE == null) {
 			INSTANCE = new XPathFactory();
 		}
@@ -28,40 +47,87 @@ public class XPathFactory {
 		return INSTANCE;
 	}
 
-	public XPathElement compile(String xPathString)
+	/**
+	 * Compiles an XPath expression in String format to IceSoap java object
+	 * format.
+	 * 
+	 * @param xpathString
+	 *            The xpath expression to compile, as a String.
+	 * @return The last element of the compiled xpath, as an XPathElement
+	 *         instance.
+	 * @throws XPathParsingException
+	 *             Will occur if the passed XPath is invalid, or uses features
+	 *             that are currently unsupported.
+	 */
+	public XPathElement compile(String xpathString)
 			throws XPathParsingException {
-		XPathReader reader;
-
 		try {
-			reader = XPathReaderFactory.createReader();
+			XPathReader reader = XPathReaderFactory.createReader();
 
-			AndroidXPathHandler handler = new AndroidXPathHandler();
+			IceSoapXPathHandler handler = new IceSoapXPathHandler();
 			reader.setXPathHandler(handler);
+			reader.parse(xpathString);
 
-			reader.parse(xPathString);
 			return handler.getXPath();
 		} catch (SAXPathException e) {
+			// This will occur in the event of an invalid XPath - wrap with an
+			// IceSoap exception type and rethrow
 			throw new XPathParsingException(e);
 		}
 	}
 
-	private class AndroidXPathHandler implements XPathHandler {
+	/**
+	 * Implementation of Jaxen XPathHandler used to parse XPaths to the IceSoap
+	 * format.
+	 * 
+	 * @author Alex Gilleran
+	 * 
+	 */
+	private class IceSoapXPathHandler implements XPathHandler {
+		/**
+		 * Holds the current element currently being passed - this will
+		 * eventually be returned.
+		 */
 		private XPathElement currentElement;
+		/** Whether a predicate expression is currently being parsed. */
 		private boolean currentlyParsingPredicate = false;
+		/** Whether we are currently parsing a double-slash XPath element. */
 		private boolean allNodeStep = false;
+		/**
+		 * Whether we're currently parsing a relative element - one that starts
+		 * with no slashes.
+		 */
 		private boolean relativeElement = false;
-
+		/**
+		 * The key (name) of the current predicate.
+		 */
 		private String currentPredicateKey;
 
+		/**
+		 * Gets the XPath that has been parsed as a result of calls made to this
+		 * object by an XPathReader.
+		 * 
+		 * @return The final element in the last XPath.
+		 */
 		public XPathElement getXPath() {
 			return currentElement;
 		}
 
+		/**
+		 * {@inheritDoc}
+		 * 
+		 * <p>
+		 * Called when the reader encounters an element with a name - this could
+		 * be an attribute, a predicate or a node.
+		 * </p>
+		 */
 		@Override
 		public void startNameStep(int axis, String prefix, String localName)
 				throws SAXPathException {
 			switch (axis) {
 			case Axis.ATTRIBUTE:
+				// This is an attribute - if we're currently parsing predicates,
+				// add one, otherwise create a new Attribute element.
 				if (currentlyParsingPredicate) {
 					currentPredicateKey = localName;
 				} else {
@@ -70,6 +136,9 @@ public class XPathFactory {
 				}
 				break;
 			default:
+				// Determine what kind of element we're parsing relative,
+				// singleslash, doubleslash) based on the previously called
+				// methods and the flags they've set.
 				if (allNodeStep) {
 					currentElement = new DoubleSlashXPathElement(localName,
 							currentElement);
@@ -86,62 +155,102 @@ public class XPathFactory {
 			}
 		}
 
-		@Override
-		public void endNameStep() throws SAXPathException {
-			// if (!currentlyParsingPredicate && currentElement != null) {
-			// xPath.addElement(currentElement);
-			// currentElement = null;
-			// }
-		}
-
+		/**
+		 * {@inheritDoc}
+		 * 
+		 * <p>
+		 * Called when a predicate ("[") expression is encountered.
+		 * </p>
+		 */
 		@Override
 		public void startPredicate() throws SAXPathException {
+			// Set a flag so that when the predicate name/value is encountered,
+			// we know what to do.
 			currentlyParsingPredicate = true;
 		}
 
-		@Override
-		public void endPredicate() throws SAXPathException {
-			currentlyParsingPredicate = false;
-			currentPredicateKey = null;
-		}
-
+		/**
+		 * {@inheritDoc}
+		 * 
+		 * <p>
+		 * Called when an = is encountered - passes the value of the =
+		 * expression.
+		 * </p>
+		 */
 		@Override
 		public void literal(String value) throws SAXPathException {
+
 			if (currentlyParsingPredicate && currentPredicateKey != null) {
+				// Currently we only use this for predicates. At this point we
+				// would have had a namestep call to remember the predicate
+				// name, so add the predicate with that name and the value
+				// passed into this method.
 				currentElement.addPredicate(currentPredicateKey, value);
 			}
 		}
 
+		/**
+		 * {@inheritDoc}
+		 * 
+		 * <p>
+		 * Called when a predicate expression is ended ("]").
+		 * </p>
+		 */
+		@Override
+		public void endPredicate() throws SAXPathException {
+			// Set the flag to false and nullify the key.
+			currentlyParsingPredicate = false;
+			currentPredicateKey = null;
+		}
+
+		/**
+		 * {@inheritDoc}
+		 * 
+		 * Called when a relative (starts with no slash) path is started.
+		 */
+		@Override
+		public void startRelativeLocationPath() throws SAXPathException {
+			// Flag this so we know to create a relative element for the first
+			// element.
+			relativeElement = true;
+		}
+
+		@Override
+		public void endNameStep() throws SAXPathException {
+			// Currently unused.
+		}
+
 		@Override
 		public void startAbsoluteLocationPath() throws SAXPathException {
-
+			// Currently unused.
 		}
 
 		@Override
 		public void endAbsoluteLocationPath() throws SAXPathException {
-			// TODO Auto-generated method stub
+			// Currently unused
 
 		}
 
 		@Override
 		public void endAdditiveExpr(int arg0) throws SAXPathException {
-			// TODO Auto-generated method stub
+			// Currently unused
 
 		}
 
 		@Override
 		public void endAllNodeStep() throws SAXPathException {
+			// Currently unused.
 		}
 
 		@Override
 		public void endAndExpr(boolean arg0) throws SAXPathException {
-			// TODO Auto-generated method stub
+			// Currently unused
 
 		}
 
 		@Override
 		public void endCommentNodeStep() throws SAXPathException {
-			// TODO Auto-generated method stub
+			// Currently unused
 
 		}
 
@@ -155,85 +264,85 @@ public class XPathFactory {
 
 		@Override
 		public void endFunction() throws SAXPathException {
-			// TODO Auto-generated method stub
+			// Currently unused
 
 		}
 
 		@Override
 		public void endMultiplicativeExpr(int arg0) throws SAXPathException {
-			// TODO Auto-generated method stub
+			// Currently unused
 
 		}
 
 		@Override
 		public void endOrExpr(boolean arg0) throws SAXPathException {
-			// TODO Auto-generated method stub
+			// Currently unused
 
 		}
 
 		@Override
 		public void endPathExpr() throws SAXPathException {
-			// TODO Auto-generated method stub
+			// Currently unused
 
 		}
 
 		@Override
 		public void endProcessingInstructionNodeStep() throws SAXPathException {
-			// TODO Auto-generated method stub
+			// Currently unused
 
 		}
 
 		@Override
 		public void endRelationalExpr(int arg0) throws SAXPathException {
-			// TODO Auto-generated method stub
+			// Currently unused
 
 		}
 
 		@Override
 		public void endRelativeLocationPath() throws SAXPathException {
-			// TODO Auto-generated method stub
+			// Currently unused
 
 		}
 
 		@Override
 		public void endTextNodeStep() throws SAXPathException {
-			// TODO Auto-generated method stub
+			// Currently unused
 
 		}
 
 		@Override
 		public void endUnaryExpr(int arg0) throws SAXPathException {
-			// TODO Auto-generated method stub
+			// Currently unused
 
 		}
 
 		@Override
 		public void endUnionExpr(boolean arg0) throws SAXPathException {
-			// TODO Auto-generated method stub
+			// Currently unused
 
 		}
 
 		@Override
 		public void endXPath() throws SAXPathException {
-			// TODO Auto-generated method stub
+			// Currently unused
 
 		}
 
 		@Override
 		public void number(int arg0) throws SAXPathException {
-			// TODO Auto-generated method stub
+			// Currently unused
 
 		}
 
 		@Override
 		public void number(double arg0) throws SAXPathException {
-			// TODO Auto-generated method stub
+			// Currently unused
 
 		}
 
 		@Override
 		public void startAdditiveExpr() throws SAXPathException {
-			// TODO Auto-generated method stub
+			// Currently unused
 
 		}
 
@@ -244,13 +353,13 @@ public class XPathFactory {
 
 		@Override
 		public void startAndExpr() throws SAXPathException {
-			// TODO Auto-generated method stub
+			// Currently unused
 
 		}
 
 		@Override
 		public void startCommentNodeStep(int arg0) throws SAXPathException {
-			// TODO Auto-generated method stub
+			// Currently unused
 
 		}
 
@@ -271,19 +380,19 @@ public class XPathFactory {
 
 		@Override
 		public void startMultiplicativeExpr() throws SAXPathException {
-			// TODO Auto-generated method stub
+			// Currently unused
 
 		}
 
 		@Override
 		public void startOrExpr() throws SAXPathException {
-			// TODO Auto-generated method stub
+			// Currently unused
 
 		}
 
 		@Override
 		public void startPathExpr() throws SAXPathException {
-			// TODO Auto-generated method stub
+			// Currently unused
 
 		}
 
@@ -294,43 +403,37 @@ public class XPathFactory {
 
 		@Override
 		public void startRelationalExpr() throws SAXPathException {
-			// TODO Auto-generated method stub
-
-		}
-
-		@Override
-		public void startRelativeLocationPath() throws SAXPathException {
-			relativeElement = true;
+			// Currently unused
 		}
 
 		@Override
 		public void startTextNodeStep(int arg0) throws SAXPathException {
-			// TODO Auto-generated method stub
+			// Currently unused
 
 		}
 
 		@Override
 		public void startUnaryExpr() throws SAXPathException {
-			// TODO Auto-generated method stub
+			// Currently unused
 
 		}
 
 		@Override
 		public void startUnionExpr() throws SAXPathException {
-			// TODO Auto-generated method stub
+			// Currently unused
 
 		}
 
 		@Override
 		public void startXPath() throws SAXPathException {
-			// TODO Auto-generated method stub
+			// Currently unused
 
 		}
 
 		@Override
 		public void variableReference(String arg0, String arg1)
 				throws SAXPathException {
-
+			// Currently unused
 		}
 
 	}
