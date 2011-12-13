@@ -4,42 +4,110 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+/**
+ * Represents base logic that applies to all XPathElement implementations unless
+ * overridden.
+ * 
+ * Note that when extending this class, if you add any extra fields it's
+ * imperative that you override hashCode and equals, as these are used by the
+ * XPathRepository.
+ * 
+ * @author Alex Gilleran
+ * 
+ */
 public abstract class BaseXPathElement implements XPathElement {
+	/** The name of the element */
 	private String name;
+	/** The previous element */
 	private XPathElement previousElement;
+	/**
+	 * A map representing all the predicates for this element, mapping from name
+	 * to value
+	 */
 	private Map<String, String> predicates = new HashMap<String, String>();
 
+	/**
+	 * Instantiates a new BaseXPathElement
+	 * 
+	 * @param name
+	 *            The name of the new element
+	 * @param previousElement
+	 *            The previous element - note that this can be set to null.
+	 */
 	public BaseXPathElement(String name, XPathElement previousElement) {
 		this.name = name;
 		this.previousElement = previousElement;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public XPathElement getPreviousElement() {
 		return previousElement;
 	}
 
-	public void setPreviousElement(XPathElement element) {
+	/**
+	 * <p>
+	 * Sets the previous element to this one in the XPath expression. Note that
+	 * an xpath element will retain the behaviour determined by how many slashes
+	 * prefix it.
+	 * </p>
+	 * <p>
+	 * E.g. If I have an XPath <code>//allnode/xpath</code> and set
+	 * <code>allnode</code>'s previous element as <code>/element</code>, the
+	 * resulting entire XPath will be <code>/element//allnode/xpath</code>.
+	 * </p>
+	 * <p>
+	 * Note that for relative XPaths, setting a previous element changes it to a
+	 * standard single-slash XPath element. E.g. if I have a relative xpath
+	 * <code>allnode/xpath</code> and set <code>allnode</code>'s previous
+	 * element to <code>/element</code> as above, the resulting entire XPath
+	 * will become <code>/element/allnode/xpath</code>.
+	 * 
+	 * @param element
+	 *            The element to set as the previous element to this one.
+	 */
+	protected void setPreviousElement(XPathElement element) {
 		previousElement = element;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public String getName() {
 		return name;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public boolean isAttribute() {
 		return false;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public boolean isFirstElement() {
 		return previousElement == null;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void addPredicate(String name, String value) {
 		predicates.put(name, value);
 	}
 
+	/**
+	 * Determines whether the passed element has the same name and the correct
+	 * value for all specified predicates of this element.
+	 */
 	@Override
 	public boolean matches(XPathElement otherElement) {
 		if (!getName().equals(otherElement.getName())) {
@@ -64,8 +132,16 @@ public abstract class BaseXPathElement implements XPathElement {
 		return true;
 	}
 
+	/**
+	 * Gets the prefix of the element... e.g. "/", "//" etc.
+	 * 
+	 * @return The prefix of the element as a string.
+	 */
 	protected abstract String getPrefix();
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public StringBuilder toStringBuilder() {
 		StringBuilder builder;
 
@@ -100,16 +176,34 @@ public abstract class BaseXPathElement implements XPathElement {
 		return builder;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String toString() {
 		return toStringBuilder().toString();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String getPredicate(String predicateName) {
 		return predicates.get(predicateName);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean isRelative() {
+		// This is overridden by RelativeXPathElement
+		return false;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -122,6 +216,9 @@ public abstract class BaseXPathElement implements XPathElement {
 		return result;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)

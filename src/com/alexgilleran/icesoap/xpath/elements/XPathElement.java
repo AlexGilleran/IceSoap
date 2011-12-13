@@ -21,7 +21,7 @@ public interface XPathElement {
 	 * 
 	 * <li>"<code>/name</code>" returns "name"</li> <li>"<code>//name</code>
 	 * " returns "name"</li> <li>"<code>name</code>" returns "name"</li> <li>"
-	 * <code>/@name</code>" returns "@name"</li>
+	 * <code>/@name</code>" returns "name"</li>
 	 * 
 	 * @return The name of the element.
 	 * 
@@ -105,29 +105,6 @@ public interface XPathElement {
 	XPathElement getPreviousElement();
 
 	/**
-	 * <p>
-	 * Sets the previous element to this one in the XPath expression. Note that
-	 * an xpath element will retain the behaviour determined by how many slashes
-	 * prefix it.
-	 * </p>
-	 * <p>
-	 * E.g. If I have an XPath <code>//allnode/xpath</code> and set
-	 * <code>allnode</code>'s previous element as <code>/element</code>, the
-	 * resulting entire XPath will be <code>/element//allnode/xpath</code>.
-	 * </p>
-	 * <p>
-	 * Note that for relative XPaths, setting a previous element changes it to a
-	 * standard single-slash XPath element. E.g. if I have a relative xpath
-	 * <code>allnode/xpath</code> and set <code>allnode</code>'s previous
-	 * element to <code>/element</code> as above, the resulting entire XPath
-	 * will become <code>/element/allnode/xpath</code>.
-	 * 
-	 * @param element
-	 *            The element to set as the previous element to this one.
-	 */
-	void setPreviousElement(XPathElement element);
-
-	/**
 	 * Determines whether this element is the first in the XPath expression.
 	 * E.g. in the XPath expression <code>/example/xpath</code>, invoking
 	 * <code>isFirstElement()</code> on the <code>example</code> element will
@@ -141,7 +118,7 @@ public interface XPathElement {
 	 * Returns the toString() representation of this XPathElement as a
 	 * StringBuilder.
 	 * 
-	 * @see XPathElement.toString()
+	 * @see {@link XPathElement.toString()}
 	 * 
 	 * @return the toString() representation of this XPathElement as a
 	 *         StringBuilder
@@ -164,4 +141,11 @@ public interface XPathElement {
 	 *         false.
 	 */
 	boolean isAttribute();
+
+	/**
+	 * Determines whether this element is relative (i.e. starts with no slashes)
+	 * 
+	 * @return true if element is relative, otherwise false.
+	 */
+	boolean isRelative();
 }

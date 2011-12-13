@@ -14,8 +14,8 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import com.alexgilleran.icesoap.annotation.SOAPField;
 import com.alexgilleran.icesoap.exception.ClassDefException;
-import com.alexgilleran.icesoap.xpath.XPathFactory;
 import com.alexgilleran.icesoap.xpath.XPathRepository;
+import com.alexgilleran.icesoap.xpath.elements.RelativeXPathElement;
 import com.alexgilleran.icesoap.xpath.elements.XPathElement;
 
 public class AnnotationParser<T> extends BaseAnnotationParser<T> {
@@ -46,7 +46,8 @@ public class AnnotationParser<T> extends BaseAnnotationParser<T> {
 			SOAPField xPath = field.getAnnotation(SOAPField.class);
 
 			if (xPath != null) {
-				XPathElement fieldElement = compileXPath(xPath, field);
+				RelativeXPathElement fieldElement = (RelativeXPathElement) compileXPath(
+						xPath, field);
 				fieldElement.setPreviousElement(getRootXPath());
 
 				fieldXPaths.put(fieldElement, field);

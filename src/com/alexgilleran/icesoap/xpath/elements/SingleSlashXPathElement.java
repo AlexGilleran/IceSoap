@@ -1,10 +1,31 @@
 package com.alexgilleran.icesoap.xpath.elements;
 
+/**
+ * Represents an XPath element that starts with a single slash ("/").
+ * 
+ * @author Alex Gilleran
+ * 
+ */
 public class SingleSlashXPathElement extends BaseXPathElement {
+
+	/** The prefix of a single slash element is / */
+	private static final String PREFIX = "/";
+
+	/**
+	 * Instantiates a new {@link SingleSlashXPathElement}
+	 * 
+	 * @param name
+	 *            The name of the new element
+	 * @param previousElement
+	 *            The previous element - note that this can be set to null.
+	 */
 	public SingleSlashXPathElement(String name, XPathElement previousElement) {
 		super(name, previousElement);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public boolean matches(XPathElement otherElement) {
 		if (!super.matches(otherElement)) {
@@ -27,6 +48,6 @@ public class SingleSlashXPathElement extends BaseXPathElement {
 
 	@Override
 	protected String getPrefix() {
-		return "/";
+		return PREFIX;
 	}
 }

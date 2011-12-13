@@ -6,7 +6,6 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import com.alexgilleran.icesoap.observer.SOAPObserver;
 
-
 /**
  * 
  * @author Alex Gilleran
@@ -17,9 +16,6 @@ import com.alexgilleran.icesoap.observer.SOAPObserver;
  *            <Product> and override the resulting methods
  */
 public interface Parser<T> {
-
-	// String getRootElementName();
-
 	void addListener(SOAPObserver<T> listener);
 
 	void removeListener(SOAPObserver<T> listener);
