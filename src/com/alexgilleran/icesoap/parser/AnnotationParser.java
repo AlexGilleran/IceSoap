@@ -21,12 +21,13 @@ import com.alexgilleran.icesoap.xpath.elements.impl.RelativeXPathElement;
 public class AnnotationParser<T> extends BaseAnnotationParser<T> {
 	private XPathRepository<Field> fieldXPaths;
 	private Class<T> targetClass;
+	@SuppressWarnings("unchecked")
 	private Set<Class<?>> textNodeClasses = new HashSet<Class<?>>(
 			Arrays.asList(long.class, float.class, int.class, double.class,
 					BigDecimal.class, String.class));
 
 	public AnnotationParser(Class<T> targetClass) {
-		super(targetClass);
+		super(retrieveRootXPath(targetClass));
 
 		this.targetClass = targetClass;
 		fieldXPaths = getFieldXPaths(targetClass);
@@ -113,11 +114,6 @@ public class AnnotationParser<T> extends BaseAnnotationParser<T> {
 		if (List.class.isAssignableFrom(classToParse)) {
 			ParameterizedType paramType = (ParameterizedType) typeToParse;
 			Type listItemType = paramType.getActualTypeArguments()[0];
-
-			// if (!(typeToParse instanceof Class)) {
-			// // TODO: Unchecked Exc. with good message here
-			// return null;
-			// }
 
 			Class<?> listItemClass = (Class<?>) listItemType;
 

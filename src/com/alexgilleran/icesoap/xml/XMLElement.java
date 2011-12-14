@@ -20,9 +20,10 @@ public interface XMLElement {
 	/**
 	 * Get all the attributes of this element.
 	 * 
-	 * @return The attributes as a collection of {@link XMLAttributeImpl} objects.
+	 * @return The attributes as a collection of {@link XMLAttributeImpl}
+	 *         objects.
 	 */
-	Collection<XMLAttributeImpl> getAttributes();
+	Collection<XMLAttribute> getAttributes();
 
 	/**
 	 * Adds an attribute to the element.
@@ -34,8 +35,9 @@ public interface XMLElement {
 	 *            The name of the attribute.
 	 * @param value
 	 *            The value of the attribute.
+	 * @return
 	 */
-	void addAttribute(String namespace, String name, String value);
+	XMLAttribute addAttribute(String namespace, String name, String value);
 
 	/**
 	 * Sets the <code>xsi:type</code> attribute for the element.

@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.xmlpull.v1.XmlPullParserException;
 
-import com.alexgilleran.icesoap.observer.SOAPObserver;
 import com.alexgilleran.icesoap.xpath.elements.XPathElement;
 
 public class AnnotationListParser<T> extends BaseAnnotationParser<List<T>>
@@ -15,7 +14,7 @@ public class AnnotationListParser<T> extends BaseAnnotationParser<List<T>>
 	private XPathElement objectXPath;
 
 	public AnnotationListParser(Class<T> clazz) {
-		super(clazz);
+		super(retrieveRootXPath(clazz));
 
 		this.parser = new AnnotationParser<T>(clazz);
 	}
@@ -40,13 +39,13 @@ public class AnnotationListParser<T> extends BaseAnnotationParser<List<T>>
 	}
 
 	@Override
-	public void addItemListener(SOAPObserver<T> listener) {
-		parser.addListener(listener);
+	public void addItemObserver(ParserObserver<T> observer) {
+		parser.addObserver(observer);
 	}
 
 	@Override
-	public void removeItemListener(SOAPObserver<T> listener) {
-		parser.removeListener(listener);
+	public void removeItemObserver(ParserObserver<T> observer) {
+		parser.removeObserver(observer);
 	}
 
 	@Override

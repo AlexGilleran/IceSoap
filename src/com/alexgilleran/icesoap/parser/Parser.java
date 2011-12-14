@@ -4,7 +4,6 @@ import java.io.IOException;
 
 import org.xmlpull.v1.XmlPullParserException;
 
-import com.alexgilleran.icesoap.observer.SOAPObserver;
 
 /**
  * 
@@ -16,9 +15,9 @@ import com.alexgilleran.icesoap.observer.SOAPObserver;
  *            <Product> and override the resulting methods
  */
 public interface Parser<T> {
-	void addListener(SOAPObserver<T> listener);
+	void addObserver(ParserObserver<T> observer);
 
-	void removeListener(SOAPObserver<T> listener);
+	void removeObserver(ParserObserver<T> observer);
 
 	/**
 	 * Parses an object by looping through every child tag, calling parseTag()

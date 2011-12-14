@@ -2,19 +2,19 @@ package com.alexgilleran.icesoap.request;
 
 import java.util.List;
 
-import com.alexgilleran.icesoap.envelope.SOAPEnv;
-import com.alexgilleran.icesoap.observer.ObserverRegistry;
-import com.alexgilleran.icesoap.observer.SOAPObserver;
-import com.alexgilleran.icesoap.parser.ListParser;
-
 import android.os.AsyncTask;
-import android.util.Log;
 
+import com.alexgilleran.icesoap.envelope.SOAPEnv;
+import com.alexgilleran.icesoap.observer.ListObserverRegistry;
+import com.alexgilleran.icesoap.observer.SOAPListObserver;
+import com.alexgilleran.icesoap.parser.ListParser;
+import com.alexgilleran.icesoap.parser.ParserObserver;
 
 public class ListRequestImpl<T> extends RequestImpl<List<T>> implements
 		ListRequest<T> {
 	private ListParser<T> parser;
-	private ObserverRegistry<T> itemRegistry = new ObserverRegistry<T>();
+	private ListObserverRegistry<T> itemRegistry = new ListObserverRegistry<T>(
+			this);
 
 	public ListRequestImpl(String url, ListParser<T> parser, SOAPEnv soapEnv) {
 		super(url, parser, soapEnv);
@@ -23,13 +23,13 @@ public class ListRequestImpl<T> extends RequestImpl<List<T>> implements
 	}
 
 	@Override
-	public void addItemListener(SOAPObserver<T> listener) {
-		itemRegistry.addListener(listener);
+	public void addItemObserver(SOAPListObserver<T> observer) {
+		itemRegistry.addObserver(observer);
 	}
 
 	@Override
-	public void removeItemListener(SOAPObserver<T> listener) {
-		itemRegistry.removeListener(listener);
+	public void removeItemObserver(SOAPListObserver<T> observer) {
+		itemRegistry.removeObserver(observer);
 	}
 
 	@Override
@@ -37,21 +37,21 @@ public class ListRequestImpl<T> extends RequestImpl<List<T>> implements
 		return new ListRequestTask();
 	}
 
-	private class ListRequestTask extends RequestTask<T> {	
+	private class ListRequestTask extends RequestTask<T> {
 		@Override
 		protected void onPreExecute() {
-			Log.d("debug", "onPreExecute executed");
-			parser.addItemListener(itemListener);
+			parser.addItemObserver(itemObserver);
 		}
 
 		@Override
 		protected void onProgressUpdate(T... item) {
-			itemRegistry.notifyListeners(item[0]);
+			itemRegistry.notifyNewItem(ListRequestImpl.this, item[0]);
 		}
 
-		private SOAPObserver<T> itemListener = new SOAPObserver<T>() {
+		private ParserObserver<T> itemObserver = new ParserObserver<T>() {
+			@SuppressWarnings("unchecked")
 			@Override
-			public void onNewDaoItem(T item) {
+			public void onNewItem(T item) {
 				publishProgress(item);
 			}
 		};

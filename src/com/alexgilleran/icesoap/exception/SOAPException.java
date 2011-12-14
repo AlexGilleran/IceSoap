@@ -1,6 +1,6 @@
 package com.alexgilleran.icesoap.exception;
 
-public class SOAPException extends RuntimeException {
+public class SOAPException extends Exception {
 
 	/**
 	 * 

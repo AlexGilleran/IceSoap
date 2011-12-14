@@ -4,7 +4,6 @@ import java.io.IOException;
 
 import com.alexgilleran.icesoap.xml.impl.XMLNode;
 
-
 /**
  * A representation of a SOAP envelope. Methods to retrieve the SOAP Header and
  * Body tags are provided so they can be manipulated by decorators
@@ -15,9 +14,9 @@ import com.alexgilleran.icesoap.xml.impl.XMLNode;
  * and construct these, passing first ConcreteSOAPEnv then each Envelope as an
  * argument.
  * 
- * e.g. SOAPEnv concreteEnv = new ConcreteSOAPEnv();
- * 		SOAPEnv mySOAPEnv = new MySOAPEnvDecorator(concreteEnv, myArguments);
- * 		SOAPEnv myOtherSoapEnv = new MyOtherSOAPEnvDecorator(mySOAPEnv, myOtherArguments); 
+ * e.g. SOAPEnv concreteEnv = new ConcreteSOAPEnv(); SOAPEnv mySOAPEnv = new
+ * MySOAPEnvDecorator(concreteEnv, myArguments); SOAPEnv myOtherSoapEnv = new
+ * MyOtherSOAPEnvDecorator(mySOAPEnv, myOtherArguments);
  * 
  * @author Alex Gilleran
  * 
@@ -36,12 +35,6 @@ public interface SOAPEnv {
 	public final static String NODE_NAMESPACE = NS_URI_SOAPENV;
 
 	public final static String ENCODING_UTF8 = "UTF-8";
-	
-	/**
-	 * Serializes the envelope and returns it as a string
-	 */
-	public String getSerializedString() throws IllegalArgumentException,
-			IllegalStateException, IOException;
 
 	/**
 	 * Returns the <soapenv:Header> node of the envelope, to be modified

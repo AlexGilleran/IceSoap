@@ -3,10 +3,6 @@ package com.alexgilleran.icesoap.requester;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.security.KeyManagementException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.UnrecoverableKeyException;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -25,21 +21,52 @@ import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 
 import com.alexgilleran.icesoap.envelope.SOAPEnv;
+import com.alexgilleran.icesoap.exception.SOAPException;
 
-import android.util.Log;
-
-
+/**
+ * Singleton implementation of {@link SOAPRequester}
+ * 
+ * @author Alex Gilleran
+ * 
+ */
 public class SOAPRequesterImpl implements SOAPRequester {
+	/** Soap action to use if none is specified. */
+	private static final String BLANK_SOAP_ACTION = "";
+	/** Port for HTTPS communication */
+	private static final int HTTPS_PORT = 8006;
+	/** Port for HTTP communication */
+	private static final int HTTP_PORT = 80;
+	/** Name of HTTPS */
+	private static final String HTTPS_NAME = "https";
+	/** Name of HTTP */
+	private static final String HTTP_NAME = "http";
+	/** Status returned if SOAP Request has executed successfully */
 	private static final int HTTP_OK_STATUS = 200;
+	/** HTTP content type submitted in HTTP POST request for SOAP calls */
 	private static final String XML_CONTENT_TYPE = "text/xml; charset=UTF-8";
+	/** Label for content-type header */
 	private static final String CONTENT_TYPE_LABEL = "Content-type";
+	/** Key for SOAP action header */
 	private static final String HEADER_KEY_SOAP_ACTION = "SOAPAction";
+	/** Timeout for making a connection */
+	private static final int DEFAULT_CONN_TIMEOUT = 5000;
+	/** Timeout for recieving data */
+	private static final int DEFAULT_SOCKET_TIMEOUT = 20000;
 
-	private static int connectionTimeout = 5000;
-	private static int soTimeout = 20000;
-
+	/** Apache HTTP Client for making HTTP requests */
+	private HttpClient httpClient = buildHttpClient();
+	/** Instance for the singleton instance of the class */
 	private static SOAPRequester INSTANCE;
 
+	private SOAPRequesterImpl() {
+		// Private constructor - singleton.
+	}
+
+	/**
+	 * Gets the instance of SOAPRequester
+	 * 
+	 * @return the instance of SOAPRequester.
+	 */
 	public static SOAPRequester getInstance() {
 		if (INSTANCE == null) {
 			INSTANCE = new SOAPRequesterImpl();
@@ -48,64 +75,79 @@ public class SOAPRequesterImpl implements SOAPRequester {
 		return INSTANCE;
 	}
 
-	private SOAPRequesterImpl() {
-
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public InputStream doSoapRequest(SOAPEnv envelope, String targetUrl)
+			throws SOAPException {
+		return doSoapRequest(envelope, targetUrl, BLANK_SOAP_ACTION);
 	}
 
-	public InputStream doSoapRequest(SOAPEnv envelope, String soapAction)
-			throws IOException {
-		String sEntity = envelope.getSerializedString();
-
-		HttpPost httppost = getPostRequest(soapAction, sEntity);
-		Log.d("outxml", sEntity);
-		return doHttpPost(httppost);
-	}
-
-	private InputStream doHttpPost(HttpPost httpPost) throws IOException,
-			ClientProtocolException {
-
+	/**
+	 * {@inheritDoc}
+	 */
+	public InputStream doSoapRequest(SOAPEnv envelope, String url,
+			String soapAction) throws SOAPException {
 		try {
-			// Execute HTTP Post Request
-			HttpResponse response = getHttpClient().execute(httpPost);
+			return doHttpPost(buildPostRequest(url, envelope.toString(),
+					soapAction));
 
-			int status = response.getStatusLine().getStatusCode();
-
-			if (status != HTTP_OK_STATUS) {
-				throw new IOException("HTTP Request Failure: "
-						+ response.getStatusLine().toString());
-			}
-
-			BufferedHttpEntity res = new BufferedHttpEntity(
-					response.getEntity());
-
-			return res.getContent();
-		} catch (KeyManagementException e) {
-			throw new RuntimeException(e);
-		} catch (UnrecoverableKeyException e) {
-			throw new RuntimeException(e);
-		} catch (NoSuchAlgorithmException e) {
-			throw new RuntimeException(e);
-		} catch (KeyStoreException e) {
-			throw new RuntimeException(e);
+			// Wrap any exceptions and rethrow.
+		} catch (IOException e) {
+			throw new SOAPException(e);
 		}
 	}
 
-	private HttpClient getHttpClient() throws KeyManagementException,
-			UnrecoverableKeyException, NoSuchAlgorithmException,
-			KeyStoreException {
+	/**
+	 * Performs an HTTP POST request
+	 * 
+	 * @param httpPost
+	 *            The {@link HttpPost} to perform.
+	 * @return An {@link InputStream} of the response.
+	 * @throws ClientProtocolException
+	 * @throws IOException
+	 * @throws SOAPException
+	 */
+	private InputStream doHttpPost(HttpPost httpPost)
+			throws ClientProtocolException, IOException, SOAPException {
+
+		// Execute HTTP Post Request
+		HttpResponse response = httpClient.execute(httpPost);
+
+		int status = response.getStatusLine().getStatusCode();
+
+		if (status != HTTP_OK_STATUS) {
+			throw new SOAPException("HTTP Request Failure: "
+					+ response.getStatusLine().toString());
+		}
+
+		HttpEntity res = new BufferedHttpEntity(response.getEntity());
+
+		return res.getContent();
+	}
+
+	/**
+	 * Builds an Apache {@link HttpClient} from defaults.
+	 * 
+	 * @return An implementation of {@link HttpClient}
+	 */
+	private HttpClient buildHttpClient() {
 		HttpParams httpParameters = new BasicHttpParams();
 		HttpConnectionParams.setConnectionTimeout(httpParameters,
-				connectionTimeout);
-		HttpConnectionParams.setSoTimeout(httpParameters, soTimeout);
+				DEFAULT_CONN_TIMEOUT);
+		HttpConnectionParams.setSoTimeout(httpParameters,
+				DEFAULT_SOCKET_TIMEOUT);
 
 		SchemeRegistry schemeRegistry = new SchemeRegistry();
 
-		schemeRegistry.register(new Scheme("http", PlainSocketFactory
-				.getSocketFactory(), 80));
-		schemeRegistry.register(new Scheme("https", new EasySSLSocketFactory(),
-				8006));
-		// schemeRegistry.register(new Scheme("https",
-		// new CustomSSLSocketFactory(), 443));
+		schemeRegistry.register(new Scheme(HTTP_NAME, PlainSocketFactory
+				.getSocketFactory(), HTTP_PORT));
+		schemeRegistry.register(new Scheme(HTTPS_NAME, PlainSocketFactory
+				.getSocketFactory(), HTTPS_PORT));
+		// schemeRegistry.register(new Scheme("https", new
+		// EasySSLSocketFactory(),
+		// 8006));
 
 		ThreadSafeClientConnManager cm = new ThreadSafeClientConnManager(
 				httpParameters, schemeRegistry);
@@ -113,17 +155,46 @@ public class SOAPRequesterImpl implements SOAPRequester {
 		return new DefaultHttpClient(cm, httpParameters);
 	}
 
-	private HttpPost getPostRequest(String soapAction, String sEntity)
-			throws UnsupportedEncodingException {
+	/**
+	 * Builds an {@link HttpPost} request.
+	 * 
+	 * @param url
+	 *            the URL to POST to
+	 * @param envelopeString
+	 *            The envelope to post, as a serialized string.
+	 * @param soapAction
+	 *            SOAPAction for the header.
+	 * @return An {@link HttpPost} object representing the supplied information.
+	 * @throws UnsupportedEncodingException
+	 */
+	private HttpPost buildPostRequest(String url, String envelopeString,
+			String soapAction) throws UnsupportedEncodingException {
 		// Create a new HttpClient and Post Header
-		HttpPost httppost = new HttpPost(soapAction);
+		HttpPost httppost = new HttpPost(url);
 
 		httppost.setHeader(CONTENT_TYPE_LABEL, XML_CONTENT_TYPE);
 		httppost.setHeader(HEADER_KEY_SOAP_ACTION, soapAction);
 
-		HttpEntity entity = new StringEntity(sEntity);
+		HttpEntity entity = new StringEntity(envelopeString);
 
 		httppost.setEntity(entity);
 		return httppost;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setConnectionTimeout(int timeout) {
+		HttpConnectionParams.setConnectionTimeout(httpClient.getParams(),
+				timeout);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setSocketTimeout(int timeout) {
+		HttpConnectionParams.setSoTimeout(httpClient.getParams(), timeout);
 	}
 }

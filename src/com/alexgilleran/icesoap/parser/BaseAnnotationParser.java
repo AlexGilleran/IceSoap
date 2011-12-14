@@ -2,6 +2,8 @@ package com.alexgilleran.icesoap.parser;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -10,35 +12,27 @@ import com.alexgilleran.icesoap.annotation.SOAPField;
 import com.alexgilleran.icesoap.annotation.SOAPObject;
 import com.alexgilleran.icesoap.exception.ClassDefException;
 import com.alexgilleran.icesoap.exception.XPathParsingException;
-import com.alexgilleran.icesoap.observer.ObserverRegistry;
-import com.alexgilleran.icesoap.observer.SOAPObserver;
 import com.alexgilleran.icesoap.xpath.XPathFactory;
 import com.alexgilleran.icesoap.xpath.elements.XPathElement;
 
 public abstract class BaseAnnotationParser<T> implements Parser<T> {
 	private XPathElement rootXPath;
-	private ObserverRegistry<T> registry = new ObserverRegistry<T>();
-
-	protected BaseAnnotationParser(Class<?> targetClass) {
-		rootXPath = retrieveRootXPath(targetClass);
-	}
+	private Set<ParserObserver<T>> observers = new HashSet<ParserObserver<T>>();
 
 	protected BaseAnnotationParser(XPathElement rootXPath) {
 		this.rootXPath = rootXPath;
 	}
 
+	public void addObserver(ParserObserver<T> observer) {
+		observers.add(observer);
+	}
+
+	public void removeObserver(ParserObserver<T> observer) {
+		observers.remove(observer);
+	}
+
 	protected XPathElement getRootXPath() {
 		return rootXPath;
-	}
-
-	@Override
-	public void addListener(SOAPObserver<T> listener) {
-		registry.addListener(listener);
-	}
-
-	@Override
-	public void removeListener(SOAPObserver<T> listener) {
-		registry.removeListener(listener);
 	}
 
 	@Override
@@ -82,10 +76,16 @@ public abstract class BaseAnnotationParser<T> implements Parser<T> {
 		}
 
 		if (objectToModify != null) {
-			registry.notifyListeners(objectToModify);
+			notifyObservers(objectToModify);
 		}
 
 		return objectToModify;
+	}
+
+	private void notifyObservers(T newItem) {
+		for (ParserObserver<T> observer : observers) {
+			observer.onNewItem(newItem);
+		}
 	}
 
 	private T parseElement(XPathXmlPullParser xmlPullParser, T objectToModify)
@@ -110,21 +110,23 @@ public abstract class BaseAnnotationParser<T> implements Parser<T> {
 	 *            Class to retrieve from
 	 * @return Root xpath or null if none is specified
 	 */
-	protected XPathElement retrieveRootXPath(Class<?> targetClass) {
+	protected static XPathElement retrieveRootXPath(Class<?> targetClass) {
 		SOAPObject xPathAnnot = targetClass.getAnnotation(SOAPObject.class);
 
 		if (xPathAnnot != null) {
 			return compileXPath(xPathAnnot, targetClass);
 		} else {
-			throw new ClassDefException("Class " + targetClass.getName()
-					+ " to be created with " + this.getClass().getSimpleName()
-					+ " was not annotated with the "
-					+ SOAPField.class.getSimpleName()
-					+ " annotation - please add this annotation");
+			throw new ClassDefException(
+					"Class "
+							+ targetClass.getName()
+							+ " to be created with AnnotationParser - it was not annotated with the "
+							+ SOAPField.class.getSimpleName()
+							+ " annotation - please add this annotation");
 		}
 	}
 
-	protected XPathElement compileXPath(SOAPField xPathAnnot, Field sourceField) {
+	protected static XPathElement compileXPath(SOAPField xPathAnnot,
+			Field sourceField) {
 		if (xPathAnnot.value() != null) {
 			return compileXPath(xPathAnnot.value(), sourceField.toString());
 		} else {
@@ -137,7 +139,7 @@ public abstract class BaseAnnotationParser<T> implements Parser<T> {
 		}
 	}
 
-	protected XPathElement compileXPath(SOAPObject xPathAnnot,
+	protected static XPathElement compileXPath(SOAPObject xPathAnnot,
 			Class<?> sourceClass) {
 		if (xPathAnnot.value() != null) {
 			return compileXPath(xPathAnnot.value(), sourceClass.getSimpleName());
@@ -147,7 +149,7 @@ public abstract class BaseAnnotationParser<T> implements Parser<T> {
 		return null;
 	}
 
-	private XPathElement compileXPath(String xPathString, String source) {
+	private static XPathElement compileXPath(String xPathString, String source) {
 		try {
 			return XPathFactory.getInstance().compile(xPathString);
 		} catch (XPathParsingException e) {

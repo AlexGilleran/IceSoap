@@ -1,18 +1,15 @@
 package com.alexgilleran.icesoap.request;
 
-import java.util.concurrent.ExecutionException;
-
 import com.alexgilleran.icesoap.observer.SOAPObserver;
-
 
 public interface Request<T> {
 	void execute();
 
-	T get() throws ExecutionException;
+	void addObserver(SOAPObserver<T> observer);
 
-	void addListener(SOAPObserver<T> listener);
-
-	void removeListener(SOAPObserver<T> listener);
+	void removeObserver(SOAPObserver<T> observer);
 
 	void cancel();
+
+	T getResult();
 }

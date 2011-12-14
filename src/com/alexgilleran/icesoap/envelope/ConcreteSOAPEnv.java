@@ -57,24 +57,6 @@ public class ConcreteSOAPEnv extends XMLNode implements SOAPEnv {
 
 	/*
 	 * (non-Javadoc)
-	 * @see com.agilleran.android.soapdroid.envelope.SOAPEnv#getSerializedString()
-	 */
-	public String getSerializedString() throws IllegalArgumentException,
-			IllegalStateException, IOException {
-		XmlSerializer cereal = Xml.newSerializer();
-		StringWriter writer = new StringWriter();
-
-		cereal.setOutput(writer);
-
-		serialize(cereal);
-
-		cereal.flush();
-
-		return writer.toString();
-	}
-
-	/*
-	 * (non-Javadoc)
 	 * @see com.agilleran.android.soapdroid.xml.XMLElement#serialize(org.xmlpull.v1.XmlSerializer)
 	 */
 	@Override

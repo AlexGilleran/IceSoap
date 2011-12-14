@@ -1,6 +1,7 @@
 package com.alexgilleran.icesoap.xml.impl;
 
 import java.io.IOException;
+import java.io.StringWriter;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -8,6 +9,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.xmlpull.v1.XmlSerializer;
+
+import android.util.Xml;
 
 import com.alexgilleran.icesoap.envelope.SOAPEnv;
 import com.alexgilleran.icesoap.xml.XMLAttribute;
@@ -21,10 +24,17 @@ import com.alexgilleran.icesoap.xml.XMLElement;
  */
 public abstract class XMLElementBase extends XMLObjectBase implements
 		XMLElement {
+	/** Name for xsi:type attribute */
+	private static final String TYPE_ATTRIBUTE_NAME = "type";
 	/** Namespace prefixes declared in this element */
 	private Map<String, String> declaredPrefixes = new HashMap<String, String>();
 	/** The attributes of the element */
-	private Set<XMLAttributeImpl> attributes = new HashSet<XMLAttributeImpl>();
+	private Set<XMLAttribute> attributes = new HashSet<XMLAttribute>();
+	/**
+	 * The xsi:type of the element - if this is set, it will be put into the
+	 * attributes set
+	 */
+	private XMLAttribute type = null;
 
 	/**
 	 * Creates a new XML Element
@@ -42,7 +52,7 @@ public abstract class XMLElementBase extends XMLObjectBase implements
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Collection<XMLAttributeImpl> getAttributes() {
+	public Collection<XMLAttribute> getAttributes() {
 		return attributes;
 	}
 
@@ -50,9 +60,10 @@ public abstract class XMLElementBase extends XMLObjectBase implements
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void addAttribute(String namespace, String name, String value) {
+	public XMLAttribute addAttribute(String namespace, String name, String value) {
 		XMLAttributeImpl att = new XMLAttributeImpl(namespace, name, value);
 		attributes.add(att);
+		return att;
 	}
 
 	/**
@@ -60,7 +71,14 @@ public abstract class XMLElementBase extends XMLObjectBase implements
 	 */
 	@Override
 	public void setType(String type) {
-		this.addAttribute(SOAPEnv.NS_URI_XSI, "type", type);
+		// If there's been no type set, make a new attribute to represent it and
+		// remember it in case it needs changing in the future
+		if (this.type == null) {
+			this.type = addAttribute(SOAPEnv.NS_URI_XSI, TYPE_ATTRIBUTE_NAME,
+					type);
+		} else {
+			this.type.setValue(type);
+		}
 	}
 
 	/**
@@ -69,6 +87,27 @@ public abstract class XMLElementBase extends XMLObjectBase implements
 	@Override
 	public void declarePrefix(String prefix, String namespace) {
 		declaredPrefixes.put(prefix, namespace);
+	}
+
+	public String toString() {
+		try {
+			XmlSerializer cereal = Xml.newSerializer();
+			StringWriter writer = new StringWriter();
+
+			cereal.setOutput(writer);
+
+			serialize(cereal);
+
+			cereal.flush();
+
+			return writer.toString();
+		} catch (IllegalArgumentException e) {
+			throw new RuntimeException(e);
+		} catch (IllegalStateException e) {
+			throw new RuntimeException(e);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	/**

@@ -1,4 +1,4 @@
-package com.alexgilleran.icesoap.requester;
+package com.alexgilleran.icesoap.requester.ssl;
 
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -10,6 +10,7 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
 
+//NOTE: This is for SSL support of unsigned certificates, which is currently unsupported.
 /**
  * @author olamy
  * @version $Id: EasyX509TrustManager.java 765355 2009-04-15 20:59:07Z evenisse

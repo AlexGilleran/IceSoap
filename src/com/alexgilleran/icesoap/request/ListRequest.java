@@ -2,11 +2,17 @@ package com.alexgilleran.icesoap.request;
 
 import java.util.List;
 
-import com.alexgilleran.icesoap.observer.SOAPObserver;
+import com.alexgilleran.icesoap.observer.SOAPListObserver;
 
-
+/**
+ * 
+ * 
+ * @author Alex Gilleran
+ *
+ * @param <T>
+ */
 public interface ListRequest<T> extends Request<List<T>> {
-	void addItemListener(SOAPObserver<T> parserListener);
+	void addItemObserver(SOAPListObserver<T> observer);
 
-	void removeItemListener(SOAPObserver<T> parserListener);
+	void removeItemObserver(SOAPListObserver<T> observer);
 }
