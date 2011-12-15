@@ -7,3 +7,4 @@ old
 .metadata
 target
 res
+*.log
