@@ -3,4 +3,7 @@ bin
 *svn*
 *.class
 old
-.classpath
+*.classpath
+.metadata
+target
+res
