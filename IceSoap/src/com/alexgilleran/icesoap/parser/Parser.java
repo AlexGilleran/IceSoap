@@ -1,44 +1,32 @@
 package com.alexgilleran.icesoap.parser;
 
-import java.io.IOException;
+import java.io.InputStream;
 
-import org.xmlpull.v1.XmlPullParserException;
+import org.xmlpull.v1.XmlPullParser;
 
+import com.alexgilleran.icesoap.exception.XmlParsingException;
 
 /**
+ * Interface for all parsers. Note that this parser is not the same concept as
+ * the {@link XmlPullParser} - rather, implementations of this class wrap around
+ * the {@link XmlPullParser} and use it to parse an instance of the ReturnType
+ * object.
  * 
  * @author Alex Gilleran
  * 
- * @param <T>
+ * @param <ReturnType>
  *            The class of the object to return. For instance, if I wanted to
- *            return a "Product" object from this parser, I would specify
- *            <Product> and override the resulting methods
+ *            return a "Product" object from this parser, I would specify {code
+ *            <Product>} and override the resulting methods
  */
-public interface Parser<T> {
-	void addObserver(ParserObserver<T> observer);
-
-	void removeObserver(ParserObserver<T> observer);
-
+public interface Parser<ReturnType> {
 	/**
-	 * Parses an object by looping through every child tag, calling parseTag()
-	 * on each START_TAG event. Stops at the end of the parent tag and returns
-	 * the object that has been parsed.
+	 * Instantiates a ReturnType object and then uses the provided
+	 * {@link XPathPullParser} to populate it with data.
+	 * 
 	 * 
 	 * @return The object created by parsing the tag
-	 * @throws XmlPullParserException
-	 * @throws IOException
+	 * @throws XmlParsingException
 	 */
-	T parse(XPathXmlPullParser parser) throws XmlPullParserException,
-			IOException;
-
-	T parse(XPathXmlPullParser parser, T objectToModify)
-			throws XmlPullParserException, IOException;
-
-	/**
-	 * Initialises a new instance of a parsed object - called at the start of
-	 * parseChildren().
-	 * 
-	 * Use this to initialise the object that will be passed into parseTag()
-	 */
-	public abstract T initializeParsedObject();
+	ReturnType parse(InputStream inputStream) throws XmlParsingException;
 }

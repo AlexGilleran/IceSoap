@@ -1,9 +1,7 @@
-package com.alexgilleran.icesoap.parser;
+package com.alexgilleran.icesoap.parser.impl;
 
-import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Field;
-import java.util.HashSet;
-import java.util.Set;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -12,23 +10,17 @@ import com.alexgilleran.icesoap.annotation.SOAPField;
 import com.alexgilleran.icesoap.annotation.SOAPObject;
 import com.alexgilleran.icesoap.exception.ClassDefException;
 import com.alexgilleran.icesoap.exception.XPathParsingException;
+import com.alexgilleran.icesoap.exception.XmlParsingException;
+import com.alexgilleran.icesoap.parser.Parser;
+import com.alexgilleran.icesoap.parser.XPathPullParser;
 import com.alexgilleran.icesoap.xpath.XPathFactory;
 import com.alexgilleran.icesoap.xpath.elements.XPathElement;
 
 public abstract class BaseAnnotationParser<T> implements Parser<T> {
 	private XPathElement rootXPath;
-	private Set<ParserObserver<T>> observers = new HashSet<ParserObserver<T>>();
 
 	protected BaseAnnotationParser(XPathElement rootXPath) {
 		this.rootXPath = rootXPath;
-	}
-
-	public void addObserver(ParserObserver<T> observer) {
-		observers.add(observer);
-	}
-
-	public void removeObserver(ParserObserver<T> observer) {
-		observers.remove(observer);
 	}
 
 	protected XPathElement getRootXPath() {
@@ -36,60 +28,65 @@ public abstract class BaseAnnotationParser<T> implements Parser<T> {
 	}
 
 	@Override
-	public final T parse(XPathXmlPullParser parser)
-			throws XmlPullParserException, IOException {
+	public T parse(InputStream inputStream) throws XmlParsingException {
+		XPathPullParserImpl parser = new XPathPullParserImpl();
+		try {
+			parser.setInput(inputStream, null);
+		} catch (XmlPullParserException e) {
+			throw new XmlParsingException(e);
+		}
+
+		return parse(parser);
+	}
+
+	protected final T parse(XPathPullParser parser) throws XmlParsingException {
 		return parse(parser, null);
 	}
 
-	@Override
-	public final T parse(XPathXmlPullParser parser, T objectToModify)
-			throws XmlPullParserException, IOException {
+	protected final T parse(XPathPullParser parser, T objectToModify)
+			throws XmlParsingException {
 		boolean isInRootElement = false;
 
-		while (true) {
-			if (rootXPath == null) {
-				objectToModify = parseElement(parser, objectToModify);
-			} else {
-				if (isInRootElement == false
-						&& parser.getEventType() == XmlPullParser.START_TAG
-						&& rootXPath.matches(parser.getCurrentElement())) {
-					isInRootElement = true;
-				} else if (isInRootElement == true
-						&& parser.getEventType() == XmlPullParser.END_TAG
-						&& rootXPath.matches(parser.getCurrentElement())) {
-					isInRootElement = false;
+		try {
+			while (true) {
+				if (rootXPath == null) {
+					objectToModify = parseElement(parser, objectToModify);
+				} else {
+					if (isInRootElement == false
+							&& parser.getEventType() == XmlPullParser.START_TAG
+							&& rootXPath.matches(parser.getCurrentElement())) {
+						isInRootElement = true;
+					} else if (isInRootElement == true
+							&& parser.getEventType() == XmlPullParser.END_TAG
+							&& rootXPath.matches(parser.getCurrentElement())) {
+						isInRootElement = false;
+						break;
+					}
+
+					if ((parser.getEventType() == XPathPullParser.START_TAG || parser
+							.getEventType() == XPathPullParser.ATTRIBUTE)
+							&& isInRootElement) {
+						objectToModify = parseElement(parser, objectToModify);
+					}
+				}
+
+				if (parser.getEventType() != XmlPullParser.END_DOCUMENT) {
+					parser.next();
+				} else {
 					break;
 				}
-
-				if ((parser.getEventType() == XPathXmlPullParser.START_TAG || parser
-						.getEventType() == XPathXmlPullParser.ATTRIBUTE)
-						&& isInRootElement) {
-					objectToModify = parseElement(parser, objectToModify);
-				}
 			}
 
-			if (parser.getEventType() != XmlPullParser.END_DOCUMENT) {
-				parser.next();
-			} else {
-				break;
-			}
-		}
-
-		if (objectToModify != null) {
-			notifyObservers(objectToModify);
-		}
-
-		return objectToModify;
-	}
-
-	private void notifyObservers(T newItem) {
-		for (ParserObserver<T> observer : observers) {
-			observer.onNewItem(newItem);
+			return objectToModify;
+		} catch (XmlPullParserException e) {
+			throw new XmlParsingException(e);
 		}
 	}
 
-	private T parseElement(XPathXmlPullParser xmlPullParser, T objectToModify)
-			throws XmlPullParserException, IOException {
+	protected abstract T initializeParsedObject();
+
+	private T parseElement(XPathPullParser xmlPullParser, T objectToModify)
+			throws XmlParsingException {
 		if (objectToModify == null) {
 			objectToModify = initializeParsedObject();
 		}
@@ -99,8 +96,8 @@ public abstract class BaseAnnotationParser<T> implements Parser<T> {
 		return objectToModify;
 	}
 
-	protected abstract T onNewTag(XPathXmlPullParser xmlPullParser,
-			T objectToModify) throws XmlPullParserException, IOException;
+	protected abstract T onNewTag(XPathPullParser xmlPullParser,
+			T objectToModify) throws XmlParsingException;
 
 	/**
 	 * Retrieves the root xpath from the annotation on the class. Note that this

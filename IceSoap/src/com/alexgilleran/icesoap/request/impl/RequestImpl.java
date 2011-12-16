@@ -1,18 +1,15 @@
 package com.alexgilleran.icesoap.request.impl;
 
-import java.io.IOException;
 import java.io.InputStream;
-
-import org.xmlpull.v1.XmlPullParserException;
 
 import android.os.AsyncTask;
 
-import com.alexgilleran.icesoap.envelope.SOAPEnv;
+import com.alexgilleran.icesoap.envelope.SOAPEnvelope;
 import com.alexgilleran.icesoap.exception.SOAPException;
+import com.alexgilleran.icesoap.exception.XmlParsingException;
 import com.alexgilleran.icesoap.observer.ObserverRegistry;
 import com.alexgilleran.icesoap.observer.SOAPObserver;
 import com.alexgilleran.icesoap.parser.Parser;
-import com.alexgilleran.icesoap.parser.XPathXmlPullParser;
 import com.alexgilleran.icesoap.request.Request;
 import com.alexgilleran.icesoap.requester.SOAPRequester;
 import com.alexgilleran.icesoap.requester.SOAPRequesterImpl;
@@ -20,27 +17,28 @@ import com.alexgilleran.icesoap.requester.SOAPRequesterImpl;
 /**
  * Implementation of {@link Request}
  * 
- * A {@link RequestImpl}, in essence, is a composition of a {@link SOAPEnv} for
- * the request, a {@link Parser} for the response, and some code to to the post.
+ * A {@link RequestImpl}, in essence, is a composition of a {@link SOAPEnvelope}
+ * for the request, a {@link Parser} for the response, and some code to to the
+ * post.
  * 
  * @author Alex Gilleran
  * 
- * @param <TypeToRetrieve>
+ * @param <ResultType>
  */
-public class RequestImpl<TypeToRetrieve> implements Request<TypeToRetrieve> {
+public class RequestImpl<ResultType> implements Request<ResultType> {
 	/** Registry of observers to send events to */
-	private ObserverRegistry<TypeToRetrieve> registry = new ObserverRegistry<TypeToRetrieve>(
+	private ObserverRegistry<ResultType> registry = new ObserverRegistry<ResultType>(
 			this);
 	/** Parser to use to parse the response */
-	private Parser<TypeToRetrieve> parser;
+	private Parser<ResultType> parser;
 	/** The URL to post the request to */
 	private String url;
 	/** The envelope to serialize and POST */
-	private SOAPEnv soapEnv;
+	private SOAPEnvelope soapEnv;
 	/** The {@link AsyncTask} that the request will be performed within */
 	private RequestTask<?> currentTask = null;
 	/** The result of the request */
-	private TypeToRetrieve result;
+	private ResultType result;
 	/** Flag - is the request complete? */
 	private boolean complete = false;
 	/** Flag - is the request currently executing? */
@@ -54,10 +52,10 @@ public class RequestImpl<TypeToRetrieve> implements Request<TypeToRetrieve> {
 	 * @param parser
 	 *            The {@link Parser} to use to parse the response.
 	 * @param soapEnv
-	 *            The SOAP envelope to send, as a {@link SOAPEnv}
+	 *            The SOAP envelope to send, as a {@link SOAPEnvelope}
 	 */
-	public RequestImpl(String url, Parser<TypeToRetrieve> parser,
-			SOAPEnv soapEnv) {
+	public RequestImpl(String url, Parser<ResultType> parser,
+			SOAPEnvelope soapEnv) {
 		this.parser = parser;
 		this.url = url;
 		this.soapEnv = soapEnv;
@@ -68,7 +66,7 @@ public class RequestImpl<TypeToRetrieve> implements Request<TypeToRetrieve> {
 	 * 
 	 * @return The appropriate {@link AsyncTask}
 	 */
-	protected AsyncTask<Void, ?, TypeToRetrieve> createTask() {
+	protected AsyncTask<Void, ?, ResultType> createTask() {
 		return new RequestTask<Void>();
 	}
 
@@ -86,7 +84,7 @@ public class RequestImpl<TypeToRetrieve> implements Request<TypeToRetrieve> {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public TypeToRetrieve getResult() {
+	public ResultType getResult() {
 		return result;
 	}
 
@@ -106,7 +104,7 @@ public class RequestImpl<TypeToRetrieve> implements Request<TypeToRetrieve> {
 	 * 
 	 * @return the parser to use.
 	 */
-	protected Parser<TypeToRetrieve> getParser() {
+	protected Parser<ResultType> getParser() {
 		return parser;
 	}
 
@@ -122,7 +120,7 @@ public class RequestImpl<TypeToRetrieve> implements Request<TypeToRetrieve> {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void addObserver(SOAPObserver<TypeToRetrieve> observer) {
+	public void registerObserver(SOAPObserver<ResultType> observer) {
 		registry.addObserver(observer);
 	}
 
@@ -130,7 +128,7 @@ public class RequestImpl<TypeToRetrieve> implements Request<TypeToRetrieve> {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void removeObserver(SOAPObserver<TypeToRetrieve> observer) {
+	public void deregisterObserver(SOAPObserver<ResultType> observer) {
 		registry.removeObserver(observer);
 	}
 
@@ -161,7 +159,7 @@ public class RequestImpl<TypeToRetrieve> implements Request<TypeToRetrieve> {
 	 *            class.
 	 */
 	protected class RequestTask<ProgressReportObject> extends
-			AsyncTask<Void, ProgressReportObject, TypeToRetrieve> {
+			AsyncTask<Void, ProgressReportObject, ResultType> {
 		/**
 		 * If an exception is caught, it is stored here until it can be thrown
 		 * on the UI thread
@@ -172,7 +170,7 @@ public class RequestImpl<TypeToRetrieve> implements Request<TypeToRetrieve> {
 		 * {@inheritDoc}
 		 */
 		@Override
-		protected void onPostExecute(TypeToRetrieve returnedResult) {
+		protected void onPostExecute(ResultType returnedResult) {
 			executing = true;
 			complete = true;
 
@@ -198,27 +196,20 @@ public class RequestImpl<TypeToRetrieve> implements Request<TypeToRetrieve> {
 		 * {@inheritDoc}
 		 */
 		@Override
-		protected TypeToRetrieve doInBackground(Void... arg0) {
+		protected ResultType doInBackground(Void... arg0) {
 			executing = true;
-
-			XPathXmlPullParser xmlParser = new XPathXmlPullParser();
 
 			try {
 				if (!isCancelled()) {
-					xmlParser.setInput(getResponse(), null);
-
-					return getParser().parse(xmlParser);
+					return getParser().parse(getResponse());
 				}
-			} catch (XmlPullParserException e) {
+			} catch (XmlParsingException e) {
 				throwException(e);
 			} catch (SOAPException e) {
-				throwException(e);
-			} catch (IOException e) {
 				throwException(e);
 			}
 
 			return null;
 		}
 	}
-
 }

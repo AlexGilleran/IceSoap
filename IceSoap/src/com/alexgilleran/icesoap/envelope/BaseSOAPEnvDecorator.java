@@ -10,10 +10,10 @@ import com.alexgilleran.icesoap.xml.XMLNode;
  * @author Alex Gilleran
  * 
  */
-public abstract class BaseSOAPEnvDecorator implements SOAPEnv {
-	SOAPEnv wrappedEnvelope;
+public abstract class BaseSOAPEnvDecorator implements SOAPEnvelope {
+	SOAPEnvelope wrappedEnvelope;
 
-	public BaseSOAPEnvDecorator(SOAPEnv wrappedEnvelope) {
+	public BaseSOAPEnvDecorator(SOAPEnvelope wrappedEnvelope) {
 		if (wrappedEnvelope == null) {
 			wrappedEnvelope = new ConcreteSOAPEnv();
 		}
@@ -21,7 +21,7 @@ public abstract class BaseSOAPEnvDecorator implements SOAPEnv {
 		this.wrappedEnvelope = wrappedEnvelope;
 	}
 
-	protected SOAPEnv getWrappedEnvelope() {
+	protected SOAPEnvelope getWrappedEnvelope() {
 		return wrappedEnvelope;
 	}
 

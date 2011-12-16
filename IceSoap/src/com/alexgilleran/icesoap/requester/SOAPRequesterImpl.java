@@ -20,7 +20,7 @@ import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 
-import com.alexgilleran.icesoap.envelope.SOAPEnv;
+import com.alexgilleran.icesoap.envelope.SOAPEnvelope;
 import com.alexgilleran.icesoap.exception.SOAPException;
 
 /**
@@ -79,7 +79,7 @@ public class SOAPRequesterImpl implements SOAPRequester {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public InputStream doSoapRequest(SOAPEnv envelope, String targetUrl)
+	public InputStream doSoapRequest(SOAPEnvelope envelope, String targetUrl)
 			throws SOAPException {
 		return doSoapRequest(envelope, targetUrl, BLANK_SOAP_ACTION);
 	}
@@ -87,7 +87,7 @@ public class SOAPRequesterImpl implements SOAPRequester {
 	/**
 	 * {@inheritDoc}
 	 */
-	public InputStream doSoapRequest(SOAPEnv envelope, String url,
+	public InputStream doSoapRequest(SOAPEnvelope envelope, String url,
 			String soapAction) throws SOAPException {
 		try {
 			return doHttpPost(buildPostRequest(url, envelope.toString(),

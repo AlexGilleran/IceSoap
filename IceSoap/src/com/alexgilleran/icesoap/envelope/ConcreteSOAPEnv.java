@@ -20,7 +20,7 @@ import android.util.Xml;
  * @author Alex Gilleran
  * 
  */
-public class ConcreteSOAPEnv extends XMLNodeImpl implements SOAPEnv {
+public class ConcreteSOAPEnv extends XMLNodeImpl implements SOAPEnvelope {
 
 	private XMLNode header;
 	private XMLNode body;

@@ -14,22 +14,22 @@ import com.alexgilleran.icesoap.observer.SOAPObserver;
  * 
  * @author Alex Gilleran
  * 
- * @param <Result>
+ * @param <ResultType>
  *            The type of the object that this request will return a list of.
  */
-public interface ListRequest<Result> extends Request<List<Result>> {
+public interface ListRequest<ResultType> extends Request<List<ResultType>> {
 	/**
 	 * Registers an observer for new item, exception and completion events.
 	 * 
 	 * Note that registering a {@link SOAPListObserver} (using this method) will
-	 * result in the observer recieving events on each new item - registering a
-	 * {@link SOAPObserver} with {@link Request#addObserver(SOAPObserver)} will
-	 * only result in it recieving exception and completion.
+	 * result in the observer receiving events on each new item - registering a
+	 * {@link SOAPObserver} with {@link Request#registerObserver(SOAPObserver)}
+	 * will only result in it receiving exception and completion.
 	 * 
 	 * @param observer
 	 *            The observer to register.
 	 */
-	void registerObserver(SOAPListObserver<Result> observer);
+	void registerObserver(SOAPListObserver<ResultType> observer);
 
 	/**
 	 * De-registers an observer
@@ -37,5 +37,5 @@ public interface ListRequest<Result> extends Request<List<Result>> {
 	 * @param observer
 	 *            The observer to deregister.
 	 */
-	void deregisterObserver(SOAPListObserver<Result> observer);
+	void deregisterObserver(SOAPListObserver<ResultType> observer);
 }

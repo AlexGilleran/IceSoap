@@ -10,19 +10,19 @@ import com.alexgilleran.icesoap.observer.SOAPObserver;
  * Encapsulates all the code for making a SOAP Request - to use, create an
  * object that implements the {@link SOAPObserver} class (generally this is
  * easiest using anonymous objects from the activity or fragment) and attach it
- * using the {@link Request#addObserver(SOAPObserver)} method. Then invoke
+ * using the {@link Request#registerObserver(SOAPObserver)} method. Then invoke
  * {@link Request#execute()} - the request will be performed on a background
  * thread, and methods of the {@link SOAPObserver} will be called on the UI
  * thread.
  * 
  * @author Alex Gilleran
  * 
- * @param <TypeToRetrieve>
+ * @param <ResultType>
  *            The type of the object to retrieve from this request. If the type
  *            is a {@link List}, you may want to consider using
  *            {@link ListRequest} instead.
  */
-public interface Request<TypeToRetrieve> {
+public interface Request<ResultType> {
 	/**
 	 * Executes the request
 	 */
@@ -35,7 +35,7 @@ public interface Request<TypeToRetrieve> {
 	 * @param observer
 	 *            The observer to add.
 	 */
-	void addObserver(SOAPObserver<TypeToRetrieve> observer);
+	void registerObserver(SOAPObserver<ResultType> observer);
 
 	/**
 	 * Remove an observer
@@ -43,7 +43,7 @@ public interface Request<TypeToRetrieve> {
 	 * @param observer
 	 *            The observer to remove.
 	 */
-	void removeObserver(SOAPObserver<TypeToRetrieve> observer);
+	void deregisterObserver(SOAPObserver<ResultType> observer);
 
 	/**
 	 * Cancels the request - akin to cancelling an {@link AsyncTask}
@@ -56,7 +56,7 @@ public interface Request<TypeToRetrieve> {
 	 * 
 	 * @return The result so far.
 	 */
-	TypeToRetrieve getResult();
+	ResultType getResult();
 
 	/**
 	 * Whether the request is currently executing - if it's not executing, it

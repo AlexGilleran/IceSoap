@@ -21,7 +21,7 @@ import com.alexgilleran.icesoap.xml.XMLNode;
  * @author Alex Gilleran
  * 
  */
-public interface SOAPEnv {
+public interface SOAPEnvelope {
 	public final static String NS_PREFIX_SOAPENV = "soapenv";
 	public final static String NS_URI_SOAPENV = "http://schemas.xmlsoap.org/soap/envelope/";
 	public final static String NS_PREFIX_SOAPENC = "soapenc";

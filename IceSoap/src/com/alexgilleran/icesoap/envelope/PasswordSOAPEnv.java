@@ -28,7 +28,7 @@ public class PasswordSOAPEnv extends BaseSOAPEnvDecorator {
 	 * @param password
 	 *            The password to put in the security header
 	 */
-	public PasswordSOAPEnv(SOAPEnv wrappedEnvelope, String username,
+	public PasswordSOAPEnv(SOAPEnvelope wrappedEnvelope, String username,
 			String password) {
 		super(wrappedEnvelope);
 

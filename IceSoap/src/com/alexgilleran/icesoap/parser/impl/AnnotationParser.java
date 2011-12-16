@@ -1,6 +1,5 @@
-package com.alexgilleran.icesoap.parser;
+package com.alexgilleran.icesoap.parser.impl;
 
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -10,10 +9,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.xmlpull.v1.XmlPullParserException;
-
 import com.alexgilleran.icesoap.annotation.SOAPField;
 import com.alexgilleran.icesoap.exception.ClassDefException;
+import com.alexgilleran.icesoap.exception.XmlParsingException;
+import com.alexgilleran.icesoap.parser.XPathPullParser;
 import com.alexgilleran.icesoap.xpath.XPathRepository;
 import com.alexgilleran.icesoap.xpath.elements.XPathElement;
 import com.alexgilleran.icesoap.xpath.elements.impl.RelativeXPathElement;
@@ -81,8 +80,8 @@ public class AnnotationParser<T> extends BaseAnnotationParser<T> {
 	}
 
 	@Override
-	protected T onNewTag(XPathXmlPullParser xmlPullParser, T objectToModify)
-			throws XmlPullParserException, IOException {
+	protected T onNewTag(XPathPullParser xmlPullParser, T objectToModify)
+			throws XmlParsingException {
 		Field fieldToSet = fieldXPaths.get(xmlPullParser.getCurrentElement());
 
 		if (fieldToSet != null) {
@@ -107,8 +106,8 @@ public class AnnotationParser<T> extends BaseAnnotationParser<T> {
 		return objectToModify;
 	}
 
-	private <E> Parser<?> getParserForClass(Type typeToParse,
-			Class<E> classToParse, XPathXmlPullParser xmlPullParser) {
+	private <E> BaseAnnotationParser<?> getParserForClass(Type typeToParse,
+			Class<E> classToParse, XPathPullParser xmlPullParser) {
 		// TODO: Caching these will make things a bunch quicker. Probably.
 
 		if (List.class.isAssignableFrom(classToParse)) {
@@ -117,8 +116,8 @@ public class AnnotationParser<T> extends BaseAnnotationParser<T> {
 
 			Class<?> listItemClass = (Class<?>) listItemType;
 
-			Parser<?> itemParser = getParserForClass(listItemType,
-					listItemClass, xmlPullParser);
+			BaseAnnotationParser<?> itemParser = getParserForClass(
+					listItemType, listItemClass, xmlPullParser);
 
 			return new AnnotationListParser(listItemClass,
 					xmlPullParser.getCurrentElement(), itemParser);
