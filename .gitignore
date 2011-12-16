@@ -6,7 +6,6 @@ old
 *.classpath
 .metadata
 target
-res
 *.log
 *.jar
 *.apk
