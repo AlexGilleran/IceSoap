@@ -5,6 +5,7 @@ import java.io.StringWriter;
 
 import org.xmlpull.v1.XmlSerializer;
 
+import com.alexgilleran.icesoap.xml.XMLElement;
 import com.alexgilleran.icesoap.xml.impl.XMLNode;
 
 
@@ -32,8 +33,8 @@ public class ConcreteSOAPEnv extends XMLNode implements SOAPEnv {
 
 		this.declarePrefix(NS_PREFIX_SOAPENV, NS_URI_SOAPENV);
 		this.declarePrefix(NS_PREFIX_SOAPENC, NS_URI_SOAPENC);
-		this.declarePrefix(NS_PREFIX_XSD, NS_URI_XSD);
-		this.declarePrefix(NS_PREFIX_XSI, NS_URI_XSI);
+		this.declarePrefix(XMLElement.NS_PREFIX_XSD, XMLElement.NS_URI_XSD);
+		this.declarePrefix(XMLElement.NS_PREFIX_XSI, XMLElement.NS_URI_XSI);
 
 		header = this.addElement(NS_URI_SOAPENV, "Header");
 		body = this.addElement(NS_URI_SOAPENV, "Body");

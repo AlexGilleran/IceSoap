@@ -3,9 +3,12 @@ package com.alexgilleran.icesoap.test.xpath;
 import static org.junit.Assert.assertFalse;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import com.alexgilleran.icesoap.exception.XPathParsingException;
+import com.xtremelabs.robolectric.RobolectricTestRunner;
 
+@RunWith(RobolectricTestRunner.class)
 public class XPathElementTest extends XPathTest {
 
 	@Test

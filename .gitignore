@@ -8,3 +8,6 @@ old
 target
 res
 *.log
+*.jar
+*.apk
+tmp

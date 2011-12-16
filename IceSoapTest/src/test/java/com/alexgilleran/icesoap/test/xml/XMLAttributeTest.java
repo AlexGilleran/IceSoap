@@ -7,13 +7,16 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import com.alexgilleran.icesoap.xml.impl.XMLAttributeImpl;
+import com.xtremelabs.robolectric.RobolectricTestRunner;
 
 /**
  * @author Alex Gilleran
  * 
  */
+@RunWith(RobolectricTestRunner.class)
 public class XMLAttributeTest extends XMLObjectTest<XMLAttributeImpl> {
 	private final static String NAMESPACE = "http://namespace.com/namespace";
 	private final static String NAME = "xmlAttName";

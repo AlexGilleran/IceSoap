@@ -12,9 +12,9 @@ import org.xmlpull.v1.XmlSerializer;
 
 import android.util.Xml;
 
-import com.alexgilleran.icesoap.envelope.SOAPEnv;
 import com.alexgilleran.icesoap.xml.XMLAttribute;
 import com.alexgilleran.icesoap.xml.XMLElement;
+import com.alexgilleran.icesoap.xml.XMLSerializerFactory;
 
 /**
  * Base implementation for XML Elements - both nodes and leaves.
@@ -26,10 +26,12 @@ public abstract class XMLElementBase extends XMLObjectBase implements
 		XMLElement {
 	/** Name for xsi:type attribute */
 	private static final String TYPE_ATTRIBUTE_NAME = "type";
-	/** Namespace prefixes declared in this element */
+	/** Namespace prefixes declared in this element (map of prefixes to urls) */
 	private Map<String, String> declaredPrefixes = new HashMap<String, String>();
 	/** The attributes of the element */
 	private Set<XMLAttribute> attributes = new HashSet<XMLAttribute>();
+	/** Used to obtain an implementation of {@link XmlSerializer} */
+	private XMLSerializerFactory serializerFactory;
 	/**
 	 * The xsi:type of the element - if this is set, it will be put into the
 	 * attributes set
@@ -74,7 +76,7 @@ public abstract class XMLElementBase extends XMLObjectBase implements
 		// If there's been no type set, make a new attribute to represent it and
 		// remember it in case it needs changing in the future
 		if (this.type == null) {
-			this.type = addAttribute(SOAPEnv.NS_URI_XSI, TYPE_ATTRIBUTE_NAME,
+			this.type = addAttribute(XMLElement.NS_URI_XSI, TYPE_ATTRIBUTE_NAME,
 					type);
 		} else {
 			this.type.setValue(type);
@@ -91,7 +93,7 @@ public abstract class XMLElementBase extends XMLObjectBase implements
 
 	public String toString() {
 		try {
-			XmlSerializer cereal = Xml.newSerializer();
+			XmlSerializer cereal = getSerializerFactory().buildXmlSerializer();
 			StringWriter writer = new StringWriter();
 
 			cereal.setOutput(writer);
@@ -113,7 +115,6 @@ public abstract class XMLElementBase extends XMLObjectBase implements
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public void serialize(XmlSerializer serializer)
 			throws IllegalArgumentException, IllegalStateException, IOException {
 		serializePrefixes(serializer);
@@ -169,4 +170,45 @@ public abstract class XMLElementBase extends XMLObjectBase implements
 	 */
 	protected abstract void serializeContent(XmlSerializer serializer)
 			throws IllegalArgumentException, IllegalStateException, IOException;
+
+	/**
+	 * Sets the {@link XMLSerializerFactory} to be used for obtaining an
+	 * implementation of {@link XmlSerializer}
+	 * 
+	 * @param serializerFactory
+	 *            The factory to use.
+	 */
+	public void setSerializerFactory(XMLSerializerFactory serializerFactory) {
+		this.serializerFactory = serializerFactory;
+	}
+
+	/**
+	 * Gets a serializer factory - if none has been set by a client class,
+	 * returns the standard {@link AndroidSerializerFactory} implementation.
+	 * 
+	 * @return A serializer factory.
+	 */
+	private XMLSerializerFactory getSerializerFactory() {
+		if (serializerFactory == null) {
+			return ANDROID_SERIALIZER_FACTORY;
+		} else {
+			return serializerFactory;
+		}
+	}
+
+	/**
+	 * Standard implementation of {@link XMLSerializerFactory} that uses the
+	 * standard Android method of getting a new instance. This will return an
+	 * exception if used outside Android normally, or a null object (every
+	 * method returns null) if used in Robolectric 1.0 - override with
+	 * {@link XMLElementBase#setSerializerFactory(XMLSerializerFactory)} in
+	 * these circumstances.
+	 */
+	private final static XMLSerializerFactory ANDROID_SERIALIZER_FACTORY = new XMLSerializerFactory() {
+		/** {@inheritDoc} */
+		@Override
+		public XmlSerializer buildXmlSerializer() {
+			return Xml.newSerializer();
+		}
+	};
 }

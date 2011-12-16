@@ -26,11 +26,6 @@ public interface SOAPEnv {
 	public final static String NS_URI_SOAPENV = "http://schemas.xmlsoap.org/soap/envelope/";
 	public final static String NS_PREFIX_SOAPENC = "soapenc";
 	public final static String NS_URI_SOAPENC = "http://schemas.xmlsoap.org/soap/encoding/";
-	public final static String NS_PREFIX_XSD = "xsd";
-	public final static String NS_URI_XSD = "http://www.w3.org/2001/XMLSchema";
-	public final static String NS_PREFIX_XSI = "xsi";
-	public final static String NS_URI_XSI = "http://www.w3.org/2001/XMLSchema-instance";
-
 	public final static String NODE_NAME = "Envelope";
 	public final static String NODE_NAMESPACE = NS_URI_SOAPENV;
 
