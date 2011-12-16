@@ -11,3 +11,4 @@ res
 *.jar
 *.apk
 tmp
+.settings
