@@ -12,3 +12,4 @@ res
 *.apk
 tmp
 .settings
+pom.properties
