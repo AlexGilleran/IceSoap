@@ -65,7 +65,7 @@ public abstract class XMLObjectTest<TypeUnderTest extends XMLObjectBase> {
 	 * Returns the current instance of the XML Object type under test - resets
 	 * at the beginning of every test
 	 */
-	protected TypeUnderTest getXmlObject() {
+	protected TypeUnderTest getXMLObject() {
 		return xmlObject;
 	}
 

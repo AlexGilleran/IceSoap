@@ -4,13 +4,16 @@ import java.io.IOException;
 
 import org.xmlpull.v1.XmlSerializer;
 
+import com.alexgilleran.icesoap.xml.XMLTextElement;
+
 /**
- * An XML text element - i.e. a node with nothing in it but a text value.
+ * Implementation of {@link XMLTextElement}
  * 
  * @author Alex Gilleran
  * 
  */
-public class XMLTextElement extends XMLElementBase {
+public class XMLTextElementImpl extends XMLElementBase implements
+		XMLTextElement {
 	/** The blank value - returned if the value is null */
 	private static final String BLANK_VALUE = "";
 	/** The text value of the text element. */
@@ -26,18 +29,16 @@ public class XMLTextElement extends XMLElementBase {
 	 * @param value
 	 *            The value of the text element.
 	 */
-	public XMLTextElement(String namespace, String name, String value) {
+	public XMLTextElementImpl(String namespace, String name, String value) {
 		super(namespace, name);
 
 		this.value = value;
 	}
 
 	/**
-	 * Gets the text value for the text element.
-	 * 
-	 * @return The text value of the text element, or "" if no value was
-	 *         specified.
+	 * {@inheritDoc}
 	 */
+	@Override
 	public String getValue() {
 		if (value == null) {
 			return BLANK_VALUE;

@@ -1,7 +1,8 @@
 package com.alexgilleran.icesoap.envelope;
 
-import com.alexgilleran.icesoap.xml.impl.XMLTextElement;
-import com.alexgilleran.icesoap.xml.impl.XMLNode;
+import com.alexgilleran.icesoap.xml.XMLNode;
+import com.alexgilleran.icesoap.xml.XMLTextElement;
+import com.alexgilleran.icesoap.xml.impl.XMLNodeImpl;
 
 /**
  * Example envelope - adds a WSSE Security tag that specifies a username and
@@ -31,7 +32,7 @@ public class PasswordSOAPEnv extends BaseSOAPEnvDecorator {
 			String password) {
 		super(wrappedEnvelope);
 
-		securityNode = getWrappedEnvelope().getHeader().addElement(NS_URI_WSSE,
+		securityNode = getWrappedEnvelope().getHeader().addNode(NS_URI_WSSE,
 				"Security");
 		securityNode.declarePrefix(NS_PREFIX_WSSE, NS_URI_WSSE);
 		securityNode.addAttribute(ConcreteSOAPEnv.NS_URI_SOAPENV,
@@ -49,11 +50,12 @@ public class PasswordSOAPEnv extends BaseSOAPEnvDecorator {
 	 *            The password to add
 	 * @return
 	 */
-	protected XMLNode getUserNameToken(String username, String password) {
-		XMLNode usernameToken = new XMLNode(NS_URI_WSSE, "UsernameToken");
-		usernameToken.addElement(NS_URI_WSSE, "Username", username);
+	protected XMLNodeImpl getUserNameToken(String username, String password) {
+		XMLNodeImpl usernameToken = new XMLNodeImpl(NS_URI_WSSE,
+				"UsernameToken");
+		usernameToken.addTextElement(NS_URI_WSSE, "Username", username);
 
-		XMLTextElement passwordLeaf = usernameToken.addElement(NS_URI_WSSE,
+		XMLTextElement passwordLeaf = usernameToken.addTextElement(NS_URI_WSSE,
 				"Password", password);
 		passwordLeaf
 				.addAttribute(

@@ -36,18 +36,18 @@ public class XMLAttributeTest extends XMLObjectTest<XMLAttributeImpl> {
 	public void testConstructor() {
 		super.testConstructor();
 
-		assertEquals(VALUE, getXmlObject().getValue());
+		assertEquals(VALUE, getXMLObject().getValue());
 	}
 
 	@Test
 	public void testGetSetValue() {
 		final String anotherValue = "anotherValue";
 
-		assertFalse(anotherValue.equals(getXmlObject().getValue()));
+		assertFalse(anotherValue.equals(getXMLObject().getValue()));
 
-		getXmlObject().setValue(anotherValue);
+		getXMLObject().setValue(anotherValue);
 
-		assertEquals(anotherValue, getXmlObject().getValue());
+		assertEquals(anotherValue, getXMLObject().getValue());
 	}
 
 }

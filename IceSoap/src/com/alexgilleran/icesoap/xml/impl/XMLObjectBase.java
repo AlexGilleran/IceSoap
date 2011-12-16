@@ -33,20 +33,30 @@ public abstract class XMLObjectBase {
 		this.name = name;
 	}
 
-	// Javadocs will be defined by classes further down the hierarchy.
-	
+	/**
+	 * {inheritDoc}
+	 */
 	public String getNamespace() {
 		return namespace;
 	}
 
+	/**
+	 * {inheritDoc}
+	 */
 	public void setNamespace(String namespace) {
 		this.namespace = namespace;
 	}
 
+	/**
+	 * {inheritDoc}
+	 */
 	public String getName() {
 		return name;
 	}
 
+	/**
+	 * {inheritDoc}
+	 */
 	public void setName(String name) {
 		this.name = name;
 	}

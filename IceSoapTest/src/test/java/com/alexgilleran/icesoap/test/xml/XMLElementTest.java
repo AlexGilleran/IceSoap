@@ -75,14 +75,14 @@ public abstract class XMLElementTest<TypeUnderTest extends XMLElementBase>
 	 */
 	@Test
 	public void testToStringBasic() {
-		getXmlObject().setNamespace(null);
+		getXMLObject().setNamespace(null);
 
-		String asString = getXmlObject().toString();
+		String asString = getXMLObject().toString();
 
 		assertTrue(asString,
-				asString.startsWith("<" + getXmlObject().getName() + ">"));
+				asString.startsWith("<" + getXMLObject().getName() + ">"));
 		assertTrue(asString,
-				asString.endsWith("</" + getXmlObject().getName() + ">"));
+				asString.endsWith("</" + getXMLObject().getName() + ">"));
 	}
 
 	/**
@@ -94,19 +94,19 @@ public abstract class XMLElementTest<TypeUnderTest extends XMLElementBase>
 		final String prefix = "prefix";
 
 		// First declare the namespace's prefix so we can test that too
-		getXmlObject().declarePrefix(prefix, getXmlObject().getNamespace());
+		getXMLObject().declarePrefix(prefix, getXMLObject().getNamespace());
 
-		String asString = getXmlObject().toString();
+		String asString = getXMLObject().toString();
 
 		assertTrue(
 				asString,
 				asString.startsWith("<" + prefix + ":"
-						+ getXmlObject().getName() + " xmlns:" + prefix + "=\""
-						+ getXmlObject().getNamespace() + "\">"));
+						+ getXMLObject().getName() + " xmlns:" + prefix + "=\""
+						+ getXMLObject().getNamespace() + "\">"));
 		assertTrue(
 				asString,
 				asString.endsWith("</" + prefix + ":"
-						+ getXmlObject().getName() + ">"));
+						+ getXMLObject().getName() + ">"));
 	}
 
 	/**
@@ -130,7 +130,7 @@ public abstract class XMLElementTest<TypeUnderTest extends XMLElementBase>
 		String testValue3 = "value3";
 
 		// Assert that there are no attributes to start with
-		assertEquals(0, getXmlObject().getAttributes().size());
+		assertEquals(0, getXMLObject().getAttributes().size());
 
 		// Make a set of sample data
 		Set<XMLAttribute> attributes = new HashSet<XMLAttribute>();
@@ -139,21 +139,21 @@ public abstract class XMLElementTest<TypeUnderTest extends XMLElementBase>
 		attributes.add(new XMLAttributeImpl(testNsUrl3, testName3, testValue3));
 
 		// Add the same values from the sample data to the XML Object
-		getXmlObject().declarePrefix(testNsPrefix1, testNsUrl1);
-		getXmlObject().addAttribute(testNsUrl1, testName1, testValue1);
-		getXmlObject().declarePrefix(testNsPrefix2, testNsUrl2);
-		getXmlObject().addAttribute(testNsUrl2, testName2, testValue2);
-		getXmlObject().declarePrefix(testNsPrefix3, testNsUrl3);
-		getXmlObject().addAttribute(testNsUrl3, testName3, testValue3);
+		getXMLObject().declarePrefix(testNsPrefix1, testNsUrl1);
+		getXMLObject().addAttribute(testNsUrl1, testName1, testValue1);
+		getXMLObject().declarePrefix(testNsPrefix2, testNsUrl2);
+		getXMLObject().addAttribute(testNsUrl2, testName2, testValue2);
+		getXMLObject().declarePrefix(testNsPrefix3, testNsUrl3);
+		getXMLObject().addAttribute(testNsUrl3, testName3, testValue3);
 
 		// Make sure they all went in okay
-		assertEquals(3, getXmlObject().getAttributes().size());
+		assertEquals(3, getXMLObject().getAttributes().size());
 
 		// Make sure the actual attributes match the sample ones
-		assertEquals(attributes, getXmlObject().getAttributes());
+		assertEquals(attributes, getXMLObject().getAttributes());
 
 		// Make sure the attributes are toStringing properly
-		String asString = getXmlObject().toString();
+		String asString = getXMLObject().toString();
 
 		assertTrue(
 				asString,
@@ -181,17 +181,17 @@ public abstract class XMLElementTest<TypeUnderTest extends XMLElementBase>
 		final String anotherType = "anotherType";
 
 		// Make sure there's no attributes to start with
-		assertEquals(0, getXmlObject().getAttributes().size());
+		assertEquals(0, getXMLObject().getAttributes().size());
 
 		// Declare the xsi namespace
-		getXmlObject().declarePrefix(XMLElement.NS_PREFIX_XSI,
+		getXMLObject().declarePrefix(XMLElement.NS_PREFIX_XSI,
 				XMLElement.NS_URI_XSI);
 
 		// Set the type - this will create an attribute for xsi:type
-		getXmlObject().setType(type);
+		getXMLObject().setType(type);
 
 		// Now get the attributes
-		Collection<XMLAttribute> attributes = getXmlObject().getAttributes();
+		Collection<XMLAttribute> attributes = getXMLObject().getAttributes();
 		assertEquals(1, attributes.size());
 		XMLAttribute typeAtt = attributes.iterator().next();
 
@@ -201,17 +201,17 @@ public abstract class XMLElementTest<TypeUnderTest extends XMLElementBase>
 		assertEquals(typeName, typeAtt.getName());
 
 		// Test the type is toStringing properly
-		String asString = getXmlObject().toString();
+		String asString = getXMLObject().toString();
 		assertTrue(
 				asString,
 				asString.contains(XMLElement.NS_PREFIX_XSI + ":" + typeName
 						+ "=\"" + type + "\""));
 
 		// Set the type again
-		getXmlObject().setType(anotherType);
+		getXMLObject().setType(anotherType);
 
 		// Get the type attribute again
-		attributes = getXmlObject().getAttributes();
+		attributes = getXMLObject().getAttributes();
 		assertEquals(1, attributes.size());
 		typeAtt = attributes.iterator().next();
 
@@ -220,7 +220,7 @@ public abstract class XMLElementTest<TypeUnderTest extends XMLElementBase>
 		assertEquals(XMLElement.NS_URI_XSI, typeAtt.getNamespace());
 		assertEquals(typeName, typeAtt.getName());
 
-		asString = getXmlObject().toString();
+		asString = getXMLObject().toString();
 		assertTrue(asString.contains(XMLElement.NS_PREFIX_XSI + ":" + typeName
 				+ "=\"" + anotherType + "\""));
 	}
@@ -234,17 +234,17 @@ public abstract class XMLElementTest<TypeUnderTest extends XMLElementBase>
 		String prefixName1 = "prefix";
 		String prefixName2 = "prefix2";
 		String testNamespace2 = "http://www.prefix2.com";
-		getXmlObject()
-				.declarePrefix(prefixName1, getXmlObject().getNamespace());
-		getXmlObject().declarePrefix(prefixName2, testNamespace2);
+		getXMLObject()
+				.declarePrefix(prefixName1, getXMLObject().getNamespace());
+		getXMLObject().declarePrefix(prefixName2, testNamespace2);
 
-		String asString = getXmlObject().toString();
+		String asString = getXMLObject().toString();
 
 		// There's no method for getting prefixes, so look at the text output.
 		assertTrue(asString.contains("<" + prefixName1 + ":"
-				+ getXmlObject().getName()));
+				+ getXMLObject().getName()));
 		assertTrue(asString.contains(prefixName1 + "=\""
-				+ getXmlObject().getNamespace() + "\""));
+				+ getXMLObject().getNamespace() + "\""));
 		assertTrue(asString.contains(prefixName2 + "=\"" + testNamespace2
 				+ "\""));
 	}

@@ -9,18 +9,18 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.alexgilleran.icesoap.xml.impl.XMLTextElement;
+import com.alexgilleran.icesoap.xml.impl.XMLTextElementImpl;
 import com.xtremelabs.robolectric.RobolectricTestRunner;
 
 /**
- * Tests that the {@link XMLTextElement} class, which represents basic XML Text
+ * Tests that the {@link XMLTextElementImpl} class, which represents basic XML Text
  * nodes in the format {@code <element>value</element>}, works as desired.
  * 
  * @author Alex Gilleran
  * 
  */
 @RunWith(RobolectricTestRunner.class)
-public class XMLTextElementTest extends XMLElementTest<XMLTextElement> {
+public class XMLTextElementTest extends XMLElementTest<XMLTextElementImpl> {
 	/** Basic namespace to pass up the class hierarchy */
 	private final static String DEFAULT_NAMESPACE = "http://www.example.com";
 	/** Basic name to pass up the class hierarchy */
@@ -36,8 +36,8 @@ public class XMLTextElementTest extends XMLElementTest<XMLTextElement> {
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected XMLTextElement constructElement(String namespace, String name) {
-		return new XMLTextElement(namespace, name, DEFAULT_VALUE);
+	protected XMLTextElementImpl constructElement(String namespace, String name) {
+		return new XMLTextElementImpl(namespace, name, DEFAULT_VALUE);
 	}
 
 /**
@@ -45,7 +45,7 @@ public class XMLTextElementTest extends XMLElementTest<XMLTextElement> {
 	 */
 	@Test
 	public void testToStringValue() {
-		String asString = getXmlObject().toString();
+		String asString = getXMLObject().toString();
 		assertTrue(asString, asString.contains(">" + DEFAULT_VALUE + "<"));
 	}
 
@@ -55,10 +55,10 @@ public class XMLTextElementTest extends XMLElementTest<XMLTextElement> {
 	 */
 	@Test
 	public void testToString() {
-		getXmlObject().setNamespace(null);
-		final String expected = "<" + getXmlObject().getName() + ">"
-				+ DEFAULT_VALUE + "</" + getXmlObject().getName() + ">";
+		getXMLObject().setNamespace(null);
+		final String expected = "<" + getXMLObject().getName() + ">"
+				+ DEFAULT_VALUE + "</" + getXMLObject().getName() + ">";
 
-		assertEquals(expected, getXmlObject().toString());
+		assertEquals(expected, getXMLObject().toString());
 	}
 }

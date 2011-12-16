@@ -3,7 +3,10 @@
  */
 package com.alexgilleran.icesoap.xml;
 
+import java.io.IOException;
 import java.util.Collection;
+
+import org.xmlpull.v1.XmlSerializer;
 
 import com.alexgilleran.icesoap.xml.impl.XMLAttributeImpl;
 
@@ -71,6 +74,21 @@ public interface XMLElement {
 	void declarePrefix(String prefix, String namespace);
 
 	/**
+	 * Get the name of the element.
+	 * 
+	 * @return The name as a string
+	 */
+	String getName();
+
+	/**
+	 * Sets the name of the element
+	 * 
+	 * @param name
+	 *            The new name as a string.
+	 */
+	void setName(String name);
+
+	/**
 	 * Get the namespace URI for this element.
 	 * 
 	 * @return The namespace URI, as a String.
@@ -84,6 +102,19 @@ public interface XMLElement {
 	 *            The namespace URI as a String.
 	 */
 	void setNamespace(String namespace);
+
+	/**
+	 * Appends the serialized representation of the element to the current
+	 * serializer.
+	 * 
+	 * @param serializer
+	 *            {@link XmlSerializer} to append to
+	 * @throws IllegalArgumentException
+	 * @throws IllegalStateException
+	 * @throws IOException
+	 */
+	public void serialize(XmlSerializer serializer)
+			throws IllegalArgumentException, IllegalStateException, IOException;
 
 	/**
 	 * Serializes the {@link XMLElement} to its String-based form... e.g.

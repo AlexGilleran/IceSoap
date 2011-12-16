@@ -2,7 +2,7 @@ package com.alexgilleran.icesoap.envelope;
 
 import java.io.IOException;
 
-import com.alexgilleran.icesoap.xml.impl.XMLNode;
+import com.alexgilleran.icesoap.xml.XMLNode;
 
 /**
  * Base class for SOAP Envelope decorators
