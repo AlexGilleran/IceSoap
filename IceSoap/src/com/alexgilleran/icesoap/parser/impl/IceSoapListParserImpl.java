@@ -7,29 +7,28 @@ import java.util.Set;
 
 import com.alexgilleran.icesoap.exception.XmlParsingException;
 import com.alexgilleran.icesoap.parser.ItemObserver;
-import com.alexgilleran.icesoap.parser.ListParser;
+import com.alexgilleran.icesoap.parser.IceSoapListParser;
 import com.alexgilleran.icesoap.parser.XPathPullParser;
 import com.alexgilleran.icesoap.xpath.elements.XPathElement;
 
-public class AnnotationListParser<T> extends BaseAnnotationParser<List<T>>
-		implements ListParser<T> {
-	private BaseAnnotationParser<T> parser;
+public class IceSoapListParserImpl<T> extends BaseIceSoapParserImpl<List<T>>
+		implements IceSoapListParser<T> {
+	private BaseIceSoapParserImpl<T> parser;
 	private XPathElement objectXPath;
 	private Set<ItemObserver<T>> observers = new HashSet<ItemObserver<T>>();
 
-	public AnnotationListParser(Class<T> clazz) {
+	public IceSoapListParserImpl(Class<T> clazz) {
 		super(retrieveRootXPath(clazz));
 
-		this.parser = new AnnotationParser<T>(clazz);
+		this.parser = new IceSoapImpl<T>(clazz);
 	}
 
-	public AnnotationListParser(Class<T> clazz, XPathElement containingXPath) {
-		this(clazz, containingXPath, new AnnotationParser<T>(clazz,
-				containingXPath));
+	public IceSoapListParserImpl(Class<T> clazz, XPathElement containingXPath) {
+		this(clazz, containingXPath, new IceSoapImpl<T>(clazz, containingXPath));
 	}
 
-	protected AnnotationListParser(Class<T> clazz, XPathElement containingXPath,
-			BaseAnnotationParser<T> parser) {
+	protected IceSoapListParserImpl(Class<T> clazz,
+			XPathElement containingXPath, BaseIceSoapParserImpl<T> parser) {
 		super(containingXPath);
 
 		objectXPath = super.retrieveRootXPath(clazz);
@@ -56,7 +55,8 @@ public class AnnotationListParser<T> extends BaseAnnotationParser<List<T>>
 	}
 
 	@Override
-	protected List<T> onNewTag(XPathPullParser xmlPullParser, List<T> listSoFar) throws XmlParsingException {
+	protected List<T> onNewTag(XPathPullParser xmlPullParser, List<T> listSoFar)
+			throws XmlParsingException {
 		if (objectXPath == null
 				|| objectXPath.matches(xmlPullParser.getCurrentElement())) {
 			T object = parser.parse(xmlPullParser);

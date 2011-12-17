@@ -2,7 +2,7 @@ package com.alexgilleran.icesoap.parser;
 
 import java.util.List;
 
-public interface ListParser<T> extends Parser<List<T>> {
+public interface IceSoapListParser<T> extends IceSoapParser<List<T>> {
 
 	/**
 	 * Registers an observer with the parser - any object passed to this method

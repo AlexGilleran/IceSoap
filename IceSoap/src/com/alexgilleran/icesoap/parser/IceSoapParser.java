@@ -19,7 +19,7 @@ import com.alexgilleran.icesoap.exception.XmlParsingException;
  *            return a "Product" object from this parser, I would specify {code
  *            <Product>} and override the resulting methods
  */
-public interface Parser<ReturnType> {
+public interface IceSoapParser<ReturnType> {
 	/**
 	 * Instantiates a ReturnType object and then uses the provided
 	 * {@link XPathPullParser} to populate it with data.

@@ -13,55 +13,85 @@ import com.alexgilleran.icesoap.exception.XmlParsingException;
 import com.alexgilleran.icesoap.xpath.elements.XPathElement;
 
 /**
+ * Wrapper around {@link XmlPullParser} that keeps track of the current element
+ * in XPath form.
+ * 
+ * Only a few methods of {@link XmlPullParser} are supported. Note that unlike
+ * the standard {@link XmlPullParser}, this treats attributes as an event in the
+ * same way as a node.
+ * 
  * @author Alex Gilleran
  * 
  */
 public interface XPathPullParser {
+	/** Indicates that the current event is the start of a document */
 	public static int START_DOCUMENT = XmlPullParser.START_DOCUMENT;
+	/** Indicates that the current event is the end of a document */
 	public static final int END_DOCUMENT = XmlPullParser.END_DOCUMENT;
+	/** Indicates that the current event is the start of a tag */
 	public static final int START_TAG = XmlPullParser.START_TAG;
+	/** Indicates that the current event is the end of a tag */
 	public static final int END_TAG = XmlPullParser.END_TAG;
+	/** Indicates that the current event is a text value */
 	public static final int TEXT = XmlPullParser.TEXT;
+	/** Indicates that the current event is an attribute value */
 	public static final int ATTRIBUTE = 5;
 
 	/**
-	 * 
 	 * Get the String value of the current node, whether attribute or text.
+	 * 
+	 * Note that if the event is {@link #ATTRIBUTE}, this will only ever return
+	 * the <i>value</i> of the attribute - get the name with
+	 * {@link #getCurrentElement()}.
 	 * 
 	 * @return The string value of the current node.
 	 * @throws IOException
 	 * @throws XmlPullParserException
 	 */
-	public abstract String getCurrentValue() throws XmlParsingException;
+	String getCurrentValue() throws XmlParsingException;
 
 	/**
-	 * @return
+	 * Delegates to {@link XmlPullParser#next()} - gets the next event from the
+	 * pull parser.
+	 * 
+	 * @return The type of the next event, as an int.
 	 * @throws XmlPullParserException
 	 * @throws IOException
 	 * @see org.xmlpull.v1.XmlPullParser#next()
 	 */
-	public abstract int next() throws XmlParsingException;
+	int next() throws XmlParsingException;
 
 	/**
-	 * @return the currentXPath
+	 * Gets the current element being passed, as an {@link XPathElement}.
+	 * 
+	 * @return the current XPath
 	 */
-	public abstract XPathElement getCurrentElement();
+	XPathElement getCurrentElement();
 
 	/**
-	 * @return
+	 * Gets the type of the current event. Be aware that although this delegates
+	 * to {@link XmlPullParser#getEventType()} in most cases, on attribute
+	 * values it will return {@link #ATTRIBUTE}, which is specific to this
+	 * interface.
+	 * 
+	 * @return The current event type as an int - compare with the public
+	 *         constants in this class.
 	 * @throws XmlPullParserException
-	 * @see org.xmlpull.v1.XmlPullParser#getEventType()
 	 */
-	public abstract int getEventType() throws XmlPullParserException;
+	int getEventType() throws XmlPullParserException;
 
 	/**
-	 * @param arg0
-	 * @param arg1
+	 * Sets the input for this parser.
+	 * 
+	 * @param inputStream
+	 *            The input stream to set
+	 * @param inputEncoding
+	 *            The encoding of the stream - null will attempt auto-detection.
 	 * @throws XmlPullParserException
 	 * @see org.xmlpull.v1.XmlPullParser#setInput(java.io.InputStream,
 	 *      java.lang.String)
 	 */
-	public abstract void setInput(InputStream arg0, String arg1)
+	void setInput(InputStream inputStream, String inputEncoding)
 			throws XmlPullParserException;
 
 }

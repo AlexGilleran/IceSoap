@@ -36,7 +36,6 @@ public class XPathPullParserImpl implements XPathPullParser {
 				return this.getCurrentAttributeValue();
 			} else {
 				return parser.nextText();
-
 			}
 		} catch (XmlPullParserException e) {
 			throw new XmlParsingException(e);
@@ -132,9 +131,9 @@ public class XPathPullParserImpl implements XPathPullParser {
 	}
 
 	@Override
-	public void setInput(InputStream arg0, String arg1)
+	public void setInput(InputStream inputStream, String inputEncoding)
 			throws XmlPullParserException {
-		parser.setInput(arg0, arg1);
+		parser.setInput(inputStream, inputEncoding);
 	}
 
 }

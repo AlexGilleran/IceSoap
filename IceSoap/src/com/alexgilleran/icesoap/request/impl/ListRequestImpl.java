@@ -7,7 +7,7 @@ import android.os.AsyncTask;
 import com.alexgilleran.icesoap.envelope.SOAPEnvelope;
 import com.alexgilleran.icesoap.observer.ListObserverRegistry;
 import com.alexgilleran.icesoap.observer.SOAPListObserver;
-import com.alexgilleran.icesoap.parser.ListParser;
+import com.alexgilleran.icesoap.parser.IceSoapListParser;
 import com.alexgilleran.icesoap.parser.ItemObserver;
 import com.alexgilleran.icesoap.request.ListRequest;
 
@@ -22,7 +22,7 @@ import com.alexgilleran.icesoap.request.ListRequest;
 public class ListRequestImpl<ResultType> extends RequestImpl<List<ResultType>>
 		implements ListRequest<ResultType> {
 	/** The parser to use to parse the result */
-	private ListParser<ResultType> parser;
+	private IceSoapListParser<ResultType> parser;
 	/** The registry to use to dispatch item-related events */
 	private ListObserverRegistry<ResultType> itemRegistry = new ListObserverRegistry<ResultType>(
 			this);
@@ -34,11 +34,11 @@ public class ListRequestImpl<ResultType> extends RequestImpl<List<ResultType>>
 	 * @param url
 	 *            The URL to post the request to
 	 * @param parser
-	 *            The {@link ListParser} to use to parse the response.
+	 *            The {@link IceSoapListParser} to use to parse the response.
 	 * @param soapEnv
 	 *            The SOAP envelope to send, as a {@link SOAPEnvelope}
 	 */
-	public ListRequestImpl(String url, ListParser<ResultType> parser,
+	public ListRequestImpl(String url, IceSoapListParser<ResultType> parser,
 			SOAPEnvelope soapEnv) {
 		super(url, parser, soapEnv);
 

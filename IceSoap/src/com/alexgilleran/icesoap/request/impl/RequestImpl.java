@@ -9,7 +9,7 @@ import com.alexgilleran.icesoap.exception.SOAPException;
 import com.alexgilleran.icesoap.exception.XmlParsingException;
 import com.alexgilleran.icesoap.observer.ObserverRegistry;
 import com.alexgilleran.icesoap.observer.SOAPObserver;
-import com.alexgilleran.icesoap.parser.Parser;
+import com.alexgilleran.icesoap.parser.IceSoapParser;
 import com.alexgilleran.icesoap.request.Request;
 import com.alexgilleran.icesoap.requester.SOAPRequester;
 import com.alexgilleran.icesoap.requester.SOAPRequesterImpl;
@@ -18,7 +18,7 @@ import com.alexgilleran.icesoap.requester.SOAPRequesterImpl;
  * Implementation of {@link Request}
  * 
  * A {@link RequestImpl}, in essence, is a composition of a {@link SOAPEnvelope}
- * for the request, a {@link Parser} for the response, and some code to to the
+ * for the request, a {@link IceSoapParser} for the response, and some code to to the
  * post.
  * 
  * @author Alex Gilleran
@@ -30,7 +30,7 @@ public class RequestImpl<ResultType> implements Request<ResultType> {
 	private ObserverRegistry<ResultType> registry = new ObserverRegistry<ResultType>(
 			this);
 	/** Parser to use to parse the response */
-	private Parser<ResultType> parser;
+	private IceSoapParser<ResultType> parser;
 	/** The URL to post the request to */
 	private String url;
 	/** The envelope to serialize and POST */
@@ -50,11 +50,11 @@ public class RequestImpl<ResultType> implements Request<ResultType> {
 	 * @param url
 	 *            The URL to post the request to
 	 * @param parser
-	 *            The {@link Parser} to use to parse the response.
+	 *            The {@link IceSoapParser} to use to parse the response.
 	 * @param soapEnv
 	 *            The SOAP envelope to send, as a {@link SOAPEnvelope}
 	 */
-	public RequestImpl(String url, Parser<ResultType> parser,
+	public RequestImpl(String url, IceSoapParser<ResultType> parser,
 			SOAPEnvelope soapEnv) {
 		this.parser = parser;
 		this.url = url;
@@ -104,7 +104,7 @@ public class RequestImpl<ResultType> implements Request<ResultType> {
 	 * 
 	 * @return the parser to use.
 	 */
-	protected Parser<ResultType> getParser() {
+	protected IceSoapParser<ResultType> getParser() {
 		return parser;
 	}
 

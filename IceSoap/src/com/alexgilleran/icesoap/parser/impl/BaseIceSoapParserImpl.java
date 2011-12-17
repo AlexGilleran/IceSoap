@@ -11,15 +11,26 @@ import com.alexgilleran.icesoap.annotation.SOAPObject;
 import com.alexgilleran.icesoap.exception.ClassDefException;
 import com.alexgilleran.icesoap.exception.XPathParsingException;
 import com.alexgilleran.icesoap.exception.XmlParsingException;
-import com.alexgilleran.icesoap.parser.Parser;
+import com.alexgilleran.icesoap.parser.IceSoapParser;
 import com.alexgilleran.icesoap.parser.XPathPullParser;
 import com.alexgilleran.icesoap.xpath.XPathFactory;
 import com.alexgilleran.icesoap.xpath.elements.XPathElement;
 
-public abstract class BaseAnnotationParser<T> implements Parser<T> {
+/**
+ * Contains common code for the implementation of {@link IceSoapParser}
+ * 
+ * @author Alex Gilleran
+ * 
+ * @param <T>
+ */
+public abstract class BaseIceSoapParserImpl<T> implements IceSoapParser<T> {
+	/**
+	 * The xpath of the XML node that this parser will parse within - it will
+	 * start parsing at the start of this node, and stop parsing at the end.
+	 */
 	private XPathElement rootXPath;
 
-	protected BaseAnnotationParser(XPathElement rootXPath) {
+	protected BaseIceSoapParserImpl(XPathElement rootXPath) {
 		this.rootXPath = rootXPath;
 	}
 

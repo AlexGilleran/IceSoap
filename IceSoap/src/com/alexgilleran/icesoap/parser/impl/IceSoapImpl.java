@@ -17,7 +17,14 @@ import com.alexgilleran.icesoap.xpath.XPathRepository;
 import com.alexgilleran.icesoap.xpath.elements.XPathElement;
 import com.alexgilleran.icesoap.xpath.elements.impl.RelativeXPathElement;
 
-public class AnnotationParser<T> extends BaseAnnotationParser<T> {
+/**
+ * 
+ * 
+ * @author Alex
+ * 
+ * @param <T>
+ */
+public class IceSoapImpl<T> extends BaseIceSoapParserImpl<T> {
 	private XPathRepository<Field> fieldXPaths;
 	private Class<T> targetClass;
 	@SuppressWarnings("unchecked")
@@ -25,14 +32,14 @@ public class AnnotationParser<T> extends BaseAnnotationParser<T> {
 			Arrays.asList(long.class, float.class, int.class, double.class,
 					BigDecimal.class, String.class));
 
-	public AnnotationParser(Class<T> targetClass) {
+	public IceSoapImpl(Class<T> targetClass) {
 		super(retrieveRootXPath(targetClass));
 
 		this.targetClass = targetClass;
 		fieldXPaths = getFieldXPaths(targetClass);
 	}
 
-	public AnnotationParser(Class<T> targetClass, XPathElement rootXPath) {
+	public IceSoapImpl(Class<T> targetClass, XPathElement rootXPath) {
 		super(rootXPath);
 
 		this.targetClass = targetClass;
@@ -106,7 +113,7 @@ public class AnnotationParser<T> extends BaseAnnotationParser<T> {
 		return objectToModify;
 	}
 
-	private <E> BaseAnnotationParser<?> getParserForClass(Type typeToParse,
+	private <E> BaseIceSoapParserImpl<?> getParserForClass(Type typeToParse,
 			Class<E> classToParse, XPathPullParser xmlPullParser) {
 		// TODO: Caching these will make things a bunch quicker. Probably.
 
@@ -116,13 +123,13 @@ public class AnnotationParser<T> extends BaseAnnotationParser<T> {
 
 			Class<?> listItemClass = (Class<?>) listItemType;
 
-			BaseAnnotationParser<?> itemParser = getParserForClass(
+			BaseIceSoapParserImpl<?> itemParser = getParserForClass(
 					listItemType, listItemClass, xmlPullParser);
 
-			return new AnnotationListParser(listItemClass,
+			return new IceSoapListParserImpl(listItemClass,
 					xmlPullParser.getCurrentElement(), itemParser);
 		} else {
-			return new AnnotationParser<E>(classToParse,
+			return new IceSoapImpl<E>(classToParse,
 					retrieveRootXPath(classToParse));
 		}
 
