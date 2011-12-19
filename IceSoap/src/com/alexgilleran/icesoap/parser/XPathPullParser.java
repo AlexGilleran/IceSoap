@@ -54,6 +54,10 @@ public interface XPathPullParser {
 	 * Delegates to {@link XmlPullParser#next()} - gets the next event from the
 	 * pull parser.
 	 * 
+	 * Note that although this is much the same as {@link XmlPullParser#next()},
+	 * this treats attribute values as events in their own right, rather than
+	 * just tags. Attribute events will return the value {@link #ATTRIBUTE}.
+	 * 
 	 * @return The type of the next event, as an int.
 	 * @throws XmlPullParserException
 	 * @throws IOException

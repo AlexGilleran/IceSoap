@@ -13,22 +13,34 @@ import com.alexgilleran.icesoap.xpath.elements.impl.AttributeXPathElement;
 import com.alexgilleran.icesoap.xpath.elements.impl.SingleSlashXPathElement;
 
 /**
- * Wrapper for XMLPullParser for XPath operations.
+ * Wrapper for {@link XmlPullParser} for XPath operations. Basically this acts
+ * in much the same manner as an {@link XmlPullParser}, but keeps track of the
+ * current position in the document as an {@link XPathElement}, which can be
+ * retrieved at any time.
  * 
  * @author Alex Gilleran
  * 
  */
 public class XPathPullParserImpl implements XPathPullParser {
+	/** The wrapped {@link XmlPullParser} */
 	private XmlPullParser parser = PullParserFactory.getInstance()
 			.buildParser();
+	/** The element that the parser is currently at */
 	private XPathElement currentElement;
+	/**
+	 * Flag - keeps track of whether to remove the last XPath element on the
+	 * next event. This is necessary so that when {@link #getCurrentElement()}
+	 * is called during an END_TAG event, it will return the element that is
+	 * ending rather than the one below it in the hierarchy.
+	 */
 	private boolean removeLastXPathElement;
-	private int currentAttribute = 0;
 
-	public XPathPullParserImpl() {
+	/** Index of the current attribute being parsed, within the current tag */
+	private int currentAttributeIndex = 0;
 
-	}
-
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String getCurrentValue() throws XmlParsingException {
 		try {
@@ -45,46 +57,56 @@ public class XPathPullParserImpl implements XPathPullParser {
 	}
 
 	/**
+	 * Gets the current attribute value.
 	 * 
 	 * @return The value of the attribute currently pointed at - if there is no
 	 *         current attribute, null.
 	 */
 	private String getCurrentAttributeValue() {
-		if ((parser.getAttributeCount() - 1) >= (currentAttribute - 1)) {
-			return parser.getAttributeValue(currentAttribute - 1);
+		if ((parser.getAttributeCount() - 1) >= (currentAttributeIndex - 1)) {
+			return parser.getAttributeValue(currentAttributeIndex - 1);
 		} else {
 			return null;
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int next() throws XmlParsingException {
 		int next;
 
 		try {
 			if (parser.getEventType() == XmlPullParser.START_TAG
-					&& currentAttribute <= parser.getAttributeCount() - 1) {
+					&& currentAttributeIndex <= parser.getAttributeCount() - 1) {
 				// There are attributes here - process them in turn before we
-				// get to
-				// the value
+				// get to the value
 				next = XPathPullParser.ATTRIBUTE;
 
 				currentElement = new AttributeXPathElement(
-						parser.getAttributeName(currentAttribute),
+						parser.getAttributeName(currentAttributeIndex),
 						currentElement);
 
-				currentAttribute++;
+				currentAttributeIndex++;
 			} else {
+				// No attributes (or no more attributes)
 				next = parser.next();
 
+				// If we were parsing an attribute, we'll want to go back a step
+				// to get the tag that the attribute was on as we haven't
+				// returned that yet
 				if (currentElement.isAttribute()) {
 					currentElement = currentElement.getPreviousElement();
 				}
 
-				currentAttribute = 0;
+				// Reset the attribute index
+				currentAttributeIndex = 0;
 			}
 
 			if (removeLastXPathElement) {
+				// If the flag was set to remove the last XPath element, do it
+				// now
 				currentElement = currentElement.getPreviousElement();
 				removeLastXPathElement = false;
 			}
@@ -123,7 +145,7 @@ public class XPathPullParserImpl implements XPathPullParser {
 
 	@Override
 	public int getEventType() throws XmlPullParserException {
-		if (currentAttribute == 0) {
+		if (currentAttributeIndex == 0) {
 			return parser.getEventType();
 		} else {
 			return XPathPullParser.ATTRIBUTE;

@@ -20,11 +20,11 @@ public class IceSoapListParserImpl<T> extends BaseIceSoapParserImpl<List<T>>
 	public IceSoapListParserImpl(Class<T> clazz) {
 		super(retrieveRootXPath(clazz));
 
-		this.parser = new IceSoapImpl<T>(clazz);
+		this.parser = new IceSoapParserImpl<T>(clazz);
 	}
 
 	public IceSoapListParserImpl(Class<T> clazz, XPathElement containingXPath) {
-		this(clazz, containingXPath, new IceSoapImpl<T>(clazz, containingXPath));
+		this(clazz, containingXPath, new IceSoapParserImpl<T>(clazz, containingXPath));
 	}
 
 	protected IceSoapListParserImpl(Class<T> clazz,
@@ -55,7 +55,7 @@ public class IceSoapListParserImpl<T> extends BaseIceSoapParserImpl<List<T>>
 	}
 
 	@Override
-	protected List<T> onNewTag(XPathPullParser xmlPullParser, List<T> listSoFar)
+	protected List<T> onNewParsingEvent(XPathPullParser xmlPullParser, List<T> listSoFar)
 			throws XmlParsingException {
 		if (objectXPath == null
 				|| objectXPath.matches(xmlPullParser.getCurrentElement())) {

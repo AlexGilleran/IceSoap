@@ -2,7 +2,17 @@ package com.alexgilleran.icesoap.parser;
 
 import java.util.List;
 
-public interface IceSoapListParser<T> extends IceSoapParser<List<T>> {
+/**
+ * Extension of {@link IceSoapParser} that allows the ability to register
+ * special observers that will be called every time a new item is passed.
+ * 
+ * @author Alex Gilleran
+ * 
+ * @param <ReturnType>
+ *            The type to return.
+ */
+public interface IceSoapListParser<ReturnType> extends
+		IceSoapParser<List<ReturnType>> {
 
 	/**
 	 * Registers an observer with the parser - any object passed to this method
@@ -12,7 +22,7 @@ public interface IceSoapListParser<T> extends IceSoapParser<List<T>> {
 	 * @param observer
 	 *            The observer to register.
 	 */
-	void registerItemObserver(ItemObserver<T> observer);
+	void registerItemObserver(ItemObserver<ReturnType> observer);
 
 	/**
 	 * De-registers an observer that has previously been registered.
@@ -20,5 +30,5 @@ public interface IceSoapListParser<T> extends IceSoapParser<List<T>> {
 	 * @param observer
 	 *            The observer instance to de-register.
 	 */
-	void deregisterItemObserver(ItemObserver<T> observer);
+	void deregisterItemObserver(ItemObserver<ReturnType> observer);
 }
