@@ -50,27 +50,9 @@ public abstract class BaseXPathElement implements XPathElement {
 	}
 
 	/**
-	 * <p>
-	 * Sets the previous element to this one in the XPath expression. Note that
-	 * an xpath element will retain the behaviour determined by how many slashes
-	 * prefix it.
-	 * </p>
-	 * <p>
-	 * E.g. If I have an XPath <code>//allnode/xpath</code> and set
-	 * <code>allnode</code>'s previous element as <code>/element</code>, the
-	 * resulting entire XPath will be <code>/element//allnode/xpath</code>.
-	 * </p>
-	 * <p>
-	 * Note that for relative XPaths, setting a previous element changes it to a
-	 * standard single-slash XPath element. E.g. if I have a relative xpath
-	 * <code>allnode/xpath</code> and set <code>allnode</code>'s previous
-	 * element to <code>/element</code> as above, the resulting entire XPath
-	 * will become <code>/element/allnode/xpath</code>.
-	 * 
-	 * @param element
-	 *            The element to set as the previous element to this one.
+	 * {@inheritDoc}
 	 */
-	protected void setPreviousElement(XPathElement element) {
+	public void setPreviousElement(XPathElement element) {
 		previousElement = element;
 	}
 
@@ -133,13 +115,6 @@ public abstract class BaseXPathElement implements XPathElement {
 
 		return true;
 	}
-
-	/**
-	 * Gets the prefix of the element... e.g. "/", "//" etc.
-	 * 
-	 * @return The prefix of the element as a string.
-	 */
-	protected abstract String getPrefix();
 
 	/**
 	 * {@inheritDoc}

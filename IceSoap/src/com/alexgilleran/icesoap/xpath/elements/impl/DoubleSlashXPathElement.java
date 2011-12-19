@@ -66,7 +66,7 @@ public class DoubleSlashXPathElement extends BaseXPathElement {
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected String getPrefix() {
+	public String getPrefix() {
 		return PREFIX;
 	}
 }

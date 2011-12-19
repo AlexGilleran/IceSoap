@@ -31,7 +31,7 @@ public class RelativeXPathElement extends SingleSlashXPathElement {
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected String getPrefix() {
+	public String getPrefix() {
 		// If this is the first element, return "", otherwise act as if this
 		// were a normal single-slash element
 		if (isFirstElement()) {
@@ -59,7 +59,6 @@ public class RelativeXPathElement extends SingleSlashXPathElement {
 	 * {@inheritDoc}
 	 */
 	public void setPreviousElement(XPathElement element) {
-		// This is public for relative XPath elements, but not other elements.
 		super.setPreviousElement(element);
 	}
 

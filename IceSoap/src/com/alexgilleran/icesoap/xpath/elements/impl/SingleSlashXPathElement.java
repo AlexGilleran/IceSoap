@@ -49,7 +49,7 @@ public class SingleSlashXPathElement extends BaseXPathElement {
 	}
 
 	@Override
-	protected String getPrefix() {
+	public String getPrefix() {
 		return PREFIX;
 	}
 }

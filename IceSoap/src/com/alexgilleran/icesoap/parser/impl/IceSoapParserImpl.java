@@ -54,7 +54,7 @@ import com.alexgilleran.icesoap.xpath.elements.impl.RelativeXPathElement;
 public class IceSoapParserImpl<ReturnType> extends
 		BaseIceSoapParserImpl<ReturnType> {
 	private static final java.text.DateFormat ISO_DATE_FORMAT = new SimpleDateFormat(
-			"yyyy/MM/dd");
+			"yyyy-MM-dd");
 
 	/**
 	 * An {@link XPathRepository} that maps xpaths to the fields represented by
@@ -74,7 +74,7 @@ public class IceSoapParserImpl<ReturnType> extends
 	@SuppressWarnings("unchecked")
 	private static final Set<Class<?>> TEXT_NODE_CLASSES = new HashSet<Class<?>>(
 			Arrays.asList(long.class, float.class, int.class, double.class,
-					BigDecimal.class, String.class));
+					BigDecimal.class, String.class, Date.class));
 
 	/**
 	 * Instantiates a new parser.
@@ -133,8 +133,7 @@ public class IceSoapParserImpl<ReturnType> extends
 				if (fieldElement.isRelative()) {
 					// If the element is relative, add it to the absolute XPath
 					// of its enclosing object.
-					((RelativeXPathElement) fieldElement)
-							.setPreviousElement(getRootXPath());
+					fieldElement.setPreviousElement(getRootXPath());
 				}
 
 				fieldXPaths.put(fieldElement, field);

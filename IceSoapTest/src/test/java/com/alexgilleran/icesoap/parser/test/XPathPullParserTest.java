@@ -142,8 +142,8 @@ public class XPathPullParserTest {
 	private void assertAttribute(XPathPullParser parser, XPathElement node,
 			String name, String value) throws XmlParsingException {
 		assertEquals(XPathPullParser.ATTRIBUTE, parser.next());
-		assertEquals(new AttributeXPathElement(name, node),
-				parser.getCurrentElement());
+		assertEquals(new AttributeXPathElement(new SingleSlashXPathElement(
+				name, node)), parser.getCurrentElement());
 		assertEquals(value, parser.getCurrentValue());
 	}
 }

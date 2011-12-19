@@ -115,8 +115,8 @@ public class XPathPullParserImpl implements XPathPullParser {
 	private int nextAttribute() {
 		// There are attributes here - process them in turn before we
 		// get to the value
-		currentElement = new AttributeXPathElement(
-				parser.getAttributeName(currentAttributeIndex), currentElement);
+		currentElement = new AttributeXPathElement(new SingleSlashXPathElement(
+				parser.getAttributeName(currentAttributeIndex), currentElement));
 
 		currentAttributeIndex++;
 

@@ -124,18 +124,9 @@ public class XPathFactory {
 		@Override
 		public void startNameStep(int axis, String prefix, String localName)
 				throws SAXPathException {
-			switch (axis) {
-			case Axis.ATTRIBUTE:
-				// This is an attribute - if we're currently parsing predicates,
-				// add one, otherwise create a new Attribute element.
-				if (currentlyParsingPredicate) {
-					currentPredicateKey = localName;
-				} else {
-					currentElement = new AttributeXPathElement(localName,
-							currentElement);
-				}
-				break;
-			default:
+			if (currentlyParsingPredicate) {
+				currentPredicateKey = localName;
+			} else {
 				// Determine what kind of element we're parsing relative,
 				// singleslash, doubleslash) based on the previously called
 				// methods and the flags they've set.
@@ -151,7 +142,10 @@ public class XPathFactory {
 					currentElement = new SingleSlashXPathElement(localName,
 							currentElement);
 				}
-				break;
+
+				if (axis == Axis.ATTRIBUTE) {
+					currentElement = new AttributeXPathElement(currentElement);
+				}
 			}
 		}
 
