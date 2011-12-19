@@ -1,4 +1,4 @@
-package com.alexgilleran.icesoap.test.xpath;
+package com.alexgilleran.icesoap.xpath.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;

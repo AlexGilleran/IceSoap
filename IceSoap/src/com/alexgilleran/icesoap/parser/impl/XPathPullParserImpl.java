@@ -21,12 +21,16 @@ import com.alexgilleran.icesoap.xpath.elements.impl.SingleSlashXPathElement;
  * @author Alex Gilleran
  * 
  */
+// TODO: Move some of the state of this into an extension of XPathElement to
+// improve cohesion.
 public class XPathPullParserImpl implements XPathPullParser {
 	/** The wrapped {@link XmlPullParser} */
 	private XmlPullParser parser = PullParserFactory.getInstance()
 			.buildParser();
 	/** The element that the parser is currently at */
 	private XPathElement currentElement;
+	/** The type of the current event as an int */
+	private int eventType;
 	/**
 	 * Flag - keeps track of whether to remove the last XPath element on the
 	 * next event. This is necessary so that when {@link #getCurrentElement()}
@@ -38,6 +42,14 @@ public class XPathPullParserImpl implements XPathPullParser {
 	/** Index of the current attribute being parsed, within the current tag */
 	private int currentAttributeIndex = 0;
 
+	public XPathPullParserImpl() {
+		try {
+			parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, true);
+		} catch (XmlPullParserException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -45,8 +57,9 @@ public class XPathPullParserImpl implements XPathPullParser {
 	public String getCurrentValue() throws XmlParsingException {
 		try {
 			if (currentElement.isAttribute()) {
-				return this.getCurrentAttributeValue();
+				return getCurrentAttributeValue();
 			} else {
+				flagLastElementForRemoval();
 				return parser.nextText();
 			}
 		} catch (XmlPullParserException e) {
@@ -75,62 +88,18 @@ public class XPathPullParserImpl implements XPathPullParser {
 	 */
 	@Override
 	public int next() throws XmlParsingException {
-		int next;
-
 		try {
-			if (parser.getEventType() == XmlPullParser.START_TAG
-					&& currentAttributeIndex <= parser.getAttributeCount() - 1) {
-				// There are attributes here - process them in turn before we
-				// get to the value
-				next = XPathPullParser.ATTRIBUTE;
+			// Trim any existing attributes
+			trimAttribute();
 
-				currentElement = new AttributeXPathElement(
-						parser.getAttributeName(currentAttributeIndex),
-						currentElement);
-
-				currentAttributeIndex++;
+			if (moreAttributesToParse()) {
+				eventType = nextAttribute();
 			} else {
-				// No attributes (or no more attributes)
-				next = parser.next();
-
-				// If we were parsing an attribute, we'll want to go back a step
-				// to get the tag that the attribute was on as we haven't
-				// returned that yet
-				if (currentElement.isAttribute()) {
-					currentElement = currentElement.getPreviousElement();
-				}
-
-				// Reset the attribute index
-				currentAttributeIndex = 0;
+				eventType = parser.next();
+				updateXPath();
 			}
 
-			if (removeLastXPathElement) {
-				// If the flag was set to remove the last XPath element, do it
-				// now
-				currentElement = currentElement.getPreviousElement();
-				removeLastXPathElement = false;
-			}
-
-			switch (getEventType()) {
-			case XmlPullParser.START_TAG:// TODO:
-				currentElement = new SingleSlashXPathElement(parser.getName(),
-						currentElement);
-
-				int attributeCount = parser.getAttributeCount();
-				if (attributeCount > 0) {
-					for (int i = 0; i < attributeCount; i++) {
-						currentElement.addPredicate(parser.getAttributeName(i),
-								parser.getAttributeValue(i));
-					}
-				}
-
-				break;
-			case XmlPullParser.END_TAG:
-				removeLastXPathElement = true;
-				break;
-			}
-
-			return next;
+			return eventType;
 		} catch (XmlPullParserException e) {
 			throw new XmlParsingException(e);
 		} catch (IOException e) {
@@ -138,24 +107,132 @@ public class XPathPullParserImpl implements XPathPullParser {
 		}
 	}
 
+	/**
+	 * Advances the parser to the next attribute.
+	 * 
+	 * @return The event type as an int.
+	 */
+	private int nextAttribute() {
+		// There are attributes here - process them in turn before we
+		// get to the value
+		currentElement = new AttributeXPathElement(
+				parser.getAttributeName(currentAttributeIndex), currentElement);
+
+		currentAttributeIndex++;
+
+		return XPathPullParser.ATTRIBUTE;
+	}
+
+	/**
+	 * Updates the current XPath and associated state variables
+	 * 
+	 * @throws XmlPullParserException
+	 */
+	private void updateXPath() throws XmlPullParserException {
+		trimEndedElement();
+
+		switch (getEventType()) {
+		case XmlPullParser.START_TAG:
+			addNewElement();
+			break;
+		case XmlPullParser.END_TAG:
+			flagLastElementForRemoval();
+			break;
+		}
+	}
+
+	/**
+	 * Flags the last element to be removed on the next event.
+	 */
+	private void flagLastElementForRemoval() {
+		removeLastXPathElement = true;
+	}
+
+	/**
+	 * Adds a the element that the parser is currently at to the current xpath,
+	 * trimming any attribute information
+	 */
+	private void addNewElement() {
+		// As we've started a new element, the attribute index starts from 0
+		// again
+		currentAttributeIndex = 0;
+
+		currentElement = new SingleSlashXPathElement(parser.getName(),
+				currentElement);
+
+		// Add predicates
+		addPredicates();
+	}
+
+	/**
+	 * Adds the attributes of the current xml node to the current xpath as
+	 * predicates.
+	 */
+	private void addPredicates() {
+		int attributeCount = parser.getAttributeCount();
+		if (attributeCount > 0) {
+			for (int i = 0; i < attributeCount; i++) {
+				currentElement.addPredicate(parser.getAttributeName(i),
+						parser.getAttributeValue(i));
+			}
+		}
+	}
+
+	/**
+	 * Trims attribute data from the current xpath, and resets the attribute
+	 * index to 0.
+	 */
+	private void trimAttribute() {
+		if (currentElement != null && currentElement.isAttribute()) {
+			currentElement = currentElement.getPreviousElement();
+		}
+	}
+
+	/**
+	 * If the last element has been flagged for removal, remove it.
+	 */
+	private void trimEndedElement() {
+		if (removeLastXPathElement) {
+			// If the flag was set to remove the last XPath element, do it
+			// now
+			currentElement = currentElement.getPreviousElement();
+			removeLastXPathElement = false;
+		}
+	}
+
+	/**
+	 * Determines whether attributes remain to parse as events.
+	 * 
+	 * @return true if attributes remain to parse as events, otherwise false
+	 * @throws XmlPullParserException
+	 */
+	private boolean moreAttributesToParse() throws XmlPullParserException {
+		return parser.getEventType() == XmlPullParser.START_TAG
+				&& currentAttributeIndex <= parser.getAttributeCount() - 1;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public XPathElement getCurrentElement() {
 		return currentElement;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int getEventType() throws XmlPullParserException {
-		if (currentAttributeIndex == 0) {
-			return parser.getEventType();
-		} else {
-			return XPathPullParser.ATTRIBUTE;
-		}
+		return eventType;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void setInput(InputStream inputStream, String inputEncoding)
 			throws XmlPullParserException {
 		parser.setInput(inputStream, inputEncoding);
 	}
-
 }

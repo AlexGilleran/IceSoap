@@ -1,4 +1,4 @@
-package com.alexgilleran.icesoap.test.misc;
+package com.alexgilleran.icesoap.misc.test;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;

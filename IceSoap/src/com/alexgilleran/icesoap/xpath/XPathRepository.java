@@ -58,7 +58,7 @@ public class XPathRepository<T> {
 
 			for (XPathElement possElement : possibleElements) {
 				if (possElement.matches(key)) {
-					return valueMap.get(key);
+					return valueMap.get(possElement);
 				}
 			}
 		}

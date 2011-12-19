@@ -38,7 +38,9 @@ public interface XPathPullParser {
 	public static final int ATTRIBUTE = 5;
 
 	/**
-	 * Get the String value of the current node, whether attribute or text.
+	 * Get the String value of the current node, whether attribute or text. For
+	 * a text node, this will move to the end of the text node after getting the
+	 * value.
 	 * 
 	 * Note that if the event is {@link #ATTRIBUTE}, this will only ever return
 	 * the <i>value</i> of the attribute - get the name with

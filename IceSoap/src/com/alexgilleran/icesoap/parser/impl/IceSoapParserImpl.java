@@ -4,7 +4,10 @@ import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -50,6 +53,9 @@ import com.alexgilleran.icesoap.xpath.elements.impl.RelativeXPathElement;
  */
 public class IceSoapParserImpl<ReturnType> extends
 		BaseIceSoapParserImpl<ReturnType> {
+	private static final java.text.DateFormat ISO_DATE_FORMAT = new SimpleDateFormat(
+			"yyyy/MM/dd");
+
 	/**
 	 * An {@link XPathRepository} that maps xpaths to the fields represented by
 	 * them.
@@ -122,13 +128,13 @@ public class IceSoapParserImpl<ReturnType> extends
 			SOAPField xPath = field.getAnnotation(SOAPField.class);
 
 			if (xPath != null) {
-				RelativeXPathElement fieldElement = (RelativeXPathElement) compileXPath(
-						xPath, field);
+				XPathElement fieldElement = compileXPath(xPath, field);
 
 				if (fieldElement.isRelative()) {
 					// If the element is relative, add it to the absolute XPath
 					// of its enclosing object.
-					fieldElement.setPreviousElement(getRootXPath());
+					((RelativeXPathElement) fieldElement)
+							.setPreviousElement(getRootXPath());
 				}
 
 				fieldXPaths.put(fieldElement, field);
@@ -308,6 +314,12 @@ public class IceSoapParserImpl<ReturnType> extends
 			return Boolean.parseBoolean(valueString);
 		} else if (BigDecimal.class.isAssignableFrom(field.getType())) {
 			return new BigDecimal(valueString);
+		} else if (Date.class.isAssignableFrom(field.getType())) {
+			try {
+				return ISO_DATE_FORMAT.parse(valueString);
+			} catch (ParseException e) {
+				throw new RuntimeException(e);
+			}
 		} else {
 			return valueString;
 		}
