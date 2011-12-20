@@ -7,6 +7,8 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
-public @interface SOAPField {
+public @interface XMLField {
 	String value();
+
+	String dateFormat() default ("yyyy-MM-dd");
 }

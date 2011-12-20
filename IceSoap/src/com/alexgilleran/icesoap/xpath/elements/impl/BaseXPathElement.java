@@ -182,6 +182,17 @@ public abstract class BaseXPathElement implements XPathElement {
 	 * {@inheritDoc}
 	 */
 	@Override
+	public XPathElement getFirstElement() {
+		XPathElement thisElement = this;
+
+		while (!thisElement.isFirstElement()) {
+			thisElement = thisElement.getPreviousElement();
+		}
+
+		return thisElement;
+	}
+
+	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
@@ -193,9 +204,6 @@ public abstract class BaseXPathElement implements XPathElement {
 		return result;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)

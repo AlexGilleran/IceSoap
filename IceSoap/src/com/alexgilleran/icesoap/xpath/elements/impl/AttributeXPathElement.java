@@ -136,4 +136,12 @@ public class AttributeXPathElement implements XPathElement {
 			return false;
 		return true;
 	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public XPathElement getFirstElement() {
+		return wrappedElement.getFirstElement();
+	}
 }

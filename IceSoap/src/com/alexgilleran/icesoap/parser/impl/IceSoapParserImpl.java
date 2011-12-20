@@ -12,8 +12,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.alexgilleran.icesoap.annotation.SOAPField;
-import com.alexgilleran.icesoap.annotation.SOAPObject;
+import android.util.Log;
+
+import com.alexgilleran.icesoap.annotation.XMLField;
+import com.alexgilleran.icesoap.annotation.XMLObject;
 import com.alexgilleran.icesoap.exception.ClassDefException;
 import com.alexgilleran.icesoap.exception.XmlParsingException;
 import com.alexgilleran.icesoap.parser.IceSoapListParser;
@@ -21,12 +23,11 @@ import com.alexgilleran.icesoap.parser.IceSoapParser;
 import com.alexgilleran.icesoap.parser.XPathPullParser;
 import com.alexgilleran.icesoap.xpath.XPathRepository;
 import com.alexgilleran.icesoap.xpath.elements.XPathElement;
-import com.alexgilleran.icesoap.xpath.elements.impl.RelativeXPathElement;
 
 /**
  * Implementation of {@link IceSoapParser} for parsing an individual object.
  * 
- * This takes in a class, then uses the {@link SOAPObject} and {@link SOAPField}
+ * This takes in a class, then uses the {@link XMLObject} and {@link XMLField}
  * annotations on it to determine the xpath of this object in SOAP calls, and
  * the xpaths of each field within the object.
  * 
@@ -40,8 +41,8 @@ import com.alexgilleran.icesoap.xpath.elements.impl.RelativeXPathElement;
  * defined by {@link #TEXT_NODE_CLASSES}), it gets the value from the parser and
  * sets that field to the value - if the value is not an XML Text field an
  * exception is thrown.</li> <li>For complex types annotated by
- * {@link SOAPObject}, it will instantiate another parser to parse an instance
- * of this object, then set the instance to that field and continue parsing.</li>
+ * {@link XMLObject}, it will instantiate another parser to parse an instance of
+ * this object, then set the instance to that field and continue parsing.</li>
  * <li>If the field is a {@link List}, it will instantiate an
  * {@link IceSoapListParser} and use it to parse the list... when the parser is
  * finished, it will set the field to the returned list and continue parsing.</li>
@@ -84,10 +85,7 @@ public class IceSoapParserImpl<ReturnType> extends
 	 *            zero-arg constructor
 	 */
 	public IceSoapParserImpl(Class<ReturnType> targetClass) {
-		super(retrieveRootXPath(targetClass));
-
-		this.targetClass = targetClass;
-		fieldXPaths = getFieldXPaths(targetClass);
+		this(targetClass, retrieveRootXPath(targetClass));
 	}
 
 	/**
@@ -102,20 +100,30 @@ public class IceSoapParserImpl<ReturnType> extends
 	 *            XML document until it finds the rootXPath and keep parsing
 	 *            until it finds the end, then finish. Note that the xml node
 	 *            described by this {@link XPathElement} can be outside the node
-	 *            specified by the {@link SOAPObject} field of targetClass or
-	 *            the same, but cannot be within it.
+	 *            specified by the {@link XMLObject} field of targetClass or the
+	 *            same, but cannot be within it.
 	 */
 	public IceSoapParserImpl(Class<ReturnType> targetClass,
 			XPathElement rootXPath) {
 		super(rootXPath);
+
+		if (targetClass.getAnnotation(XMLObject.class) == null) {
+			throw new ClassDefException(
+					"Attempted to create an "
+							+ IceSoapParser.class.getSimpleName()
+							+ " for "
+							+ targetClass.getSimpleName()
+							+ ", which was not annotated with "
+							+ XMLObject.class.getSimpleName()
+							+ ". Please annotate this class if it is to be used for parsing");
+		}
 
 		this.targetClass = targetClass;
 		fieldXPaths = getFieldXPaths(targetClass);
 	}
 
 	/**
-	 * Gets the xpaths declared with the {@link SOAPField} annotation on a
-	 * class.
+	 * Gets the xpaths declared with the {@link XMLField} annotation on a class.
 	 * 
 	 * @param targetClass
 	 *            The class to get xpaths for.
@@ -125,18 +133,20 @@ public class IceSoapParserImpl<ReturnType> extends
 		XPathRepository<Field> fieldXPaths = new XPathRepository<Field>();
 
 		for (Field field : targetClass.getDeclaredFields()) {
-			SOAPField xPath = field.getAnnotation(SOAPField.class);
+			XMLField xPath = field.getAnnotation(XMLField.class);
 
 			if (xPath != null) {
-				XPathElement fieldElement = compileXPath(xPath, field);
+				XPathElement lastFieldElement = compileXPath(xPath, field);
+				XPathElement firstFieldElement = lastFieldElement
+						.getFirstElement();
 
-				if (fieldElement.isRelative()) {
+				if (firstFieldElement.isRelative()) {
 					// If the element is relative, add it to the absolute XPath
 					// of its enclosing object.
-					fieldElement.setPreviousElement(getRootXPath());
+					firstFieldElement.setPreviousElement(getRootXPath());
 				}
 
-				fieldXPaths.put(fieldElement, field);
+				fieldXPaths.put(lastFieldElement, field);
 			}
 		}
 
@@ -254,11 +264,9 @@ public class IceSoapParserImpl<ReturnType> extends
 			return new IceSoapListParserImpl(listItemClass,
 					pullParser.getCurrentElement(), itemParser);
 		} else {
-			// The type is not a list - create a parser. If the type isn't
-			// annotated properly this will throw an error.
-
+			// The type is not a list - create a parser
 			return new IceSoapParserImpl<E>(classToParse,
-					retrieveRootXPath(classToParse));
+					pullParser.getCurrentElement());
 		}
 	}
 
@@ -315,9 +323,18 @@ public class IceSoapParserImpl<ReturnType> extends
 			return new BigDecimal(valueString);
 		} else if (Date.class.isAssignableFrom(field.getType())) {
 			try {
-				return ISO_DATE_FORMAT.parse(valueString);
+				return new SimpleDateFormat(field.getAnnotation(XMLField.class)
+						.dateFormat()).parse(valueString);
 			} catch (ParseException e) {
-				throw new RuntimeException(e);
+				// Just log an exception and leave it null
+				Log.e("IceSoap",
+						"Encountered date parsing exception when parsing "
+								+ field.toString()
+								+ " with format "
+								+ field.getAnnotation(XMLField.class)
+										.dateFormat() + " for value "
+								+ valueString);
+				return null;
 			}
 		} else {
 			return valueString;

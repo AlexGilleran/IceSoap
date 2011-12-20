@@ -6,13 +6,14 @@ import java.lang.reflect.Field;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
-import com.alexgilleran.icesoap.annotation.SOAPField;
-import com.alexgilleran.icesoap.annotation.SOAPObject;
+import com.alexgilleran.icesoap.annotation.XMLField;
+import com.alexgilleran.icesoap.annotation.XMLObject;
 import com.alexgilleran.icesoap.exception.ClassDefException;
 import com.alexgilleran.icesoap.exception.XPathParsingException;
 import com.alexgilleran.icesoap.exception.XmlParsingException;
 import com.alexgilleran.icesoap.parser.IceSoapParser;
 import com.alexgilleran.icesoap.parser.XPathPullParser;
+import com.alexgilleran.icesoap.request.Request;
 import com.alexgilleran.icesoap.xpath.XPathFactory;
 import com.alexgilleran.icesoap.xpath.elements.XPathElement;
 
@@ -42,6 +43,21 @@ public abstract class BaseIceSoapParserImpl<ReturnType> implements
 	 */
 	protected BaseIceSoapParserImpl(XPathElement rootXPath) {
 		this.rootXPath = rootXPath;
+
+		if (rootXPath.isRelative()) {
+			throw new ClassDefException(
+					"Attempted to use "
+							+ this.getClass().getSimpleName()
+							+ " to parse relative XPath "
+							+ rootXPath.toString()
+							+ ". Please either annotate this class with "
+							+ XMLObject.class.getSimpleName()
+							+ " and an absolute XPath, or make sure to only use it as a field in other "
+							+ XMLObject.class.getSimpleName()
+							+ "-annotated classes rather than passing it directly to a "
+							+ Request.class.getSimpleName() + " or "
+							+ IceSoapParser.class.getSimpleName() + " object");
+		}
 	}
 
 	/**
@@ -217,22 +233,22 @@ public abstract class BaseIceSoapParserImpl<ReturnType> implements
 	 * @return Root xpath or null if none is specified
 	 */
 	protected static XPathElement retrieveRootXPath(Class<?> targetClass) {
-		SOAPObject xPathAnnot = targetClass.getAnnotation(SOAPObject.class);
+		XMLObject xPathAnnot = targetClass.getAnnotation(XMLObject.class);
 
 		if (xPathAnnot != null) {
 			return compileXPath(xPathAnnot, targetClass);
 		} else {
-			throw new ClassDefException(
-					"Class "
-							+ targetClass.getName()
-							+ " to be created with AnnotationParser - it was not annotated with the "
-							+ SOAPField.class.getSimpleName()
-							+ " annotation - please add this annotation");
+			throw new ClassDefException("Class " + targetClass.getName()
+					+ " to be created with "
+					+ BaseIceSoapParserImpl.class.getSimpleName()
+					+ " was not annotated with the "
+					+ XMLObject.class.getSimpleName()
+					+ " annotation - please add this annotation");
 		}
 	}
 
 	/**
-	 * Gets the xpath from a {@link SOAPField} annotation and compiles it to an
+	 * Gets the xpath from a {@link XMLField} annotation and compiles it to an
 	 * xpath element.
 	 * 
 	 * @param soapFieldAnnot
@@ -242,14 +258,14 @@ public abstract class BaseIceSoapParserImpl<ReturnType> implements
 	 *            exception messages).
 	 * @return The last element of the compiled xpath.
 	 */
-	protected final static XPathElement compileXPath(SOAPField soapFieldAnnot,
+	protected final static XPathElement compileXPath(XMLField soapFieldAnnot,
 			Field sourceField) {
 		if (soapFieldAnnot.value() != null) {
 			return compileXPath(soapFieldAnnot.value(), sourceField.toString());
 		} else {
 			throw new ClassDefException(
 					"The "
-							+ SOAPField.class.getSimpleName()
+							+ XMLField.class.getSimpleName()
 							+ " annotation on field "
 							+ sourceField.toString()
 							+ " did not specify a mandatory XPath expression for a value.");
@@ -257,7 +273,7 @@ public abstract class BaseIceSoapParserImpl<ReturnType> implements
 	}
 
 	/**
-	 * Gets the xpath from a {@link SOAPObject} annotation and compiles it to an
+	 * Gets the xpath from a {@link XMLObject} annotation and compiles it to an
 	 * xpath element.
 	 * 
 	 * @param soapObjectAnnot
@@ -268,8 +284,8 @@ public abstract class BaseIceSoapParserImpl<ReturnType> implements
 	 * @see #compileXPath(String, String)
 	 */
 	protected final static XPathElement compileXPath(
-			SOAPObject soapObjectAnnot, Class<?> sourceClass) {
-		if (soapObjectAnnot.value() != null) {
+			XMLObject soapObjectAnnot, Class<?> sourceClass) {
+		if (soapObjectAnnot.value() != "") {
 			return compileXPath(soapObjectAnnot.value(),
 					sourceClass.getSimpleName());
 		}

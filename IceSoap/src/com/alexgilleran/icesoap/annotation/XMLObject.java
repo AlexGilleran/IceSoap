@@ -7,6 +7,8 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-public @interface SOAPObject {
-	String value();
+public @interface XMLObject {
+	public final String DEFAULT = "";
+	
+	String value() default "";
 }

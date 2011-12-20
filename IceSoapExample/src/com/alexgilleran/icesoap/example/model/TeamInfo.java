@@ -1,9 +1,9 @@
 package com.alexgilleran.icesoap.example.model;
 
-import com.alexgilleran.icesoap.annotation.SOAPField;
-import com.alexgilleran.icesoap.annotation.SOAPObject;
+import com.alexgilleran.icesoap.annotation.XMLField;
+import com.alexgilleran.icesoap.annotation.XMLObject;
 
-@SOAPObject("//TeamInfo")
+@XMLObject("//TeamInfo")
 public class TeamInfo {
 	/*
 	 * <m:tTeamInfo> 
@@ -13,16 +13,16 @@ public class TeamInfo {
 	 * </m:tTeamInfo>
 	 */
 	
-	@SOAPField("iId")
+	@XMLField("iId")
 	private long id;
 	
-	@SOAPField("sName")
+	@XMLField("sName")
 	private String name;
 
-	@SOAPField("sCountryFlag")
+	@XMLField("sCountryFlag")
 	private String countryFlag;
 	
-	@SOAPField("sWikipediaURL")
+	@XMLField("sWikipediaURL")
 	private String wikipediaUrl;
 
 }

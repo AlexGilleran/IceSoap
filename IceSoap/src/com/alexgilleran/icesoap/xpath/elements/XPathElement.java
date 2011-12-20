@@ -178,4 +178,12 @@ public interface XPathElement {
 	 *            The element to set as the previous element to this one.
 	 */
 	void setPreviousElement(XPathElement previousElement);
+
+	/**
+	 * Gets the first element of the XPath associated with this XPath.
+	 * 
+	 * @return The first XPathElement in the associated XPath.
+	 */
+	XPathElement getFirstElement();
+
 }
