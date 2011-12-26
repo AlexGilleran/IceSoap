@@ -11,13 +11,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.junit.Test;
-import org.xmlpull.v1.XmlPullParserException;
-import org.xmlpull.v1.XmlPullParserFactory;
-import org.xmlpull.v1.XmlSerializer;
 
 import com.alexgilleran.icesoap.xml.XMLAttribute;
 import com.alexgilleran.icesoap.xml.XMLElement;
-import com.alexgilleran.icesoap.xml.XMLSerializerFactory;
 import com.alexgilleran.icesoap.xml.impl.XMLAttributeImpl;
 import com.alexgilleran.icesoap.xml.impl.XMLElementBase;
 
@@ -246,19 +242,4 @@ public abstract class XMLElementTest<TypeUnderTest extends XMLElementBase>
 		assertTrue(asString.contains(prefixName2 + "=\"" + testNamespace2
 				+ "\""));
 	}
-
-	/**
-	 * Constructs a standard, non-Android XmlPull serializer that can be used in
-	 * Robolectric junits.
-	 */
-	private static final XMLSerializerFactory JUNIT_SERIALIZER_FACTORY = new XMLSerializerFactory() {
-		@Override
-		public XmlSerializer buildXmlSerializer() {
-			try {
-				return XmlPullParserFactory.newInstance().newSerializer();
-			} catch (XmlPullParserException e) {
-				throw new RuntimeException(e);
-			}
-		}
-	};
 }
