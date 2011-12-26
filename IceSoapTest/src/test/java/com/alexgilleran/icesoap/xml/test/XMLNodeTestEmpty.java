@@ -7,13 +7,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import com.alexgilleran.icesoap.xml.XMLNode;
 import com.alexgilleran.icesoap.xml.XMLTextElement;
 import com.alexgilleran.icesoap.xml.impl.XMLNodeImpl;
 import com.alexgilleran.icesoap.xml.impl.XMLTextElementImpl;
-import com.xtremelabs.robolectric.RobolectricTestRunner;
 
 /**
  * Tests the functionality of {@link XMLNodeImpl}, starting with a blank slate,
@@ -22,7 +20,6 @@ import com.xtremelabs.robolectric.RobolectricTestRunner;
  * @author Alex Gilleran
  * 
  */
-@RunWith(RobolectricTestRunner.class)
 public class XMLNodeTestEmpty extends XMLElementTest<XMLNodeImpl> {
 	/** Basic namespace to pass up the class hierarchy */
 	private final static String DEFAULT_NAMESPACE = "http://www.xmlnodeempty.com/lulzy";

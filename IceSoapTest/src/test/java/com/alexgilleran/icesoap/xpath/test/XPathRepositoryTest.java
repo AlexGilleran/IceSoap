@@ -5,15 +5,12 @@ import static org.junit.Assert.assertNull;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import com.alexgilleran.icesoap.exception.XPathParsingException;
 import com.alexgilleran.icesoap.xpath.XPathFactory;
 import com.alexgilleran.icesoap.xpath.XPathRepository;
 import com.alexgilleran.icesoap.xpath.elements.XPathElement;
-import com.xtremelabs.robolectric.RobolectricTestRunner;
 
-@RunWith(RobolectricTestRunner.class)
 public class XPathRepositoryTest extends XPathTest {
 	private XPathRepository<String> repo;
 

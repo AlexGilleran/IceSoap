@@ -3,14 +3,11 @@ package com.alexgilleran.icesoap.xpath.test;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import com.alexgilleran.icesoap.exception.XPathParsingException;
 import com.alexgilleran.icesoap.xpath.XPathFactory;
 import com.alexgilleran.icesoap.xpath.elements.XPathElement;
-import com.xtremelabs.robolectric.RobolectricTestRunner;
 
-@RunWith(RobolectricTestRunner.class)
 public class XPathFactoryTest extends XPathTest {
 	private XPathFactory factory = XPathFactory.getInstance();
 

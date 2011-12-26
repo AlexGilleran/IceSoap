@@ -5,15 +5,12 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import com.alexgilleran.icesoap.exception.XPathParsingException;
 import com.alexgilleran.icesoap.xpath.XPathFactory;
 import com.alexgilleran.icesoap.xpath.elements.XPathElement;
 import com.alexgilleran.icesoap.xpath.elements.impl.SingleSlashXPathElement;
-import com.xtremelabs.robolectric.RobolectricTestRunner;
 
-@RunWith(RobolectricTestRunner.class)
 public class SingleSlashXPathElementTest extends XPathTest {
 	@Test
 	public void testMatches() throws XPathParsingException {

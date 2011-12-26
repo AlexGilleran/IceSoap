@@ -10,20 +10,17 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.xmlpull.v1.XmlPullParserException;
 
 import com.alexgilleran.icesoap.exception.XmlParsingException;
 import com.alexgilleran.icesoap.parser.IceSoapParser;
 import com.alexgilleran.icesoap.parser.impl.IceSoapParserImpl;
 import com.alexgilleran.icesoap.parser.test.xmlclasses.PurchaseOrder;
-import com.xtremelabs.robolectric.RobolectricTestRunner;
 
 /**
  * @author Alex Gilleran
  * 
  */
-@RunWith(RobolectricTestRunner.class)
 public class IceSoapParserTest {
 	private final static SimpleDateFormat FORMAT = new SimpleDateFormat(
 			"yyyy-MM-dd");

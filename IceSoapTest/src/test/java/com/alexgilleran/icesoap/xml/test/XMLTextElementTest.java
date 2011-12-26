@@ -7,19 +7,16 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import com.alexgilleran.icesoap.xml.impl.XMLTextElementImpl;
-import com.xtremelabs.robolectric.RobolectricTestRunner;
 
 /**
- * Tests that the {@link XMLTextElementImpl} class, which represents basic XML Text
- * nodes in the format {@code <element>value</element>}, works as desired.
+ * Tests that the {@link XMLTextElementImpl} class, which represents basic XML
+ * Text nodes in the format {@code <element>value</element>}, works as desired.
  * 
  * @author Alex Gilleran
  * 
  */
-@RunWith(RobolectricTestRunner.class)
 public class XMLTextElementTest extends XMLElementTest<XMLTextElementImpl> {
 	/** Basic namespace to pass up the class hierarchy */
 	private final static String DEFAULT_NAMESPACE = "http://www.example.com";

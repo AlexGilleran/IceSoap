@@ -9,13 +9,11 @@ import static org.junit.Assert.assertTrue;
 import java.util.List;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import com.alexgilleran.icesoap.xml.XMLElement;
 import com.alexgilleran.icesoap.xml.XMLNode;
 import com.alexgilleran.icesoap.xml.XMLTextElement;
 import com.alexgilleran.icesoap.xml.impl.XMLNodeImpl;
-import com.xtremelabs.robolectric.RobolectricTestRunner;
 
 /**
  * Tests the inherited functionality of {@link XMLNodeImpl} by starting with a
@@ -28,7 +26,6 @@ import com.xtremelabs.robolectric.RobolectricTestRunner;
  * @author Alex Gilleran
  * 
  */
-@RunWith(RobolectricTestRunner.class)
 public class XMLNodeTest extends XMLElementTest<XMLNodeImpl> {
 	/** Basic namespace to pass up the class hierarchy */
 	private final static String DEFAULT_NAMESPACE = "http://www.xmlnode.com/lulzy";
