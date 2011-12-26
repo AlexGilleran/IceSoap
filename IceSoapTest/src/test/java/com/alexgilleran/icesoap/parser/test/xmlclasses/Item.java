@@ -16,15 +16,39 @@ import com.alexgilleran.icesoap.annotation.XMLObject;
 @XMLObject
 public class Item {
 	@XMLField("@PartNumber")
-	public String partNumber;
+	private String partNumber;
 	@XMLField("ProductName")
-	public String productName;
+	private String productName;
 	@XMLField("Quantity")
-	public double quantity;
+	private double quantity;
 	@XMLField("USPrice")
-	public BigDecimal usPrice;
+	private BigDecimal usPrice;
 	@XMLField(value = "ShipDate", dateFormat = "yyyy-MM-dd")
-	public Date shipDate;
+	private Date shipDate;
 	@XMLField("Comment")
-	public String comment;
+	private String comment;
+
+	public String getPartNumber() {
+		return partNumber;
+	}
+
+	public String getProductName() {
+		return productName;
+	}
+
+	public double getQuantity() {
+		return quantity;
+	}
+
+	public BigDecimal getUsPrice() {
+		return usPrice;
+	}
+
+	public Date getShipDate() {
+		return shipDate;
+	}
+
+	public String getComment() {
+		return comment;
+	}
 }

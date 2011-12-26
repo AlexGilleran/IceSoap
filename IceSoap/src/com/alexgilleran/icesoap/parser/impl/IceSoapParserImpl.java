@@ -12,6 +12,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.management.modelmbean.XMLParseException;
+
 import android.util.Log;
 
 import com.alexgilleran.icesoap.annotation.XMLField;
@@ -54,9 +56,6 @@ import com.alexgilleran.icesoap.xpath.elements.XPathElement;
  */
 public class IceSoapParserImpl<ReturnType> extends
 		BaseIceSoapParserImpl<ReturnType> {
-	private static final java.text.DateFormat ISO_DATE_FORMAT = new SimpleDateFormat(
-			"yyyy-MM-dd");
-
 	/**
 	 * An {@link XPathRepository} that maps xpaths to the fields represented by
 	 * them.
@@ -199,6 +198,8 @@ public class IceSoapParserImpl<ReturnType> extends
 	 * the value from the node and sets it to the field. If it's a complex
 	 * field, it calls {@link #getParserForClass(Type, Class, XPathPullParser)}
 	 * to parse it.
+	 * 
+	 * @throws
 	 */
 	@Override
 	protected ReturnType onNewParsingEvent(XPathPullParser xmlPullParser,
@@ -207,19 +208,16 @@ public class IceSoapParserImpl<ReturnType> extends
 
 		if (fieldToSet != null) {
 			if (TEXT_NODE_CLASSES.contains(fieldToSet.getType())) {
-				setField(
-						objectToModify,
-						fieldToSet,
-						convertToFieldType(fieldToSet,
-								xmlPullParser.getCurrentValue()));
+				Object valueToSet = convertToFieldType(fieldToSet,
+						xmlPullParser.getCurrentValue());
+				setField(objectToModify, fieldToSet, valueToSet);
 
 			} else {
 				Type fieldType = fieldToSet.getGenericType();
-				setField(
-						objectToModify,
-						fieldToSet,
-						getParserForClass(fieldType, fieldToSet.getType(),
-								xmlPullParser).parse(xmlPullParser));
+				Object valueToSet = getParserForClass(fieldType,
+						fieldToSet.getType(), xmlPullParser).parse(
+						xmlPullParser);
+				setField(objectToModify, fieldToSet, valueToSet);
 
 			}
 		}
@@ -258,8 +256,8 @@ public class IceSoapParserImpl<ReturnType> extends
 
 			Class<?> listItemClass = (Class<?>) listItemType;
 
-			BaseIceSoapParserImpl<?> itemParser = getParserForClass(
-					listItemType, listItemClass, pullParser);
+			BaseIceSoapParserImpl<?> itemParser = new IceSoapParserImpl(
+					listItemClass);
 
 			return new IceSoapListParserImpl(listItemClass,
 					pullParser.getCurrentElement(), itemParser);
@@ -307,8 +305,10 @@ public class IceSoapParserImpl<ReturnType> extends
 	 * @param valueString
 	 *            The string to parse to the correct type.
 	 * @return The string's value as the appropriate type.
+	 * @throws XMLParseException
 	 */
-	private Object convertToFieldType(Field field, String valueString) {
+	private Object convertToFieldType(Field field, String valueString)
+			throws XmlParsingException {
 		if (int.class.isAssignableFrom(field.getType())) {
 			return Integer.parseInt(valueString);
 		} else if (long.class.isAssignableFrom(field.getType())) {
@@ -326,15 +326,13 @@ public class IceSoapParserImpl<ReturnType> extends
 				return new SimpleDateFormat(field.getAnnotation(XMLField.class)
 						.dateFormat()).parse(valueString);
 			} catch (ParseException e) {
-				// Just log an exception and leave it null
-				Log.e("IceSoap",
+				throw new XmlParsingException(
 						"Encountered date parsing exception when parsing "
 								+ field.toString()
 								+ " with format "
 								+ field.getAnnotation(XMLField.class)
 										.dateFormat() + " for value "
-								+ valueString);
-				return null;
+								+ valueString, e);
 			}
 		} else {
 			return valueString;

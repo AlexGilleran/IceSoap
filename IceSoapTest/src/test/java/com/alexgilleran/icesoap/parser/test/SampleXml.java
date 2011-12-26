@@ -44,7 +44,7 @@ public class SampleXml {
 			+ "<aw:ShipDate>1999-05-21</aw:ShipDate>" + "</aw:Item>"
 			+ "</aw:Items>" + "</aw:PurchaseOrder>";
 
-	private static final String BOOKS_AND_ORDERS = "<?xml version=\"1.0\" encoding=\"utf-8\"?>"
+	private static final String CUSTS_AND_ORDERS = "<?xml version=\"1.0\" encoding=\"utf-8\"?>"
 			+ "<Root xmlns=\"http://www.adventure-works.com\">"
 			+ "<Customers>"
 			+ "<Customer CustomerID=\"GREAL\">"
@@ -285,7 +285,7 @@ public class SampleXml {
 		return new ByteArrayInputStream(PURCHASE_ORDER.getBytes());
 	}
 
-	public static InputStream getBooksAndOrders() {
-		return new ByteArrayInputStream(BOOKS_AND_ORDERS.getBytes());
+	public static InputStream getCustomersAndOrders() {
+		return new ByteArrayInputStream(CUSTS_AND_ORDERS.getBytes());
 	}
 }

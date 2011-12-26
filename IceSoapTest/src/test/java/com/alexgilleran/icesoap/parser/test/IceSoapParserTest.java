@@ -25,7 +25,8 @@ import com.xtremelabs.robolectric.RobolectricTestRunner;
  */
 @RunWith(RobolectricTestRunner.class)
 public class IceSoapParserTest {
-	SimpleDateFormat FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+	private final static SimpleDateFormat FORMAT = new SimpleDateFormat(
+			"yyyy-MM-dd");
 
 	/**
 	 * Holistic test on realistic data.
@@ -42,44 +43,45 @@ public class IceSoapParserTest {
 
 		PurchaseOrder po = parser.parse(SampleXml.getPurchaseOrder());
 
-		assertEquals(99503l, po.purchaseOrderNumber);
-		assertEquals(FORMAT.parse("1999-10-20"), po.orderDate);
+		assertEquals(99503l, po.getPurchaseOrderNumber());
+		assertEquals(FORMAT.parse("1999-10-20"), po.getOrderDate());
 
 		// Shipping Address
-		assertEquals("Shipping", po.shippingAddress.type);
-		assertEquals("Ellen Adams", po.shippingAddress.name);
-		assertEquals("123 Maple Street", po.shippingAddress.street);
-		assertEquals("Mill Valley", po.shippingAddress.city);
-		assertEquals("CA", po.shippingAddress.state);
-		assertEquals(10999, po.shippingAddress.zip);
-		assertEquals("USA", po.shippingAddress.country);
+		assertEquals("Shipping", po.getShippingAddress().getType());
+		assertEquals("Ellen Adams", po.getShippingAddress().getName());
+		assertEquals("123 Maple Street", po.getShippingAddress().getStreet());
+		assertEquals("Mill Valley", po.getShippingAddress().getCity());
+		assertEquals("CA", po.getShippingAddress().getState());
+		assertEquals(10999, po.getShippingAddress().getZip());
+		assertEquals("USA", po.getShippingAddress().getCountry());
 
 		// Billing Address
-		assertEquals("Billing", po.billingAddress.type);
-		assertEquals("Tai Yee", po.billingAddress.name);
-		assertEquals("8 Oak Avenue", po.billingAddress.street);
-		assertEquals("Old Town", po.billingAddress.city);
-		assertEquals("PA", po.billingAddress.state);
-		assertEquals(95819, po.billingAddress.zip);
-		assertEquals("USA", po.billingAddress.country);
+		assertEquals("Billing", po.getBillingAddress().getType());
+		assertEquals("Tai Yee", po.getBillingAddress().getName());
+		assertEquals("8 Oak Avenue", po.getBillingAddress().getStreet());
+		assertEquals("Old Town", po.getBillingAddress().getCity());
+		assertEquals("PA", po.getBillingAddress().getState());
+		assertEquals(95819, po.getBillingAddress().getZip());
+		assertEquals("USA", po.getBillingAddress().getCountry());
 
 		assertEquals("Please leave packages in shed by driveway.",
-				po.deliveryNotes);
+				po.getDeliveryNotes());
 
 		// Item 1
-		assertEquals("872-AA", po.item872aa.partNumber);
-		assertEquals("Lawnmower", po.item872aa.productName);
-		assertEquals(1d, po.item872aa.quantity, 0d);
-		assertEquals(new BigDecimal("148.95"), po.item872aa.usPrice);
-		assertEquals(null, po.item872aa.shipDate);
-		assertEquals("Confirm this is electric", po.item872aa.comment);
+		assertEquals("872-AA", po.getItem872aa().getPartNumber());
+		assertEquals("Lawnmower", po.getItem872aa().getProductName());
+		assertEquals(1d, po.getItem872aa().getQuantity(), 0d);
+		assertEquals(new BigDecimal("148.95"), po.getItem872aa().getUsPrice());
+		assertEquals(null, po.getItem872aa().getShipDate());
+		assertEquals("Confirm this is electric", po.getItem872aa().getComment());
 
 		// Item 2
-		assertEquals("926-AA", po.item926aa.partNumber);
-		assertEquals("Baby Monitor", po.item926aa.productName);
-		assertEquals(2d, po.item926aa.quantity, 0d);
-		assertEquals(new BigDecimal("39.98"), po.item926aa.usPrice);
-		assertEquals(FORMAT.parse("1999-05-21"), po.item926aa.shipDate);
-		assertEquals(null, po.item926aa.comment);
+		assertEquals("926-AA", po.getItem926aa().getPartNumber());
+		assertEquals("Baby Monitor", po.getItem926aa().getProductName());
+		assertEquals(2d, po.getItem926aa().getQuantity(), 0d);
+		assertEquals(new BigDecimal("39.98"), po.getItem926aa().getUsPrice());
+		assertEquals(FORMAT.parse("1999-05-21"), po.getItem926aa()
+				.getShipDate());
+		assertEquals(null, po.getItem926aa().getComment());
 	}
 }

@@ -11,17 +11,45 @@ import com.alexgilleran.icesoap.annotation.XMLObject;
 @XMLObject("/PurchaseOrder")
 public class PurchaseOrder {
 	@XMLField("@PurchaseOrderNumber")
-	public long purchaseOrderNumber;
+	private long purchaseOrderNumber;
 	@XMLField("@OrderDate")
-	public Date orderDate;
+	private Date orderDate;
 	@XMLField("Address[@Type=\"Shipping\"]")
-	public Address shippingAddress;
+	private Address shippingAddress;
 	@XMLField("/PurchaseOrder/Address[@Type=\"Billing\"]")
-	public Address billingAddress;
+	private Address billingAddress;
 	@XMLField("DeliveryNotes")
-	public String deliveryNotes;
+	private String deliveryNotes;
 	@XMLField("Items/Item[@PartNumber=\"872-AA\"]")
-	public Item item872aa;
+	private Item item872aa;
 	@XMLField("Items/Item[@PartNumber=\"926-AA\"]")
-	public Item item926aa;
+	private Item item926aa;
+
+	public long getPurchaseOrderNumber() {
+		return purchaseOrderNumber;
+	}
+
+	public Date getOrderDate() {
+		return orderDate;
+	}
+
+	public Address getShippingAddress() {
+		return shippingAddress;
+	}
+
+	public Address getBillingAddress() {
+		return billingAddress;
+	}
+
+	public String getDeliveryNotes() {
+		return deliveryNotes;
+	}
+
+	public Item getItem872aa() {
+		return item872aa;
+	}
+
+	public Item getItem926aa() {
+		return item926aa;
+	}
 }

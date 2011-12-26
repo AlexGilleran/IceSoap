@@ -9,17 +9,45 @@ import com.alexgilleran.icesoap.annotation.XMLObject;
 @XMLObject("//Address")
 public class Address {
 	@XMLField("@Type")
-	public String type;
+	private String type;
 	@XMLField("Name")
-	public String name;
+	private String name;
 	@XMLField("//Street")
-	public String street;
+	private String street;
 	@XMLField("City")
-	public String city;
+	private String city;
 	@XMLField("//State")
-	public String state;
+	private String state;
 	@XMLField("Zip")
-	public int zip;
+	private int zip;
 	@XMLField("/PurchaseOrder/Address/Country")
-	public String country;
+	private String country;
+
+	public String getType() {
+		return type;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public String getStreet() {
+		return street;
+	}
+
+	public String getCity() {
+		return city;
+	}
+
+	public String getState() {
+		return state;
+	}
+
+	public int getZip() {
+		return zip;
+	}
+
+	public String getCountry() {
+		return country;
+	}
 }
