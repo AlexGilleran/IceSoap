@@ -12,14 +12,14 @@ import com.alexgilleran.icesoap.observer.SOAPObserver;
 import com.alexgilleran.icesoap.parser.IceSoapParser;
 import com.alexgilleran.icesoap.request.Request;
 import com.alexgilleran.icesoap.requester.SOAPRequester;
-import com.alexgilleran.icesoap.requester.SOAPRequesterImpl;
+import com.alexgilleran.icesoap.requester.ApacheSOAPRequester;
 
 /**
  * Implementation of {@link Request}
  * 
  * A {@link RequestImpl}, in essence, is a composition of a {@link SOAPEnvelope}
- * for the request, a {@link IceSoapParser} for the response, and some code to to the
- * post.
+ * for the request, a {@link IceSoapParser} for the response, and some code to
+ * to the post.
  * 
  * @author Alex Gilleran
  * 
@@ -96,7 +96,11 @@ public class RequestImpl<ResultType> implements Request<ResultType> {
 	 * @throws SOAPException
 	 */
 	protected InputStream getResponse() throws SOAPException {
-		return SOAPRequesterImpl.getInstance().doSoapRequest(soapEnv, url);
+		return getSOAPRequester().doSoapRequest(soapEnv, url);
+	}
+
+	protected SOAPRequester getSOAPRequester() {
+		return ApacheSOAPRequester.getInstance();
 	}
 
 	/**

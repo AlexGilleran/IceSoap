@@ -24,12 +24,13 @@ import com.alexgilleran.icesoap.envelope.SOAPEnvelope;
 import com.alexgilleran.icesoap.exception.SOAPException;
 
 /**
- * Singleton implementation of {@link SOAPRequester}
+ * Singleton implementation of {@link SOAPRequester}, using the Apache HTTP
+ * Client
  * 
  * @author Alex Gilleran
  * 
  */
-public class SOAPRequesterImpl implements SOAPRequester {
+public class ApacheSOAPRequester implements SOAPRequester {
 	/** Soap action to use if none is specified. */
 	private static final String BLANK_SOAP_ACTION = "";
 	/** Port for HTTPS communication */
@@ -58,7 +59,7 @@ public class SOAPRequesterImpl implements SOAPRequester {
 	/** Instance for the singleton instance of the class */
 	private static SOAPRequester INSTANCE;
 
-	private SOAPRequesterImpl() {
+	private ApacheSOAPRequester() {
 		// Private constructor - singleton.
 	}
 
@@ -69,7 +70,7 @@ public class SOAPRequesterImpl implements SOAPRequester {
 	 */
 	public static SOAPRequester getInstance() {
 		if (INSTANCE == null) {
-			INSTANCE = new SOAPRequesterImpl();
+			INSTANCE = new ApacheSOAPRequester();
 		}
 
 		return INSTANCE;
