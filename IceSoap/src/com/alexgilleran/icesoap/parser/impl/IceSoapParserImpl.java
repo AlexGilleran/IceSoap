@@ -14,8 +14,6 @@ import java.util.Set;
 
 import javax.management.modelmbean.XMLParseException;
 
-import android.util.Log;
-
 import com.alexgilleran.icesoap.annotation.XMLField;
 import com.alexgilleran.icesoap.annotation.XMLObject;
 import com.alexgilleran.icesoap.exception.ClassDefException;

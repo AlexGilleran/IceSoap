@@ -1,16 +1,12 @@
 package com.alexgilleran.icesoap.envelope;
 
 import java.io.IOException;
-import java.io.StringWriter;
 
 import org.xmlpull.v1.XmlSerializer;
 
 import com.alexgilleran.icesoap.xml.XMLElement;
 import com.alexgilleran.icesoap.xml.XMLNode;
 import com.alexgilleran.icesoap.xml.impl.XMLNodeImpl;
-
-
-import android.util.Xml;
 
 /**
  * Concrete implementation of SOAPEnv to be decorated. Automatically sets up the
@@ -43,6 +39,7 @@ public class ConcreteSOAPEnv extends XMLNodeImpl implements SOAPEnvelope {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see com.agilleran.android.soapdroid.envelope.SOAPEnv#getHeader()
 	 */
 	public XMLNode getHeader() {
@@ -51,6 +48,7 @@ public class ConcreteSOAPEnv extends XMLNodeImpl implements SOAPEnvelope {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see com.agilleran.android.soapdroid.envelope.SOAPEnv#getBody()
 	 */
 	public XMLNode getBody() {
@@ -59,7 +57,10 @@ public class ConcreteSOAPEnv extends XMLNodeImpl implements SOAPEnvelope {
 
 	/*
 	 * (non-Javadoc)
-	 * @see com.agilleran.android.soapdroid.xml.XMLElement#serialize(org.xmlpull.v1.XmlSerializer)
+	 * 
+	 * @see
+	 * com.agilleran.android.soapdroid.xml.XMLElement#serialize(org.xmlpull.
+	 * v1.XmlSerializer)
 	 */
 	@Override
 	public void serialize(XmlSerializer cereal)

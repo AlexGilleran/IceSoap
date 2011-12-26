@@ -44,8 +44,6 @@ public abstract class XMLElementTest<TypeUnderTest extends XMLElementBase>
 	protected TypeUnderTest constructObject(String namespace, String name) {
 		TypeUnderTest element = constructElement(namespace, name);
 
-		element.setSerializerFactory(JUNIT_SERIALIZER_FACTORY);
-
 		return element;
 	}
 
