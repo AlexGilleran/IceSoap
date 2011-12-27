@@ -12,8 +12,34 @@ import com.alexgilleran.icesoap.annotation.XMLObject;
 public class Response {
 	@XMLField("id")
 	private int responseId;
+
 	@XMLField("TextField")
 	private String textField;
+
+	public Response() {
+
+	}
+
+	public Response(int responseId, String textField) {
+		this.responseId = responseId;
+		this.textField = textField;
+	}
+
+	public int getResponseId() {
+		return responseId;
+	}
+
+	public void setResponseId(int responseId) {
+		this.responseId = responseId;
+	}
+
+	public String getTextField() {
+		return textField;
+	}
+
+	public void setTextField(String textField) {
+		this.textField = textField;
+	}
 
 	@Override
 	public int hashCode() {

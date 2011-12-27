@@ -5,7 +5,7 @@ import java.io.InputStream;
 
 public class SampleResponse {
 	private final static String SINGLE_RESPONSE = "<Response>"//
-			+ "<Details id=1>"//
+			+ "<Details id=\"1\">"//
 			+ "<TextField>Text</TextField>"//
 			+ "</Details>"//
 			+ "</Response>";

@@ -76,6 +76,13 @@ public interface Request<ResultType> {
 	boolean isComplete();
 
 	/**
+	 * Retrieves an exception if one has been encountered
+	 * 
+	 * @return The encountered exception if one exists, otherwise null
+	 */
+	Throwable getException();
+
+	/**
 	 * Gets the instance of SOAPRequester currently being used to perform
 	 * requests.
 	 * 

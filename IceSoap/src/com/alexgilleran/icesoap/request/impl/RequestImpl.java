@@ -45,6 +45,11 @@ public class RequestImpl<ResultType> implements Request<ResultType> {
 	private boolean executing = false;
 	/** Class to perform SOAP requests */
 	private SOAPRequester soapRequester;
+	/**
+	 * If an exception is caught, it is stored here until it can be thrown on
+	 * the UI thread
+	 */
+	private Throwable caughtException = null;
 
 	/**
 	 * Creates a new request.
@@ -175,6 +180,14 @@ public class RequestImpl<ResultType> implements Request<ResultType> {
 	}
 
 	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Throwable getException() {
+		return caughtException;
+	}
+
+	/**
 	 * Subclass of {@link AsyncTask} used for performing the request in a
 	 * background thread.
 	 * 
@@ -186,19 +199,14 @@ public class RequestImpl<ResultType> implements Request<ResultType> {
 	 */
 	protected class RequestTask<ProgressReportObject> extends
 			AsyncTask<Void, ProgressReportObject, ResultType> {
-		/**
-		 * If an exception is caught, it is stored here until it can be thrown
-		 * on the UI thread
-		 */
-		private Throwable caughtException = null;
 
 		/**
 		 * {@inheritDoc}
 		 */
 		@Override
 		protected void onPostExecute(ResultType returnedResult) {
-			executing = true;
 			complete = true;
+			executing = false;
 
 			if (caughtException != null) {
 				registry.notifyException(RequestImpl.this, caughtException);
