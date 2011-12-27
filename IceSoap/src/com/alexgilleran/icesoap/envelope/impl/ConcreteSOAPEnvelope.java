@@ -1,9 +1,10 @@
-package com.alexgilleran.icesoap.envelope;
+package com.alexgilleran.icesoap.envelope.impl;
 
 import java.io.IOException;
 
 import org.xmlpull.v1.XmlSerializer;
 
+import com.alexgilleran.icesoap.envelope.SOAPEnvelope;
 import com.alexgilleran.icesoap.xml.XMLElement;
 import com.alexgilleran.icesoap.xml.XMLNode;
 import com.alexgilleran.icesoap.xml.impl.XMLNodeImpl;
@@ -16,16 +17,17 @@ import com.alexgilleran.icesoap.xml.impl.XMLNodeImpl;
  * @author Alex Gilleran
  * 
  */
-public class ConcreteSOAPEnv extends XMLNodeImpl implements SOAPEnvelope {
-
+public class ConcreteSOAPEnvelope extends XMLNodeImpl implements SOAPEnvelope {
+	/** The SOAP header element */
 	private XMLNode header;
+	/** The SOAP body element */
 	private XMLNode body;
 
 	/**
 	 * Initialises the class - sets up the basic "soapenv", "soapenc", "xsd" and
 	 * "xsi" namespaces present in all SOAP messages
 	 */
-	public ConcreteSOAPEnv() {
+	public ConcreteSOAPEnvelope() {
 		super(NODE_NAMESPACE, NODE_NAME);
 
 		this.declarePrefix(NS_PREFIX_SOAPENV, NS_URI_SOAPENV);
@@ -37,30 +39,24 @@ public class ConcreteSOAPEnv extends XMLNodeImpl implements SOAPEnvelope {
 		body = this.addNode(NS_URI_SOAPENV, "Body");
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.agilleran.android.soapdroid.envelope.SOAPEnv#getHeader()
+	/**
+	 * {@inheritDoc}
 	 */
+	@Override
 	public XMLNode getHeader() {
 		return header;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.agilleran.android.soapdroid.envelope.SOAPEnv#getBody()
+	/**
+	 * {@inheritDoc}
 	 */
+	@Override
 	public XMLNode getBody() {
 		return body;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.agilleran.android.soapdroid.xml.XMLElement#serialize(org.xmlpull.
-	 * v1.XmlSerializer)
+	/**
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void serialize(XmlSerializer cereal)
@@ -70,5 +66,36 @@ public class ConcreteSOAPEnv extends XMLNodeImpl implements SOAPEnvelope {
 		super.serialize(cereal);
 
 		cereal.endDocument();
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((body == null) ? 0 : body.hashCode());
+		result = prime * result + ((header == null) ? 0 : header.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ConcreteSOAPEnvelope other = (ConcreteSOAPEnvelope) obj;
+		if (body == null) {
+			if (other.body != null)
+				return false;
+		} else if (!body.equals(other.body))
+			return false;
+		if (header == null) {
+			if (other.header != null)
+				return false;
+		} else if (!header.equals(other.header))
+			return false;
+		return true;
 	}
 }

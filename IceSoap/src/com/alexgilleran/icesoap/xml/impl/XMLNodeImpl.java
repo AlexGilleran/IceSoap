@@ -88,4 +88,30 @@ public class XMLNodeImpl extends XMLElementBase implements XMLNode {
 			element.serialize(cereal);
 		}
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((subElements == null) ? 0 : subElements.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		XMLNodeImpl other = (XMLNodeImpl) obj;
+		if (subElements == null) {
+			if (other.subElements != null)
+				return false;
+		} else if (!subElements.equals(other.subElements))
+			return false;
+		return true;
+	}
 }

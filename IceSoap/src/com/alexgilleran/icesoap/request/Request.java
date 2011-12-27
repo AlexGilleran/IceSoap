@@ -5,6 +5,8 @@ import java.util.List;
 import android.os.AsyncTask;
 
 import com.alexgilleran.icesoap.observer.SOAPObserver;
+import com.alexgilleran.icesoap.requester.ApacheSOAPRequester;
+import com.alexgilleran.icesoap.requester.SOAPRequester;
 
 /**
  * Encapsulates all the code for making a SOAP Request - to use, create an
@@ -72,4 +74,21 @@ public interface Request<ResultType> {
 	 * @return true if complete, otherwise false.
 	 */
 	boolean isComplete();
+
+	/**
+	 * Gets the instance of SOAPRequester currently being used to perform
+	 * requests.
+	 * 
+	 * @return The SOAPRequester instance
+	 */
+	SOAPRequester getSoapRequester();
+
+	/**
+	 * Sets the SOAP Requester to use - if this is not set, a default
+	 * implementation will be used.
+	 * 
+	 * @param soapRequester
+	 *            The SOAP requester to use.
+	 */
+	void setSoapRequester(SOAPRequester soapRequester);
 }

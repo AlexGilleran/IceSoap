@@ -168,4 +168,44 @@ public abstract class XMLElementBase extends XMLObjectBase implements
 	protected abstract void serializeContent(XmlSerializer serializer)
 			throws IllegalArgumentException, IllegalStateException, IOException;
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((attributes == null) ? 0 : attributes.hashCode());
+		result = prime
+				* result
+				+ ((declaredPrefixes == null) ? 0 : declaredPrefixes.hashCode());
+		result = prime * result + ((type == null) ? 0 : type.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		XMLElementBase other = (XMLElementBase) obj;
+		if (attributes == null) {
+			if (other.attributes != null)
+				return false;
+		} else if (!attributes.equals(other.attributes))
+			return false;
+		if (declaredPrefixes == null) {
+			if (other.declaredPrefixes != null)
+				return false;
+		} else if (!declaredPrefixes.equals(other.declaredPrefixes))
+			return false;
+		if (type == null) {
+			if (other.type != null)
+				return false;
+		} else if (!type.equals(other.type))
+			return false;
+		return true;
+	}
+
 }

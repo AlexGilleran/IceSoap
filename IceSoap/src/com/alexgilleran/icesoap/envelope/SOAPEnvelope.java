@@ -26,7 +26,6 @@ public interface SOAPEnvelope {
 	public final static String NS_URI_SOAPENC = "http://schemas.xmlsoap.org/soap/encoding/";
 	public final static String NODE_NAME = "Envelope";
 	public final static String NODE_NAMESPACE = NS_URI_SOAPENV;
-
 	public final static String ENCODING_UTF8 = "UTF-8";
 
 	/**

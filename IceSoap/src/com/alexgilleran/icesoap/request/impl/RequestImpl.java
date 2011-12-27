@@ -43,6 +43,8 @@ public class RequestImpl<ResultType> implements Request<ResultType> {
 	private boolean complete = false;
 	/** Flag - is the request currently executing? */
 	private boolean executing = false;
+	/** Class to perform SOAP requests */
+	private SOAPRequester soapRequester;
 
 	/**
 	 * Creates a new request.
@@ -96,11 +98,7 @@ public class RequestImpl<ResultType> implements Request<ResultType> {
 	 * @throws SOAPException
 	 */
 	protected InputStream getResponse() throws SOAPException {
-		return getSOAPRequester().doSoapRequest(soapEnv, url);
-	}
-
-	protected SOAPRequester getSOAPRequester() {
-		return ApacheSOAPRequester.getInstance();
+		return getSoapRequester().doSoapRequest(soapEnv, url);
 	}
 
 	/**
@@ -150,6 +148,30 @@ public class RequestImpl<ResultType> implements Request<ResultType> {
 	@Override
 	public boolean isComplete() {
 		return complete;
+	}
+
+	/**
+	 * Gets an instance of SOAPRequester to perform requests.
+	 * 
+	 * @return The SOAPRequester instance
+	 */
+	public SOAPRequester getSoapRequester() {
+		if (soapRequester == null) {
+			return ApacheSOAPRequester.getInstance();
+		} else {
+			return soapRequester;
+		}
+	}
+
+	/**
+	 * Sets the SOAP Requester to use - if this is not set, the default
+	 * {@link ApacheSOAPRequester} implementation will be used.
+	 * 
+	 * @param soapRequester
+	 *            The SOAP requester to use.
+	 */
+	public void setSoapRequester(SOAPRequester soapRequester) {
+		this.soapRequester = soapRequester;
 	}
 
 	/**
