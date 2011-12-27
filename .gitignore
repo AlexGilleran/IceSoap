@@ -13,3 +13,4 @@ tmp
 .settings
 pom.properties
 gen
+default-soapui-workspace.xml
