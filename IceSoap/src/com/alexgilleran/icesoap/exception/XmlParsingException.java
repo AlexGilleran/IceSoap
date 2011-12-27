@@ -7,12 +7,12 @@ package com.alexgilleran.icesoap.exception;
  * @author Alex Gilleran
  * 
  */
-public class XmlParsingException extends Exception {
+public class XMLParsingException extends Exception {
 
 	/**
 	 * 
 	 */
-	public XmlParsingException() {
+	public XMLParsingException() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
@@ -21,7 +21,7 @@ public class XmlParsingException extends Exception {
 	 * @param message
 	 * @param cause
 	 */
-	public XmlParsingException(String message, Throwable cause) {
+	public XMLParsingException(String message, Throwable cause) {
 		super(message, cause);
 		// TODO Auto-generated constructor stub
 	}
@@ -29,7 +29,7 @@ public class XmlParsingException extends Exception {
 	/**
 	 * @param message
 	 */
-	public XmlParsingException(String message) {
+	public XMLParsingException(String message) {
 		super(message);
 		// TODO Auto-generated constructor stub
 	}
@@ -37,7 +37,7 @@ public class XmlParsingException extends Exception {
 	/**
 	 * @param cause
 	 */
-	public XmlParsingException(Throwable cause) {
+	public XMLParsingException(Throwable cause) {
 		super(cause);
 		// TODO Auto-generated constructor stub
 	}

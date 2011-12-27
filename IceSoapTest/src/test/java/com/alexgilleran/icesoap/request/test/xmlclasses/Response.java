@@ -3,16 +3,10 @@ package com.alexgilleran.icesoap.request.test.xmlclasses;
 import com.alexgilleran.icesoap.annotation.XMLField;
 import com.alexgilleran.icesoap.annotation.XMLObject;
 
-//"<Response>"//
-//+ "<Details id=1>"//
-//+ "<TextField>Text</TextField>"//
-//+ "</Details>"//
-//+ "</Response>";
-@XMLObject("/Response/Details")
+@XMLObject("//Details")
 public class Response {
 	@XMLField("id")
 	private int responseId;
-
 	@XMLField("TextField")
 	private String textField;
 

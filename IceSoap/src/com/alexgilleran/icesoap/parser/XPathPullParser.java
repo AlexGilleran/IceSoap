@@ -9,7 +9,7 @@ import java.io.InputStream;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
-import com.alexgilleran.icesoap.exception.XmlParsingException;
+import com.alexgilleran.icesoap.exception.XMLParsingException;
 import com.alexgilleran.icesoap.xpath.elements.XPathElement;
 
 /**
@@ -50,7 +50,7 @@ public interface XPathPullParser {
 	 * @throws IOException
 	 * @throws XmlPullParserException
 	 */
-	String getCurrentValue() throws XmlParsingException;
+	String getCurrentValue() throws XMLParsingException;
 
 	/**
 	 * Delegates to {@link XmlPullParser#next()} - gets the next event from the
@@ -65,7 +65,7 @@ public interface XPathPullParser {
 	 * @throws IOException
 	 * @see org.xmlpull.v1.XmlPullParser#next()
 	 */
-	int next() throws XmlParsingException;
+	int next() throws XMLParsingException;
 
 	/**
 	 * Gets the current element being passed, as an {@link XPathElement}.

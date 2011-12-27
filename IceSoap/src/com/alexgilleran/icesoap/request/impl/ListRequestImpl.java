@@ -9,6 +9,7 @@ import com.alexgilleran.icesoap.observer.ListObserverRegistry;
 import com.alexgilleran.icesoap.observer.SOAPListObserver;
 import com.alexgilleran.icesoap.parser.IceSoapListParser;
 import com.alexgilleran.icesoap.parser.ItemObserver;
+import com.alexgilleran.icesoap.parser.impl.IceSoapListParserImpl;
 import com.alexgilleran.icesoap.request.ListRequest;
 
 /**
@@ -28,19 +29,33 @@ public class ListRequestImpl<ResultType> extends RequestImpl<List<ResultType>>
 			this);
 
 	/**
+	 * Creates a new list request without having to specify a parser.
 	 * 
+	 * @param url
+	 *            The URL to post the request to
+	 * @param soapEnv
+	 *            The SOAP envelope to send, as a {@link SOAPEnvelope}
+	 * @param resultClass
+	 *            The class of the contents of the list.
+	 */
+	public ListRequestImpl(String url, SOAPEnvelope soapEnv,
+			Class<ResultType> resultClass) {
+		this(url, soapEnv, new IceSoapListParserImpl<ResultType>(resultClass));
+	}
+
+	/**
 	 * Creates a new list request.
 	 * 
 	 * @param url
 	 *            The URL to post the request to
-	 * @param parser
-	 *            The {@link IceSoapListParser} to use to parse the response.
 	 * @param soapEnv
 	 *            The SOAP envelope to send, as a {@link SOAPEnvelope}
+	 * @param parser
+	 *            The {@link IceSoapListParser} to use to parse the response.
 	 */
-	public ListRequestImpl(String url, IceSoapListParser<ResultType> parser,
-			SOAPEnvelope soapEnv) {
-		super(url, parser, soapEnv);
+	public ListRequestImpl(String url, SOAPEnvelope soapEnv,
+			IceSoapListParser<ResultType> parser) {
+		super(url, soapEnv, parser);
 
 		this.parser = parser;
 	}

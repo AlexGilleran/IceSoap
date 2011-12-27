@@ -4,6 +4,8 @@ import java.util.List;
 
 import android.os.AsyncTask;
 
+import com.alexgilleran.icesoap.exception.SOAPException;
+import com.alexgilleran.icesoap.exception.XMLParsingException;
 import com.alexgilleran.icesoap.observer.SOAPObserver;
 import com.alexgilleran.icesoap.requester.ApacheSOAPRequester;
 import com.alexgilleran.icesoap.requester.SOAPRequester;
@@ -57,8 +59,12 @@ public interface Request<ResultType> {
 	 * the result so far.
 	 * 
 	 * @return The result so far.
+	 * @throws SOAPException
+	 *             If a SOAPException has occurred
+	 * @throws XMLParsingException
+	 *             If an XMLParsingException has occurred
 	 */
-	ResultType getResult();
+	ResultType getResult() throws XMLParsingException, SOAPException;
 
 	/**
 	 * Whether the request is currently executing - if it's not executing, it

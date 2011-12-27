@@ -4,7 +4,7 @@ import java.io.InputStream;
 
 import org.xmlpull.v1.XmlPullParser;
 
-import com.alexgilleran.icesoap.exception.XmlParsingException;
+import com.alexgilleran.icesoap.exception.XMLParsingException;
 
 /**
  * Interface for all parsers. Note that this parser is not the same concept as
@@ -26,7 +26,7 @@ public interface IceSoapParser<ReturnType> {
 	 * 
 	 * 
 	 * @return The object created by parsing the tag
-	 * @throws XmlParsingException
+	 * @throws XMLParsingException
 	 */
-	ReturnType parse(InputStream inputStream) throws XmlParsingException;
+	ReturnType parse(InputStream inputStream) throws XMLParsingException;
 }

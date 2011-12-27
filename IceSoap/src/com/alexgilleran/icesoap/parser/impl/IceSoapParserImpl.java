@@ -17,7 +17,7 @@ import javax.management.modelmbean.XMLParseException;
 import com.alexgilleran.icesoap.annotation.XMLField;
 import com.alexgilleran.icesoap.annotation.XMLObject;
 import com.alexgilleran.icesoap.exception.ClassDefException;
-import com.alexgilleran.icesoap.exception.XmlParsingException;
+import com.alexgilleran.icesoap.exception.XMLParsingException;
 import com.alexgilleran.icesoap.parser.IceSoapListParser;
 import com.alexgilleran.icesoap.parser.IceSoapParser;
 import com.alexgilleran.icesoap.parser.XPathPullParser;
@@ -201,7 +201,7 @@ public class IceSoapParserImpl<ReturnType> extends
 	 */
 	@Override
 	protected ReturnType onNewParsingEvent(XPathPullParser xmlPullParser,
-			ReturnType objectToModify) throws XmlParsingException {
+			ReturnType objectToModify) throws XMLParsingException {
 		Field fieldToSet = fieldXPaths.get(xmlPullParser.getCurrentElement());
 
 		if (fieldToSet != null) {
@@ -306,7 +306,7 @@ public class IceSoapParserImpl<ReturnType> extends
 	 * @throws XMLParseException
 	 */
 	private Object convertToFieldType(Field field, String valueString)
-			throws XmlParsingException {
+			throws XMLParsingException {
 		if (int.class.isAssignableFrom(field.getType())) {
 			return Integer.parseInt(valueString);
 		} else if (long.class.isAssignableFrom(field.getType())) {
@@ -324,7 +324,7 @@ public class IceSoapParserImpl<ReturnType> extends
 				return new SimpleDateFormat(field.getAnnotation(XMLField.class)
 						.dateFormat()).parse(valueString);
 			} catch (ParseException e) {
-				throw new XmlParsingException(
+				throw new XMLParsingException(
 						"Encountered date parsing exception when parsing "
 								+ field.toString()
 								+ " with format "

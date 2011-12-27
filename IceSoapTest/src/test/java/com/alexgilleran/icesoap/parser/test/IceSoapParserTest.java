@@ -12,7 +12,7 @@ import java.text.SimpleDateFormat;
 import org.junit.Test;
 import org.xmlpull.v1.XmlPullParserException;
 
-import com.alexgilleran.icesoap.exception.XmlParsingException;
+import com.alexgilleran.icesoap.exception.XMLParsingException;
 import com.alexgilleran.icesoap.parser.IceSoapParser;
 import com.alexgilleran.icesoap.parser.impl.IceSoapParserImpl;
 import com.alexgilleran.icesoap.parser.test.xmlclasses.PurchaseOrder;
@@ -29,12 +29,12 @@ public class IceSoapParserTest {
 	 * Holistic test on realistic data.
 	 * 
 	 * @throws XmlPullParserException
-	 * @throws XmlParsingException
+	 * @throws XMLParsingException
 	 * @throws ParseException
 	 */
 	@Test
 	public void testPurchaseOrder() throws XmlPullParserException,
-			XmlParsingException, ParseException {
+			XMLParsingException, ParseException {
 		IceSoapParser<PurchaseOrder> parser = new IceSoapParserImpl<PurchaseOrder>(
 				PurchaseOrder.class);
 

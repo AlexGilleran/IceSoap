@@ -9,7 +9,7 @@ import java.util.List;
 import org.junit.Test;
 import org.xmlpull.v1.XmlPullParserException;
 
-import com.alexgilleran.icesoap.exception.XmlParsingException;
+import com.alexgilleran.icesoap.exception.XMLParsingException;
 import com.alexgilleran.icesoap.parser.IceSoapListParser;
 import com.alexgilleran.icesoap.parser.IceSoapParser;
 import com.alexgilleran.icesoap.parser.ItemObserver;
@@ -27,12 +27,12 @@ public class IceSoapListParserTest {
 	 * Holistic test on realistic data.
 	 * 
 	 * @throws XmlPullParserException
-	 * @throws XmlParsingException
+	 * @throws XMLParsingException
 	 * @throws ParseException
 	 */
 	@Test
 	public void testCustomerList() throws XmlPullParserException,
-			XmlParsingException, ParseException {
+			XMLParsingException, ParseException {
 		CustomerObserver customerObserver = new CustomerObserver();
 		IceSoapListParser<Customer> parser = new IceSoapListParserImpl<Customer>(
 				Customer.class);
@@ -47,7 +47,7 @@ public class IceSoapListParserTest {
 	}
 
 	@Test
-	public void testOrderList() throws XmlParsingException, ParseException {
+	public void testOrderList() throws XMLParsingException, ParseException {
 		OrderObserver orderObserver = new OrderObserver();
 		IceSoapListParser<Order> parser = new IceSoapListParserImpl<Order>(
 				Order.class);
@@ -62,7 +62,7 @@ public class IceSoapListParserTest {
 	}
 
 	@Test
-	public void testListsInTypes() throws XmlParsingException, ParseException {
+	public void testListsInTypes() throws XMLParsingException, ParseException {
 		IceSoapParser<CustsAndOrders> parser = new IceSoapParserImpl<CustsAndOrders>(
 				CustsAndOrders.class);
 

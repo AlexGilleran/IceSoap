@@ -6,7 +6,7 @@ import java.io.InputStream;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
-import com.alexgilleran.icesoap.exception.XmlParsingException;
+import com.alexgilleran.icesoap.exception.XMLParsingException;
 import com.alexgilleran.icesoap.parser.XPathPullParser;
 import com.alexgilleran.icesoap.xpath.elements.XPathElement;
 import com.alexgilleran.icesoap.xpath.elements.impl.AttributeXPathElement;
@@ -54,7 +54,7 @@ public class XPathPullParserImpl implements XPathPullParser {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String getCurrentValue() throws XmlParsingException {
+	public String getCurrentValue() throws XMLParsingException {
 		try {
 			if (currentElement.isAttribute()) {
 				return getCurrentAttributeValue();
@@ -63,9 +63,9 @@ public class XPathPullParserImpl implements XPathPullParser {
 				return parser.nextText();
 			}
 		} catch (XmlPullParserException e) {
-			throw new XmlParsingException(e);
+			throw new XMLParsingException(e);
 		} catch (IOException e) {
-			throw new XmlParsingException(e);
+			throw new XMLParsingException(e);
 		}
 	}
 
@@ -87,7 +87,7 @@ public class XPathPullParserImpl implements XPathPullParser {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public int next() throws XmlParsingException {
+	public int next() throws XMLParsingException {
 		try {
 			// Trim any existing attributes
 			trimAttribute();
@@ -101,9 +101,9 @@ public class XPathPullParserImpl implements XPathPullParser {
 
 			return eventType;
 		} catch (XmlPullParserException e) {
-			throw new XmlParsingException(e);
+			throw new XMLParsingException(e);
 		} catch (IOException e) {
-			throw new XmlParsingException(e);
+			throw new XMLParsingException(e);
 		}
 	}
 

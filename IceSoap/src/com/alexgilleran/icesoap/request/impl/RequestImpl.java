@@ -6,13 +6,14 @@ import android.os.AsyncTask;
 
 import com.alexgilleran.icesoap.envelope.SOAPEnvelope;
 import com.alexgilleran.icesoap.exception.SOAPException;
-import com.alexgilleran.icesoap.exception.XmlParsingException;
+import com.alexgilleran.icesoap.exception.XMLParsingException;
 import com.alexgilleran.icesoap.observer.ObserverRegistry;
 import com.alexgilleran.icesoap.observer.SOAPObserver;
 import com.alexgilleran.icesoap.parser.IceSoapParser;
+import com.alexgilleran.icesoap.parser.impl.IceSoapParserImpl;
 import com.alexgilleran.icesoap.request.Request;
-import com.alexgilleran.icesoap.requester.SOAPRequester;
 import com.alexgilleran.icesoap.requester.ApacheSOAPRequester;
+import com.alexgilleran.icesoap.requester.SOAPRequester;
 
 /**
  * Implementation of {@link Request}
@@ -52,17 +53,32 @@ public class RequestImpl<ResultType> implements Request<ResultType> {
 	private Throwable caughtException = null;
 
 	/**
+	 * Creates a new request, automatically creating the parser.
+	 * 
+	 * @param url
+	 *            The URL to post the request to
+	 * @param soapEnv
+	 *            The SOAP envelope to send, as a {@link SOAPEnvelope}
+	 * @param resultClass
+	 *            The class of the type to return from the request.
+	 */
+	public RequestImpl(String url, SOAPEnvelope soapEnv,
+			Class<ResultType> resultClass) {
+		this(url, soapEnv, new IceSoapParserImpl<ResultType>(resultClass));
+	}
+
+	/**
 	 * Creates a new request.
 	 * 
 	 * @param url
 	 *            The URL to post the request to
-	 * @param parser
-	 *            The {@link IceSoapParser} to use to parse the response.
 	 * @param soapEnv
 	 *            The SOAP envelope to send, as a {@link SOAPEnvelope}
+	 * @param parser
+	 *            The {@link IceSoapParser} to use to parse the response.
 	 */
-	public RequestImpl(String url, IceSoapParser<ResultType> parser,
-			SOAPEnvelope soapEnv) {
+	public RequestImpl(String url, SOAPEnvelope soapEnv,
+			IceSoapParser<ResultType> parser) {
 		this.parser = parser;
 		this.url = url;
 		this.soapEnv = soapEnv;
@@ -91,7 +107,17 @@ public class RequestImpl<ResultType> implements Request<ResultType> {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public ResultType getResult() {
+	public ResultType getResult() throws XMLParsingException, SOAPException {
+		if (caughtException != null) {
+			if (XMLParsingException.class.isAssignableFrom(caughtException
+					.getClass())) {
+				throw ((XMLParsingException) caughtException);
+			} else if (SOAPException.class.isAssignableFrom(caughtException
+					.getClass())) {
+				throw ((SOAPException) caughtException);
+			}
+		}
+
 		return result;
 	}
 
@@ -237,7 +263,7 @@ public class RequestImpl<ResultType> implements Request<ResultType> {
 				if (!isCancelled()) {
 					return getParser().parse(getResponse());
 				}
-			} catch (XmlParsingException e) {
+			} catch (XMLParsingException e) {
 				throwException(e);
 			} catch (SOAPException e) {
 				throwException(e);
@@ -245,5 +271,83 @@ public class RequestImpl<ResultType> implements Request<ResultType> {
 
 			return null;
 		}
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((caughtException == null) ? 0 : caughtException.hashCode());
+		result = prime * result + (complete ? 1231 : 1237);
+		result = prime * result
+				+ ((currentTask == null) ? 0 : currentTask.hashCode());
+		result = prime * result + (executing ? 1231 : 1237);
+		result = prime * result + ((parser == null) ? 0 : parser.hashCode());
+		result = prime * result
+				+ ((registry == null) ? 0 : registry.hashCode());
+		result = prime * result
+				+ ((this.result == null) ? 0 : this.result.hashCode());
+		result = prime * result + ((soapEnv == null) ? 0 : soapEnv.hashCode());
+		result = prime * result
+				+ ((soapRequester == null) ? 0 : soapRequester.hashCode());
+		result = prime * result + ((url == null) ? 0 : url.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		RequestImpl<?> other = (RequestImpl<?>) obj;
+		if (caughtException == null) {
+			if (other.caughtException != null)
+				return false;
+		} else if (!caughtException.equals(other.caughtException))
+			return false;
+		if (complete != other.complete)
+			return false;
+		if (currentTask == null) {
+			if (other.currentTask != null)
+				return false;
+		} else if (!currentTask.equals(other.currentTask))
+			return false;
+		if (executing != other.executing)
+			return false;
+		if (parser == null) {
+			if (other.parser != null)
+				return false;
+		} else if (!parser.equals(other.parser))
+			return false;
+		if (registry == null) {
+			if (other.registry != null)
+				return false;
+		} else if (!registry.equals(other.registry))
+			return false;
+		if (result == null) {
+			if (other.result != null)
+				return false;
+		} else if (!result.equals(other.result))
+			return false;
+		if (soapEnv == null) {
+			if (other.soapEnv != null)
+				return false;
+		} else if (!soapEnv.equals(other.soapEnv))
+			return false;
+		if (soapRequester == null) {
+			if (other.soapRequester != null)
+				return false;
+		} else if (!soapRequester.equals(other.soapRequester))
+			return false;
+		if (url == null) {
+			if (other.url != null)
+				return false;
+		} else if (!url.equals(other.url))
+			return false;
+		return true;
 	}
 }

@@ -1,69 +1,48 @@
 package com.alexgilleran.icesoap.request.test;
 
-import static org.easymock.EasyMock.*;
-import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.replay;
-import static org.junit.Assert.*;
+import static org.easymock.EasyMock.verify;
+import static org.junit.Assert.assertEquals;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.alexgilleran.icesoap.envelope.SOAPEnvelope;
-import com.alexgilleran.icesoap.envelope.impl.PasswordSOAPEnvelope;
 import com.alexgilleran.icesoap.exception.SOAPException;
+import com.alexgilleran.icesoap.exception.XMLParsingException;
 import com.alexgilleran.icesoap.observer.SOAPObserver;
-import com.alexgilleran.icesoap.parser.IceSoapParser;
-import com.alexgilleran.icesoap.parser.impl.IceSoapParserImpl;
 import com.alexgilleran.icesoap.request.Request;
 import com.alexgilleran.icesoap.request.impl.RequestImpl;
 import com.alexgilleran.icesoap.request.test.xmlclasses.Response;
-import com.alexgilleran.icesoap.requester.SOAPRequester;
 import com.xtremelabs.robolectric.RobolectricTestRunner;
 
 @RunWith(RobolectricTestRunner.class)
-public class RequestTest {
-	private static final String DUMMY_URL = "http://www.example.com/services/exampleservice";
-	private SOAPRequester mockRequester;
-	private SOAPObserver<Response> mockObserver;
+public class RequestTest extends BaseRequestTest<Response> {
 	private Response expectedResponse = new Response(1, "Text");
 
-	@Before
-	public void setUp() {
-		mockRequester = createMock(SOAPRequester.class);
-		mockObserver = createMock(SOAPObserver.class);
-	}
-
+	@SuppressWarnings("unchecked")
 	@Test
-	public void testRequest() throws SOAPException {
-		SOAPEnvelope envelope = new PasswordSOAPEnvelope("username", "password");
-		envelope.getBody().addNode("http://testns.com", "testname")
-				.addTextElement(null, "textelement", "value");
-
-		IceSoapParser<Response> parser = new IceSoapParserImpl<Response>(
-				Response.class);
+	public void testRequest() throws SOAPException, XMLParsingException {
+		// Set up a parser for the response
 		Request<Response> request = new RequestImpl<Response>(DUMMY_URL,
-				parser, envelope);
-		request.setSoapRequester(mockRequester);
+				getDummyEnvelope(), Response.class);
+
+		// Create a mock observer and put in the expected call (we expect it to
+		// come back with the request)
+		SOAPObserver<Response> mockObserver = createMock(SOAPObserver.class);
+		mockObserver.onCompletion(request);
+		replay(mockObserver);
+
+		// Register the observer to the request
 		request.registerObserver(mockObserver);
 
-		mockObserver.onCompletion(request);
-		expect(mockRequester.doSoapRequest(envelope, DUMMY_URL)).andReturn(
-				SampleResponse.getSingleResponse());
-		replay(mockObserver);
-		replay(mockRequester);
+		// Do the request
+		doRequest(request, SampleResponse.getSingleResponse());
 
-		request.execute();
-
-		while (!request.isComplete()) {
-
-		}
-
-		assertNull(request.getException());
-
+		// Verify that it did what it was supposed to
 		verify(mockObserver);
-		verify(mockRequester);
 
+		// Verify the parsed object was correct.
 		assertEquals(expectedResponse, request.getResult());
 	}
 }

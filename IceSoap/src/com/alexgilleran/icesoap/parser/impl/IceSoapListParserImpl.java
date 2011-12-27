@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.alexgilleran.icesoap.exception.XmlParsingException;
+import com.alexgilleran.icesoap.exception.XMLParsingException;
 import com.alexgilleran.icesoap.parser.ItemObserver;
 import com.alexgilleran.icesoap.parser.IceSoapListParser;
 import com.alexgilleran.icesoap.parser.XPathPullParser;
@@ -56,7 +56,7 @@ public class IceSoapListParserImpl<T> extends BaseIceSoapParserImpl<List<T>>
 
 	@Override
 	protected List<T> onNewParsingEvent(XPathPullParser xmlPullParser, List<T> listSoFar)
-			throws XmlParsingException {
+			throws XMLParsingException {
 		if (objectXPath == null
 				|| objectXPath.matches(xmlPullParser.getCurrentElement())) {
 			T object = parser.parse(xmlPullParser);

@@ -8,7 +8,7 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 import org.xmlpull.v1.XmlPullParserException;
 
-import com.alexgilleran.icesoap.exception.XmlParsingException;
+import com.alexgilleran.icesoap.exception.XMLParsingException;
 import com.alexgilleran.icesoap.parser.XPathPullParser;
 import com.alexgilleran.icesoap.parser.impl.XPathPullParserImpl;
 import com.alexgilleran.icesoap.xpath.elements.XPathElement;
@@ -27,11 +27,11 @@ public class XPathPullParserTest {
 	 * predicates.
 	 * 
 	 * @throws XmlPullParserException
-	 * @throws XmlParsingException
+	 * @throws XMLParsingException
 	 */
 	@Test
 	public void testWithPurchaseOrder() throws XmlPullParserException,
-			XmlParsingException {
+			XMLParsingException {
 		// Get a new instance of pull parser and set the input to the Microsoft
 		// Purchase Order sample XML
 		XPathPullParser parser = new XPathPullParserImpl();
@@ -110,11 +110,11 @@ public class XPathPullParserTest {
 	 *            The name of the text element
 	 * @param value
 	 *            The value of the text element
-	 * @throws XmlParsingException
+	 * @throws XMLParsingException
 	 */
 	private void assertTextElement(XPathPullParser parser,
 			XPathElement rootXPathElement, String name, String value)
-			throws XmlParsingException {
+			throws XMLParsingException {
 		assertEquals(XPathPullParser.START_TAG, parser.next());
 		XPathElement textXPath = new SingleSlashXPathElement(name,
 				rootXPathElement);
@@ -134,10 +134,10 @@ public class XPathPullParserTest {
 	 *            The name of the attribute
 	 * @param value
 	 *            The value of the attribute
-	 * @throws XmlParsingException
+	 * @throws XMLParsingException
 	 */
 	private void assertAttribute(XPathPullParser parser, XPathElement node,
-			String name, String value) throws XmlParsingException {
+			String name, String value) throws XMLParsingException {
 		assertEquals(XPathPullParser.ATTRIBUTE, parser.next());
 		assertEquals(new AttributeXPathElement(new SingleSlashXPathElement(
 				name, node)), parser.getCurrentElement());

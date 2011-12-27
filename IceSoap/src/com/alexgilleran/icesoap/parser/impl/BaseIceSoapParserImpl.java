@@ -10,7 +10,7 @@ import com.alexgilleran.icesoap.annotation.XMLField;
 import com.alexgilleran.icesoap.annotation.XMLObject;
 import com.alexgilleran.icesoap.exception.ClassDefException;
 import com.alexgilleran.icesoap.exception.XPathParsingException;
-import com.alexgilleran.icesoap.exception.XmlParsingException;
+import com.alexgilleran.icesoap.exception.XMLParsingException;
 import com.alexgilleran.icesoap.parser.IceSoapParser;
 import com.alexgilleran.icesoap.parser.XPathPullParser;
 import com.alexgilleran.icesoap.request.Request;
@@ -73,12 +73,12 @@ public abstract class BaseIceSoapParserImpl<ReturnType> implements
 	 * {@inheritDoc}
 	 */
 	@Override
-	public ReturnType parse(InputStream inputStream) throws XmlParsingException {
+	public ReturnType parse(InputStream inputStream) throws XMLParsingException {
 		XPathPullParserImpl parser = new XPathPullParserImpl();
 		try {
 			parser.setInput(inputStream, null);
 		} catch (XmlPullParserException e) {
-			throw new XmlParsingException(e);
+			throw new XMLParsingException(e);
 		}
 
 		return parse(parser);
@@ -96,10 +96,10 @@ public abstract class BaseIceSoapParserImpl<ReturnType> implements
 	 * @param parser
 	 *            The {@link XPathPullParser} instance to use for parsing.
 	 * @return A parsed instance of ReturnType
-	 * @throws XmlParsingException
+	 * @throws XMLParsingException
 	 */
 	protected final ReturnType parse(XPathPullParser parser)
-			throws XmlParsingException {
+			throws XMLParsingException {
 		return parse(parser, null);
 	}
 
@@ -115,11 +115,11 @@ public abstract class BaseIceSoapParserImpl<ReturnType> implements
 	 *            The object instance to be parsed - this will have its fields
 	 *            modified by the parser according to the xml.
 	 * @return A parsed instance of ReturnType.
-	 * @throws XmlParsingException
+	 * @throws XMLParsingException
 	 * 
 	 */
 	protected final ReturnType parse(XPathPullParser parser,
-			ReturnType objectToModify) throws XmlParsingException {
+			ReturnType objectToModify) throws XMLParsingException {
 		boolean isInRootElement = false;
 
 		try {
@@ -169,7 +169,7 @@ public abstract class BaseIceSoapParserImpl<ReturnType> implements
 			// document, so the object should be completely parsed - return it.
 			return objectToModify;
 		} catch (XmlPullParserException e) {
-			throw new XmlParsingException(e);
+			throw new XMLParsingException(e);
 		}
 	}
 
@@ -191,11 +191,11 @@ public abstract class BaseIceSoapParserImpl<ReturnType> implements
 	 *            The object to modify - can be left null, in which case it will
 	 *            be initialized with {@link #initializeParsedObject()}.
 	 * @return A parsed instance of ReturnType.
-	 * @throws XmlParsingException
+	 * @throws XMLParsingException
 	 *             If there's a problem with parsing e.g. invalid xml.
 	 */
 	private ReturnType parseElement(XPathPullParser pullParser,
-			ReturnType objectToModify) throws XmlParsingException {
+			ReturnType objectToModify) throws XMLParsingException {
 		if (objectToModify == null) {
 			objectToModify = initializeParsedObject();
 		}
@@ -219,10 +219,10 @@ public abstract class BaseIceSoapParserImpl<ReturnType> implements
 	 * @param objectToModify
 	 *            The object to modify.
 	 * @return Should be the passed in objectToModify object, with changes.
-	 * @throws XmlParsingException
+	 * @throws XMLParsingException
 	 */
 	protected abstract ReturnType onNewParsingEvent(XPathPullParser pullParser,
-			ReturnType objectToModify) throws XmlParsingException;
+			ReturnType objectToModify) throws XMLParsingException;
 
 	/**
 	 * Retrieves the root xpath from the annotation on the class. Note that this
