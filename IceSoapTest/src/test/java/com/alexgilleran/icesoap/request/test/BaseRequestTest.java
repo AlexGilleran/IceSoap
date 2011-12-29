@@ -39,8 +39,8 @@ public class BaseRequestTest<E> {
 		request.setSoapRequester(mockRequester);
 		SOAPEnvelope envelope = getDummyEnvelope();
 
-		expect(mockRequester.doSoapRequest(envelope, DUMMY_URL)).andReturn(
-				inputStream);
+		expect(mockRequester.doSoapRequest(envelope, DUMMY_URL, null))
+				.andReturn(inputStream);
 		replay(mockRequester);
 
 		request.execute();

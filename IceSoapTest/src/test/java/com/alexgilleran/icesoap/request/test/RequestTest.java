@@ -25,7 +25,7 @@ public class RequestTest extends BaseRequestTest<Response> {
 	public void testRequest() throws SOAPException, XMLParsingException {
 		// Set up a parser for the response
 		Request<Response> request = new RequestImpl<Response>(DUMMY_URL,
-				getDummyEnvelope(), Response.class, null);
+				getDummyEnvelope(), null, Response.class);
 
 		// Create a mock observer and put in the expected call (we expect it to
 		// come back with the request)
