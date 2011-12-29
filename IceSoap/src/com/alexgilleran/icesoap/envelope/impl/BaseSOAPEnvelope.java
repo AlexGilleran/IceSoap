@@ -17,7 +17,7 @@ import com.alexgilleran.icesoap.xml.impl.XMLNodeImpl;
  * @author Alex Gilleran
  * 
  */
-public class ConcreteSOAPEnvelope extends XMLNodeImpl implements SOAPEnvelope {
+public class BaseSOAPEnvelope extends XMLNodeImpl implements SOAPEnvelope {
 	/** The SOAP header element */
 	private XMLNode header;
 	/** The SOAP body element */
@@ -27,7 +27,7 @@ public class ConcreteSOAPEnvelope extends XMLNodeImpl implements SOAPEnvelope {
 	 * Initialises the class - sets up the basic "soapenv", "soapenc", "xsd" and
 	 * "xsi" namespaces present in all SOAP messages
 	 */
-	public ConcreteSOAPEnvelope() {
+	public BaseSOAPEnvelope() {
 		super(NODE_NAMESPACE, NODE_NAME);
 
 		this.declarePrefix(NS_PREFIX_SOAPENV, NS_URI_SOAPENV);
@@ -85,7 +85,7 @@ public class ConcreteSOAPEnvelope extends XMLNodeImpl implements SOAPEnvelope {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		ConcreteSOAPEnvelope other = (ConcreteSOAPEnvelope) obj;
+		BaseSOAPEnvelope other = (BaseSOAPEnvelope) obj;
 		if (body == null) {
 			if (other.body != null)
 				return false;

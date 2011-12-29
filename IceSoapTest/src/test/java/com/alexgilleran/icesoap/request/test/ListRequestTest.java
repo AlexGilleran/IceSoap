@@ -30,7 +30,7 @@ public class ListRequestTest extends BaseRequestTest<List<Response>> {
 	public void testRequest() throws XMLParsingException, SOAPException {
 		// Set up a parser for the response
 		ListRequest<Response> request = new ListRequestImpl<Response>(
-				DUMMY_URL, getDummyEnvelope(), Response.class);
+				DUMMY_URL, getDummyEnvelope(), Response.class, null);
 
 		// Create a mock observer and put in the expected call (we expect it to
 		// come back with the request)

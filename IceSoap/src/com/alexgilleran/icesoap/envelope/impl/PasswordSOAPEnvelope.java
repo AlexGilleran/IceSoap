@@ -1,6 +1,5 @@
 package com.alexgilleran.icesoap.envelope.impl;
 
-import com.alexgilleran.icesoap.envelope.SOAPEnvelope;
 import com.alexgilleran.icesoap.xml.XMLNode;
 import com.alexgilleran.icesoap.xml.XMLTextElement;
 import com.alexgilleran.icesoap.xml.impl.XMLNodeImpl;
@@ -12,7 +11,7 @@ import com.alexgilleran.icesoap.xml.impl.XMLNodeImpl;
  * @author Alex Gilleran
  * 
  */
-public class PasswordSOAPEnvelope extends BaseSOAPEnvelopeDecorator {
+public class PasswordSOAPEnvelope extends BaseSOAPEnvelope {
 	/** Prefix for WSSE namespace */
 	private static final String NS_PREFIX_WSSE = "wsse";
 	/** URI for WSSE namespace */
@@ -34,28 +33,10 @@ public class PasswordSOAPEnvelope extends BaseSOAPEnvelopeDecorator {
 		setupWSSENode(username, password);
 	}
 
-	/**
-	 * Instantiates a new password envelope, specifying username and password
-	 * 
-	 * @param wrappedEnvelope
-	 *            SOAPEnv to wrap
-	 * @param username
-	 *            The username to put in the security header
-	 * @param password
-	 *            The password to put in the security header
-	 */
-	public PasswordSOAPEnvelope(SOAPEnvelope wrappedEnvelope, String username,
-			String password) {
-		super(wrappedEnvelope);
-
-		setupWSSENode(username, password);
-	}
-
 	private void setupWSSENode(String username, String password) {
-		securityNode = getWrappedEnvelope().getHeader().addNode(NS_URI_WSSE,
-				"Security");
+		securityNode = getHeader().addNode(NS_URI_WSSE, "Security");
 		securityNode.declarePrefix(NS_PREFIX_WSSE, NS_URI_WSSE);
-		securityNode.addAttribute(ConcreteSOAPEnvelope.NS_URI_SOAPENV,
+		securityNode.addAttribute(BaseSOAPEnvelope.NS_URI_SOAPENV,
 				"mustUnderstand", "1");
 
 		securityNode.addElement(getUserNameToken(username, password));

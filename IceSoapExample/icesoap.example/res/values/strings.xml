@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="country_name_prompt">Enter Country Name:</string>
-    <string name="app_name">Weather Getter</string>
-    <string name="get_cities_button_label">Get Cities</string>
+    <string name="app_name">SOAP-Based Dictionary</string>
+    <string name="define_prompt">Enter Word To Define:</string>
+    <string name="define_button_caption">Go!</string>
+    <string name="define_dictionary_name_prefix">Dictionary: </string>
 </resources>
