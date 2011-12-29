@@ -19,6 +19,16 @@ import com.alexgilleran.icesoap.observer.SOAPObserver;
  */
 public interface ListRequest<ResultType> extends Request<List<ResultType>> {
 	/**
+	 * Registers the provided observer then executes the request - this is
+	 * equivalent to calling {@link #registerObserver(SOAPListObserver)}, then
+	 * {@link #execute()}
+	 * 
+	 * @param observer
+	 *            An observer to register
+	 */
+	void execute(SOAPListObserver<ResultType> observer);
+
+	/**
 	 * Registers an observer for new item, exception and completion events.
 	 * 
 	 * Note that registering a {@link SOAPListObserver} (using this method) will

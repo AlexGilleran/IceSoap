@@ -61,15 +61,15 @@ public class RequestImpl<ResultType> implements Request<ResultType> {
 	 *            The URL to post the request to
 	 * @param soapEnv
 	 *            The SOAP envelope to send, as a {@link SOAPEnvelope}
-	 * @param resultClass
-	 *            The class of the type to return from the request.
 	 * @param soapAction
 	 *            The SOAP Action to pass in the HTTP header - can be null
+	 * @param resultClass
+	 *            The class of the type to return from the request.
 	 */
-	public RequestImpl(String url, SOAPEnvelope soapEnv,
-			Class<ResultType> resultClass, String soapAction) {
-		this(url, soapEnv, new IceSoapParserImpl<ResultType>(resultClass),
-				soapAction);
+	public RequestImpl(String url, SOAPEnvelope soapEnv, String soapAction,
+			Class<ResultType> resultClass) {
+		this(url, soapEnv, soapAction, new IceSoapParserImpl<ResultType>(
+				resultClass));
 	}
 
 	/**
@@ -79,13 +79,13 @@ public class RequestImpl<ResultType> implements Request<ResultType> {
 	 *            The URL to post the request to
 	 * @param soapEnv
 	 *            The SOAP envelope to send, as a {@link SOAPEnvelope}
-	 * @param parser
-	 *            The {@link IceSoapParser} to use to parse the response.
 	 * @param soapAction
 	 *            The SOAP Action to pass in the HTTP header - can be null
+	 * @param parser
+	 *            The {@link IceSoapParser} to use to parse the response.
 	 */
-	public RequestImpl(String url, SOAPEnvelope soapEnv,
-			IceSoapParser<ResultType> parser, String soapAction) {
+	public RequestImpl(String url, SOAPEnvelope soapEnv, String soapAction,
+			IceSoapParser<ResultType> parser) {
 		this.parser = parser;
 		this.url = url;
 		this.soapEnv = soapEnv;
@@ -145,6 +145,15 @@ public class RequestImpl<ResultType> implements Request<ResultType> {
 	@Override
 	public void execute() {
 		createTask().execute();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void execute(SOAPObserver<ResultType> observer) {
+		registerObserver(observer);
+		execute();
 	}
 
 	/**

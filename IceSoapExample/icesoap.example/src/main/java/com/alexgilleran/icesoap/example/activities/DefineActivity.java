@@ -1,6 +1,6 @@
 package com.alexgilleran.icesoap.example.activities;
 
-import android.app.Activity;
+import roboguice.activity.RoboActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -9,23 +9,26 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.alexgilleran.icesoap.example.R;
-import com.alexgilleran.icesoap.example.model.Definition;
-import com.alexgilleran.icesoap.examples.envelopes.DefineWordEnvelope;
+import com.alexgilleran.icesoap.example.dao.RequestFactory;
+import com.alexgilleran.icesoap.example.domain.Definition;
 import com.alexgilleran.icesoap.exception.SOAPException;
 import com.alexgilleran.icesoap.observer.SOAPObserver;
 import com.alexgilleran.icesoap.request.Request;
-import com.alexgilleran.icesoap.request.impl.RequestImpl;
+import com.google.inject.Inject;
 
-public class DefineActivity extends Activity {
+public class DefineActivity extends RoboActivity {
 	public static final String DICT_ID_KEY = "dictidkey";
 	public static final String DICT_NAME_KEY = "dictnamekey";
-	private String dictionaryNamePrefix;
+
+	@Inject
+	private RequestFactory requestFactory;
 
 	private TextView dictNameTextView;
 	private TextView definitionTextView;
 	private EditText wordEditText;
 	private Button retrieveButton;
 
+	private String dictionaryNamePrefix;
 	private String dictionaryId;
 
 	@Override
@@ -58,14 +61,8 @@ public class DefineActivity extends Activity {
 	};
 
 	private void retrieveDefinition(String word) {
-		Request<Definition> request = new RequestImpl<Definition>(
-				"http://services.aonaware.com/DictService/DictService.asmx",
-				new DefineWordEnvelope(dictionaryId, word), Definition.class,
-				"http://services.aonaware.com/webservices/DefineInDict");
-
-		request.registerObserver(definitionObserver);
-
-		request.execute();
+		requestFactory.getDefinition(dictionaryId, word).execute(
+				definitionObserver);
 	}
 
 	private SOAPObserver<Definition> definitionObserver = new SOAPObserver<Definition>() {
@@ -76,7 +73,7 @@ public class DefineActivity extends Activity {
 			if (request.getResult() != null) {
 				definition = request.getResult().getWordDefinition();
 			} else {
-				definition = "(no result found)";
+				definition = getString(R.string.define_no_result_message);
 			}
 
 			definitionTextView.setText(definition);

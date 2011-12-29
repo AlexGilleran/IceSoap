@@ -1,4 +1,4 @@
-package com.alexgilleran.icesoap.example.model;
+package com.alexgilleran.icesoap.example.domain;
 
 import com.alexgilleran.icesoap.annotation.XMLField;
 import com.alexgilleran.icesoap.annotation.XMLObject;

@@ -1,4 +1,4 @@
-package com.alexgilleran.icesoap.examples.envelopes;
+package com.alexgilleran.icesoap.example.envelopes;
 
 import com.alexgilleran.icesoap.xml.XMLNode;
 

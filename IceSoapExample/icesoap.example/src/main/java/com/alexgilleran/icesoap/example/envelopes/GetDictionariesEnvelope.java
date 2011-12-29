@@ -1,4 +1,4 @@
-package com.alexgilleran.icesoap.examples.envelopes;
+package com.alexgilleran.icesoap.example.envelopes;
 
 //<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:web="http://services.aonaware.com/webservices/">
 //<soapenv:Header/>

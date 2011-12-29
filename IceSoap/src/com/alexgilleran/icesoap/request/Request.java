@@ -30,6 +30,16 @@ public interface Request<ResultType> {
 	void execute();
 
 	/**
+	 * Registers the provided observer then executes the request - this is
+	 * equivalent to calling {@link #registerObserver(SOAPObserver)}, then
+	 * {@link #execute()}
+	 * 
+	 * @param observer
+	 *            An observer to register
+	 */
+	void execute(SOAPObserver<ResultType> observer);
+
+	/**
 	 * Adds an observer to the request - the observer's methods will be called
 	 * on certain events.
 	 * 

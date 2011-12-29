@@ -3,7 +3,7 @@ package com.alexgilleran.icesoap.example.activities;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.app.Activity;
+import roboguice.activity.RoboActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -12,17 +12,19 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import com.alexgilleran.icesoap.envelope.SOAPEnvelope;
 import com.alexgilleran.icesoap.example.R;
-import com.alexgilleran.icesoap.example.model.Dictionary;
-import com.alexgilleran.icesoap.examples.envelopes.GetDictionariesEnvelope;
+import com.alexgilleran.icesoap.example.dao.RequestFactory;
+import com.alexgilleran.icesoap.example.domain.Dictionary;
 import com.alexgilleran.icesoap.exception.SOAPException;
 import com.alexgilleran.icesoap.observer.SOAPListObserver;
 import com.alexgilleran.icesoap.request.ListRequest;
 import com.alexgilleran.icesoap.request.Request;
-import com.alexgilleran.icesoap.request.impl.ListRequestImpl;
+import com.google.inject.Inject;
 
-public class DictionaryListActivity extends Activity {
+public class DictionaryListActivity extends RoboActivity {
+	@Inject
+	private RequestFactory requestFactory;
+
 	private ArrayAdapter<Dictionary> listAdapter;
 	private ListView cityList;
 
@@ -43,15 +45,8 @@ public class DictionaryListActivity extends Activity {
 	}
 
 	private void doRequest() {
-		SOAPEnvelope envelope = new GetDictionariesEnvelope();
-
-		ListRequest<Dictionary> request = new ListRequestImpl<Dictionary>(
-				"http://services.aonaware.com/DictService/DictService.asmx",
-				envelope, Dictionary.class,
-				"http://services.aonaware.com/webservices/DictionaryList");
-
+		ListRequest<Dictionary> request = requestFactory.getAllDictionaries();
 		request.registerObserver(observer);
-
 		request.execute();
 	}
 

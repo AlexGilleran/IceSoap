@@ -3,7 +3,7 @@
   package="com.alexgilleran.icesoap.example" android:versionCode="1" android:versionName="0.0.1-SNAPSHOT">
 <uses-permission android:name="android.permission.INTERNET"/>
 
-  <application android:icon="@drawable/icon" android:label="@string/app_name">
+  <application android:icon="@drawable/icon" android:label="@string/app_name" android:name="com.alexgilleran.icesoap.example.guice.Application">
     <activity android:name=".activities.DictionaryListActivity">
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />

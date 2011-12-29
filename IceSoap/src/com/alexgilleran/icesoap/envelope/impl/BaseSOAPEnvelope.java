@@ -71,7 +71,7 @@ public class BaseSOAPEnvelope extends XMLNodeImpl implements SOAPEnvelope {
 	@Override
 	public int hashCode() {
 		final int prime = 31;
-		int result = 1;
+		int result = super.hashCode();
 		result = prime * result + ((body == null) ? 0 : body.hashCode());
 		result = prime * result + ((header == null) ? 0 : header.hashCode());
 		return result;
@@ -81,7 +81,7 @@ public class BaseSOAPEnvelope extends XMLNodeImpl implements SOAPEnvelope {
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
-		if (obj == null)
+		if (!super.equals(obj))
 			return false;
 		if (getClass() != obj.getClass())
 			return false;

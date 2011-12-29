@@ -4,4 +4,8 @@
     <string name="define_prompt">Enter Word To Define:</string>
     <string name="define_button_caption">Go!</string>
     <string name="define_dictionary_name_prefix">Dictionary: </string>
+    <string name="define_no_result_message">(no result found)</string>
+    <string name="soap_action_define">http://services.aonaware.com/webservices/DefineInDict</string>
+    <string name="soap_action_dictionary_list">http://services.aonaware.com/webservices/DictionaryList</string>
+    <string name="url_dictionary_services">http://services.aonaware.com/DictService/DictService.asmx</string>
 </resources>
