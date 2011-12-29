@@ -1,7 +1,16 @@
 package com.alexgilleran.icesoap.envelope.impl;
 
+import java.io.IOException;
+import java.util.Collection;
+import java.util.List;
+
+import org.xmlpull.v1.XmlSerializer;
+
 import com.alexgilleran.icesoap.envelope.SOAPEnvelope;
+import com.alexgilleran.icesoap.xml.XMLAttribute;
+import com.alexgilleran.icesoap.xml.XMLElement;
 import com.alexgilleran.icesoap.xml.XMLNode;
+import com.alexgilleran.icesoap.xml.XMLTextElement;
 
 /**
  * Base class for SOAP Envelope decorators
@@ -42,6 +51,64 @@ public abstract class BaseSOAPEnvelopeDecorator implements SOAPEnvelope {
 	 */
 	protected SOAPEnvelope getWrappedEnvelope() {
 		return wrappedEnvelope;
+	}
+
+	public List<XMLElement> getSubElements() {
+		return wrappedEnvelope.getSubElements();
+	}
+
+	public XMLNode addNode(String namespace, String name) {
+		return wrappedEnvelope.addNode(namespace, name);
+	}
+
+	public Collection<XMLAttribute> getAttributes() {
+		return wrappedEnvelope.getAttributes();
+	}
+
+	public XMLElement addElement(XMLElement element) {
+		return wrappedEnvelope.addElement(element);
+	}
+
+	public XMLAttribute addAttribute(String namespace, String name, String value) {
+		return wrappedEnvelope.addAttribute(namespace, name, value);
+	}
+
+	public XMLTextElement addTextElement(String namespace, String name,
+			String value) {
+		return wrappedEnvelope.addTextElement(namespace, name, value);
+	}
+
+	public void setType(String type) {
+		wrappedEnvelope.setType(type);
+	}
+
+	public void declarePrefix(String prefix, String namespace) {
+		wrappedEnvelope.declarePrefix(prefix, namespace);
+	}
+
+	public String getName() {
+		return wrappedEnvelope.getName();
+	}
+
+	public void setName(String name) {
+		wrappedEnvelope.setName(name);
+	}
+
+	public String getNamespace() {
+		return wrappedEnvelope.getNamespace();
+	}
+
+	public void setNamespace(String namespace) {
+		wrappedEnvelope.setNamespace(namespace);
+	}
+
+	public void serialize(XmlSerializer serializer)
+			throws IllegalArgumentException, IllegalStateException, IOException {
+		wrappedEnvelope.serialize(serializer);
+	}
+
+	public String toString() {
+		return wrappedEnvelope.toString();
 	}
 
 	/**

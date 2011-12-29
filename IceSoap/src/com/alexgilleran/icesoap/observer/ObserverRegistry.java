@@ -3,6 +3,7 @@ package com.alexgilleran.icesoap.observer;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.alexgilleran.icesoap.exception.SOAPException;
 import com.alexgilleran.icesoap.request.Request;
 
 public class ObserverRegistry<T> {
@@ -25,7 +26,7 @@ public class ObserverRegistry<T> {
 		observers.remove(observer);
 	}
 
-	public void notifyException(Request<T> request, Throwable exception) {
+	public void notifyException(Request<T> request, SOAPException exception) {
 		for (SOAPObserver<T> observer : observers) {
 			observer.onException(request, exception);
 		}

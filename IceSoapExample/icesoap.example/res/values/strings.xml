@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="country_name_prompt">Enter Country Name:</string>
+    <string name="app_name">Weather Getter</string>
+    <string name="get_cities_button_label">Get Cities</string>
+</resources>

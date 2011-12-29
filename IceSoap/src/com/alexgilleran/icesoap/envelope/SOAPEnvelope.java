@@ -19,7 +19,7 @@ import com.alexgilleran.icesoap.xml.XMLNode;
  * @author Alex Gilleran
  * 
  */
-public interface SOAPEnvelope {
+public interface SOAPEnvelope extends XMLNode {
 	public final static String NS_PREFIX_SOAPENV = "soapenv";
 	public final static String NS_URI_SOAPENV = "http://schemas.xmlsoap.org/soap/envelope/";
 	public final static String NS_PREFIX_SOAPENC = "soapenc";

@@ -37,10 +37,13 @@ public class ListRequestImpl<ResultType> extends RequestImpl<List<ResultType>>
 	 *            The SOAP envelope to send, as a {@link SOAPEnvelope}
 	 * @param resultClass
 	 *            The class of the contents of the list.
+	 * @param soapAction
+	 *            The SOAP Action to pass in the HTTP header - can be null
 	 */
 	public ListRequestImpl(String url, SOAPEnvelope soapEnv,
-			Class<ResultType> resultClass) {
-		this(url, soapEnv, new IceSoapListParserImpl<ResultType>(resultClass));
+			Class<ResultType> resultClass, String soapAction) {
+		this(url, soapEnv, new IceSoapListParserImpl<ResultType>(resultClass),
+				soapAction);
 	}
 
 	/**
@@ -52,10 +55,12 @@ public class ListRequestImpl<ResultType> extends RequestImpl<List<ResultType>>
 	 *            The SOAP envelope to send, as a {@link SOAPEnvelope}
 	 * @param parser
 	 *            The {@link IceSoapListParser} to use to parse the response.
+	 * @param soapAction
+	 *            The SOAP Action to pass in the HTTP header - can be null
 	 */
 	public ListRequestImpl(String url, SOAPEnvelope soapEnv,
-			IceSoapListParser<ResultType> parser) {
-		super(url, soapEnv, parser);
+			IceSoapListParser<ResultType> parser, String soapAction) {
+		super(url, soapEnv, parser, soapAction);
 
 		this.parser = parser;
 	}

@@ -46,11 +46,13 @@ public class RequestImpl<ResultType> implements Request<ResultType> {
 	private boolean executing = false;
 	/** Class to perform SOAP requests */
 	private SOAPRequester soapRequester;
+	/** The SOAPAction to perform */
+	private String soapAction;
 	/**
 	 * If an exception is caught, it is stored here until it can be thrown on
 	 * the UI thread
 	 */
-	private Throwable caughtException = null;
+	private SOAPException caughtException = null;
 
 	/**
 	 * Creates a new request, automatically creating the parser.
@@ -61,10 +63,13 @@ public class RequestImpl<ResultType> implements Request<ResultType> {
 	 *            The SOAP envelope to send, as a {@link SOAPEnvelope}
 	 * @param resultClass
 	 *            The class of the type to return from the request.
+	 * @param soapAction
+	 *            The SOAP Action to pass in the HTTP header - can be null
 	 */
 	public RequestImpl(String url, SOAPEnvelope soapEnv,
-			Class<ResultType> resultClass) {
-		this(url, soapEnv, new IceSoapParserImpl<ResultType>(resultClass));
+			Class<ResultType> resultClass, String soapAction) {
+		this(url, soapEnv, new IceSoapParserImpl<ResultType>(resultClass),
+				soapAction);
 	}
 
 	/**
@@ -76,12 +81,15 @@ public class RequestImpl<ResultType> implements Request<ResultType> {
 	 *            The SOAP envelope to send, as a {@link SOAPEnvelope}
 	 * @param parser
 	 *            The {@link IceSoapParser} to use to parse the response.
+	 * @param soapAction
+	 *            The SOAP Action to pass in the HTTP header - can be null
 	 */
 	public RequestImpl(String url, SOAPEnvelope soapEnv,
-			IceSoapParser<ResultType> parser) {
+			IceSoapParser<ResultType> parser, String soapAction) {
 		this.parser = parser;
 		this.url = url;
 		this.soapEnv = soapEnv;
+		this.soapAction = soapAction;
 	}
 
 	/**
@@ -107,17 +115,7 @@ public class RequestImpl<ResultType> implements Request<ResultType> {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public ResultType getResult() throws XMLParsingException, SOAPException {
-		if (caughtException != null) {
-			if (XMLParsingException.class.isAssignableFrom(caughtException
-					.getClass())) {
-				throw ((XMLParsingException) caughtException);
-			} else if (SOAPException.class.isAssignableFrom(caughtException
-					.getClass())) {
-				throw ((SOAPException) caughtException);
-			}
-		}
-
+	public ResultType getResult() {
 		return result;
 	}
 
@@ -129,7 +127,7 @@ public class RequestImpl<ResultType> implements Request<ResultType> {
 	 * @throws SOAPException
 	 */
 	protected InputStream getResponse() throws SOAPException {
-		return getSoapRequester().doSoapRequest(soapEnv, url);
+		return getSoapRequester().doSoapRequest(soapEnv, url, soapAction);
 	}
 
 	/**
@@ -248,7 +246,7 @@ public class RequestImpl<ResultType> implements Request<ResultType> {
 		 * @param exception
 		 *            The exception to throw.
 		 */
-		protected void throwException(Throwable exception) {
+		protected void throwException(SOAPException exception) {
 			caughtException = exception;
 		}
 
@@ -264,7 +262,7 @@ public class RequestImpl<ResultType> implements Request<ResultType> {
 					return getParser().parse(getResponse());
 				}
 			} catch (XMLParsingException e) {
-				throwException(e);
+				throwException(new SOAPException(e));
 			} catch (SOAPException e) {
 				throwException(e);
 			}
