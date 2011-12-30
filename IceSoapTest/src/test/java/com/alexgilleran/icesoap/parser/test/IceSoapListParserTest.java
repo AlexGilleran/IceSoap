@@ -76,8 +76,6 @@ public class IceSoapListParserTest {
 
 	private void checkOrderList(List<Order> purchaseOrders)
 			throws ParseException {
-		OrderObserver observer = new OrderObserver();
-
 		// Check the numbers
 		assertEquals(11, purchaseOrders.size());
 

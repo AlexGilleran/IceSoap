@@ -31,9 +31,13 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content" />
 
-    <TextView
-        android:id="@+id/define_definition_textview"
+    <ScrollView
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent" />
+        android:layout_height="fill_parent" >
+        <TextView
+            android:id="@+id/define_definition_textview"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" />
+    </ScrollView>
 
 </LinearLayout>

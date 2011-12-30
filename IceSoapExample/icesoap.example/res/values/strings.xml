@@ -8,4 +8,6 @@
     <string name="soap_action_define">http://services.aonaware.com/webservices/DefineInDict</string>
     <string name="soap_action_dictionary_list">http://services.aonaware.com/webservices/DictionaryList</string>
     <string name="url_dictionary_services">http://services.aonaware.com/DictService/DictService.asmx</string>
+    <string name="dialog_connection_error">Connection error.</string>
+    <string name="dialog_button_ok">OK</string>
 </resources>

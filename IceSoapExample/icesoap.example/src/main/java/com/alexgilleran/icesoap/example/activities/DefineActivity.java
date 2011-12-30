@@ -1,9 +1,14 @@
 package com.alexgilleran.icesoap.example.activities;
 
 import roboguice.activity.RoboActivity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -34,6 +39,7 @@ public class DefineActivity extends RoboActivity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		setContentView(R.layout.define);
 
 		dictNameTextView = (TextView) findViewById(R.id.define_dictionary_name_textview);
@@ -61,8 +67,28 @@ public class DefineActivity extends RoboActivity {
 	};
 
 	private void retrieveDefinition(String word) {
+		setProgressBarIndeterminateVisibility(true);
 		requestFactory.getDefinition(dictionaryId, word).execute(
 				definitionObserver);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * Creates a dialog in the case of connection problems - this is the only
+	 * dialog for this activity and hence the id is not used.
+	 */
+	@Override
+	protected Dialog onCreateDialog(int id) {
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setMessage(R.string.dialog_connection_error).setPositiveButton(
+				R.string.dialog_button_ok,
+				new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						dialog.cancel();
+					}
+				});
+		return builder.create();
 	}
 
 	private SOAPObserver<Definition> definitionObserver = new SOAPObserver<Definition>() {
@@ -77,11 +103,13 @@ public class DefineActivity extends RoboActivity {
 			}
 
 			definitionTextView.setText(definition);
+			setProgressBarIndeterminateVisibility(false);
 		}
 
 		@Override
 		public void onException(Request<Definition> request, SOAPException e) {
-			throw new RuntimeException(e);
+			Log.e(DefineActivity.class.getSimpleName(), e.getMessage(), e);
+			showDialog(0);
 		}
 	};
 }
