@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<con:soapui-project name="DictService" soapui-version="4.0.1.1" xmlns:con="http://eviware.com/soapui/config"><con:settings/><con:interface xsi:type="con:WsdlInterface" wsaVersion="NONE" name="DictServiceSoap12" type="wsdl" bindingName="{http://services.aonaware.com/webservices/}DictServiceSoap12" soapVersion="1_2" anonymous="optional" definition="http://services.aonaware.com/DictService/DictService.asmx?WSDL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache/><con:endpoints><con:endpoint>http://services.aonaware.com/DictService/DictService.asmx</con:endpoint></con:endpoints><con:operation isOneWay="false" action="http://services.aonaware.com/webservices/Define" name="Define" bindingOperationName="Define" type="Request-Response" inputName="" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings/><con:encoding>UTF-8</con:encoding><con:endpoint>http://services.aonaware.com/DictService/DictService.asmx</con:endpoint><con:request><![CDATA[<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:web="http://services.aonaware.com/webservices/">
+<con:soapui-project name="DictService" soapui-version="4.0.1.1" abortOnError="false" runType="SEQUENTIAL" resourceRoot="" xmlns:con="http://eviware.com/soapui/config"><con:settings/><con:interface xsi:type="con:WsdlInterface" wsaVersion="NONE" name="DictServiceSoap12" type="wsdl" bindingName="{http://services.aonaware.com/webservices/}DictServiceSoap12" soapVersion="1_2" anonymous="optional" definition="http://services.aonaware.com/DictService/DictService.asmx?WSDL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache/><con:endpoints><con:endpoint>http://services.aonaware.com/DictService/DictService.asmx</con:endpoint></con:endpoints><con:operation isOneWay="false" action="http://services.aonaware.com/webservices/Define" name="Define" bindingOperationName="Define" type="Request-Response" inputName="" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call name="Request 1"><con:settings/><con:encoding>UTF-8</con:encoding><con:endpoint>http://services.aonaware.com/DictService/DictService.asmx</con:endpoint><con:request><![CDATA[<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:web="http://services.aonaware.com/webservices/">
    <soap:Header/>
    <soap:Body>
       <web:Define>
@@ -900,7 +900,8 @@
    <soapenv:Header/>
    <soapenv:Body>
       <web:DefineInDict>
-         <web:dictId>jargon</web:dictId>
+         <web:dictId>jargon</web:dictId>
+
          <web:word>scsi</web:word>
       </web:DefineInDict>
    </soapenv:Body>
