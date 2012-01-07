@@ -1,11 +1,19 @@
-package com.alexgilleran.icesoap.observer;
+package com.alexgilleran.icesoap.observer.registry;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import com.alexgilleran.icesoap.exception.SOAPException;
+import com.alexgilleran.icesoap.observer.SOAPObserver;
 import com.alexgilleran.icesoap.request.Request;
 
+/**
+ * 
+ * 
+ * @author Alex Gilleran
+ *
+ * @param <T>
+ */
 public class ObserverRegistry<T> {
 	private List<SOAPObserver<T>> observers = new ArrayList<SOAPObserver<T>>();
 	private Request<T> request;

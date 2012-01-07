@@ -1,14 +1,17 @@
 /**
  * 
  */
-package com.alexgilleran.icesoap.observer;
+package com.alexgilleran.icesoap.observer.registry;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import com.alexgilleran.icesoap.observer.SOAPListObserver;
 import com.alexgilleran.icesoap.request.Request;
 
 /**
+ * 
+ * 
  * @author Alex Gilleran
  * 
  */

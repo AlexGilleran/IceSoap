@@ -1,5 +1,13 @@
 package com.alexgilleran.icesoap.exception;
 
+/**
+ * Occurs due to problems with SOAP communication - this takes into account
+ * connectivity issues, and may also wrap an {@link XMLParsingException} that
+ * occurs when parsing a SOAP response.
+ * 
+ * @author Alex Gilleran
+ * 
+ */
 public class SOAPException extends Exception {
 
 	/**
@@ -9,22 +17,17 @@ public class SOAPException extends Exception {
 
 	public SOAPException() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	public SOAPException(String arg0, Throwable arg1) {
 		super(arg0, arg1);
-		// TODO Auto-generated constructor stub
 	}
 
 	public SOAPException(String arg0) {
 		super(arg0);
-		// TODO Auto-generated constructor stub
 	}
 
 	public SOAPException(Throwable arg0) {
 		super(arg0);
-		// TODO Auto-generated constructor stub
 	}
-
 }

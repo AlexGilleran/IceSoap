@@ -5,8 +5,8 @@ import java.util.List;
 import android.os.AsyncTask;
 
 import com.alexgilleran.icesoap.envelope.SOAPEnvelope;
-import com.alexgilleran.icesoap.observer.ListObserverRegistry;
 import com.alexgilleran.icesoap.observer.SOAPListObserver;
+import com.alexgilleran.icesoap.observer.registry.ListObserverRegistry;
 import com.alexgilleran.icesoap.parser.IceSoapListParser;
 import com.alexgilleran.icesoap.parser.ItemObserver;
 import com.alexgilleran.icesoap.parser.impl.IceSoapListParserImpl;

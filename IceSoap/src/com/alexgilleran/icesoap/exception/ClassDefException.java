@@ -1,5 +1,14 @@
 package com.alexgilleran.icesoap.exception;
 
+import com.alexgilleran.icesoap.parser.IceSoapParser;
+
+/**
+ * Exception that occurs when a class definition is not valid for use with
+ * {@link IceSoapParser}s.
+ * 
+ * @author Alex Gilleran
+ * 
+ */
 public class ClassDefException extends RuntimeException {
 
 	/**
@@ -8,22 +17,18 @@ public class ClassDefException extends RuntimeException {
 	private static final long serialVersionUID = -4086594115851592824L;
 
 	public ClassDefException() {
-		// TODO Auto-generated constructor stub
 	}
 
 	public ClassDefException(String message) {
 		super(message);
-		// TODO Auto-generated constructor stub
 	}
 
 	public ClassDefException(Throwable cause) {
 		super(cause);
-		// TODO Auto-generated constructor stub
 	}
 
 	public ClassDefException(String message, Throwable cause) {
 		super(message, cause);
-		// TODO Auto-generated constructor stub
 	}
 
 }

@@ -10,7 +10,7 @@ import com.alexgilleran.icesoap.xml.XMLNode;
 import com.alexgilleran.icesoap.xml.impl.XMLNodeImpl;
 
 /**
- * Concrete implementation of SOAPEnv to be decorated. Automatically sets up the
+ * Concrete implementation of {@link SOAPEnvelope}. Automatically sets up the
  * basic namespaces, <envelope> tags etc, as well as creating a head and body
  * tag to be manipulated by decorators.
  * 
