@@ -15,7 +15,6 @@ import com.alexgilleran.icesoap.exception.SOAPException;
 import com.alexgilleran.icesoap.exception.XMLParsingException;
 import com.alexgilleran.icesoap.observer.SOAPListObserver;
 import com.alexgilleran.icesoap.request.ListRequest;
-import com.alexgilleran.icesoap.request.impl.ListRequestImpl;
 import com.alexgilleran.icesoap.request.test.xmlclasses.Response;
 import com.xtremelabs.robolectric.RobolectricTestRunner;
 
@@ -29,7 +28,7 @@ public class ListRequestTest extends BaseRequestTest<List<Response>> {
 	@SuppressWarnings("unchecked")
 	public void testRequest() throws XMLParsingException, SOAPException {
 		// Set up a parser for the response
-		ListRequest<Response> request = new ListRequestImpl<Response>(
+		ListRequest<Response> request = getRequestFactory().buildListRequest(
 				DUMMY_URL, getDummyEnvelope(), null, Response.class);
 
 		// Create a mock observer and put in the expected call (we expect it to

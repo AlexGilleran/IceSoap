@@ -11,6 +11,7 @@ import com.alexgilleran.icesoap.parser.IceSoapListParser;
 import com.alexgilleran.icesoap.parser.ItemObserver;
 import com.alexgilleran.icesoap.parser.impl.IceSoapListParserImpl;
 import com.alexgilleran.icesoap.request.ListRequest;
+import com.alexgilleran.icesoap.requester.SOAPRequester;
 
 /**
  * Implementation of {@link ListRequest}
@@ -39,11 +40,15 @@ public class ListRequestImpl<ResultType> extends RequestImpl<List<ResultType>>
 	 *            The SOAP Action to pass in the HTTP header - can be null
 	 * @param resultClass
 	 *            The class of the contents of the list.
+	 * @param requester
+	 *            The implementation of {@link SOAPRequester} to use for
+	 *            requests.
 	 */
-	public ListRequestImpl(String url, SOAPEnvelope soapEnv, String soapAction,
-			Class<ResultType> resultClass) {
+	protected ListRequestImpl(String url, SOAPEnvelope soapEnv,
+			String soapAction, Class<ResultType> resultClass,
+			SOAPRequester requester) {
 		this(url, soapEnv, new IceSoapListParserImpl<ResultType>(resultClass),
-				soapAction);
+				soapAction, requester);
 	}
 
 	/**
@@ -57,10 +62,14 @@ public class ListRequestImpl<ResultType> extends RequestImpl<List<ResultType>>
 	 *            The {@link IceSoapListParser} to use to parse the response.
 	 * @param soapAction
 	 *            The SOAP Action to pass in the HTTP header - can be null
+	 * @param requester
+	 *            The implementation of {@link SOAPRequester} to use for
+	 *            requests.
 	 */
-	public ListRequestImpl(String url, SOAPEnvelope soapEnv,
-			IceSoapListParser<ResultType> parser, String soapAction) {
-		super(url, soapEnv, soapAction, parser);
+	protected ListRequestImpl(String url, SOAPEnvelope soapEnv,
+			IceSoapListParser<ResultType> parser, String soapAction,
+			SOAPRequester requester) {
+		super(url, soapEnv, soapAction, parser, requester);
 
 		this.parser = parser;
 	}

@@ -18,7 +18,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.alexgilleran.icesoap.example.R;
-import com.alexgilleran.icesoap.example.dao.RequestFactory;
+import com.alexgilleran.icesoap.example.dao.DictionaryRequestFactory;
 import com.alexgilleran.icesoap.example.domain.Dictionary;
 import com.alexgilleran.icesoap.exception.SOAPException;
 import com.alexgilleran.icesoap.observer.SOAPListObserver;
@@ -35,7 +35,7 @@ import com.google.inject.Inject;
 public class DictionaryListActivity extends RoboActivity {
 	/** Builds requests */
 	@Inject
-	private RequestFactory requestFactory;
+	private DictionaryRequestFactory requestFactory;
 
 	/** Adapter for the main list */
 	private ArrayAdapter<Dictionary> dictListAdapter;

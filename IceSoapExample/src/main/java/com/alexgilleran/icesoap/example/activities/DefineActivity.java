@@ -14,7 +14,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.alexgilleran.icesoap.example.R;
-import com.alexgilleran.icesoap.example.dao.RequestFactory;
+import com.alexgilleran.icesoap.example.dao.DictionaryRequestFactory;
 import com.alexgilleran.icesoap.example.domain.Definition;
 import com.alexgilleran.icesoap.exception.SOAPException;
 import com.alexgilleran.icesoap.observer.SOAPObserver;
@@ -26,7 +26,7 @@ public class DefineActivity extends RoboActivity {
 	public static final String DICT_NAME_KEY = "dictnamekey";
 
 	@Inject
-	private RequestFactory requestFactory;
+	private DictionaryRequestFactory requestFactory;
 
 	private TextView dictNameTextView;
 	private TextView definitionTextView;

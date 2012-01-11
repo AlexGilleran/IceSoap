@@ -10,12 +10,12 @@ import com.alexgilleran.icesoap.example.envelopes.DefineWordEnvelope;
 import com.alexgilleran.icesoap.example.envelopes.GetDictionariesEnvelope;
 import com.alexgilleran.icesoap.request.ListRequest;
 import com.alexgilleran.icesoap.request.Request;
-import com.alexgilleran.icesoap.request.impl.ListRequestImpl;
-import com.alexgilleran.icesoap.request.impl.RequestImpl;
+import com.alexgilleran.icesoap.request.RequestFactory;
+import com.alexgilleran.icesoap.request.impl.RequestFactoryImpl;
 import com.google.inject.Singleton;
 
 @Singleton
-public class RequestFactoryImpl implements RequestFactory {
+public class DictionaryRequestFactoryImpl implements DictionaryRequestFactory {
 	@InjectResource(R.string.soap_action_define)
 	private String defineSoapAction;
 	@InjectResource(R.string.soap_action_dictionary_list)
@@ -23,17 +23,19 @@ public class RequestFactoryImpl implements RequestFactory {
 	@InjectResource(R.string.url_dictionary_services)
 	private String url;
 
+	private RequestFactory requestFactory = new RequestFactoryImpl();
+
 	@Override
 	public ListRequest<Dictionary> getAllDictionaries() {
 		SOAPEnvelope envelope = new GetDictionariesEnvelope();
 
-		return new ListRequestImpl<Dictionary>(url, envelope,
+		return requestFactory.buildListRequest(url, envelope,
 				dictionariesSoapAction, Dictionary.class);
 	}
 
 	@Override
 	public Request<Definition> getDefinition(String dictionaryId, String word) {
-		return new RequestImpl<Definition>(url, new DefineWordEnvelope(
+		return requestFactory.buildRequest(url, new DefineWordEnvelope(
 				dictionaryId, word), defineSoapAction, Definition.class);
 	}
 }

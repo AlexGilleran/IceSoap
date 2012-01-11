@@ -14,16 +14,24 @@ import com.alexgilleran.icesoap.envelope.impl.PasswordSOAPEnvelope;
 import com.alexgilleran.icesoap.exception.SOAPException;
 import com.alexgilleran.icesoap.exception.XMLParsingException;
 import com.alexgilleran.icesoap.request.Request;
+import com.alexgilleran.icesoap.request.RequestFactory;
+import com.alexgilleran.icesoap.request.impl.RequestFactoryImpl;
 import com.alexgilleran.icesoap.requester.SOAPRequester;
 
 public class BaseRequestTest<E> {
 
 	protected static final String DUMMY_URL = "http://www.example.com/services/exampleservice";
+	private RequestFactory requestFactory;
 	private SOAPRequester mockRequester;
 
 	@Before
 	public void setUp() {
 		mockRequester = createMock(SOAPRequester.class);
+		requestFactory = new RequestFactoryImpl(mockRequester);
+	}
+
+	protected RequestFactory getRequestFactory() {
+		return requestFactory;
 	}
 
 	protected SOAPEnvelope getDummyEnvelope() {
@@ -36,7 +44,6 @@ public class BaseRequestTest<E> {
 
 	protected void doRequest(Request<E> request, InputStream inputStream)
 			throws SOAPException, XMLParsingException {
-		request.setSoapRequester(mockRequester);
 		SOAPEnvelope envelope = getDummyEnvelope();
 
 		expect(mockRequester.doSoapRequest(envelope, DUMMY_URL, null))

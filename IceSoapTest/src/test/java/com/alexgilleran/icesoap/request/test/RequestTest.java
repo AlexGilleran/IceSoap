@@ -12,7 +12,6 @@ import com.alexgilleran.icesoap.exception.SOAPException;
 import com.alexgilleran.icesoap.exception.XMLParsingException;
 import com.alexgilleran.icesoap.observer.SOAPObserver;
 import com.alexgilleran.icesoap.request.Request;
-import com.alexgilleran.icesoap.request.impl.RequestImpl;
 import com.alexgilleran.icesoap.request.test.xmlclasses.Response;
 import com.xtremelabs.robolectric.RobolectricTestRunner;
 
@@ -24,7 +23,7 @@ public class RequestTest extends BaseRequestTest<Response> {
 	@Test
 	public void testRequest() throws SOAPException, XMLParsingException {
 		// Set up a parser for the response
-		Request<Response> request = new RequestImpl<Response>(DUMMY_URL,
+		Request<Response> request = getRequestFactory().buildRequest(DUMMY_URL,
 				getDummyEnvelope(), null, Response.class);
 
 		// Create a mock observer and put in the expected call (we expect it to

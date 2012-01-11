@@ -12,7 +12,6 @@ import com.alexgilleran.icesoap.observer.registry.ObserverRegistry;
 import com.alexgilleran.icesoap.parser.IceSoapParser;
 import com.alexgilleran.icesoap.parser.impl.IceSoapParserImpl;
 import com.alexgilleran.icesoap.request.Request;
-import com.alexgilleran.icesoap.requester.ApacheSOAPRequester;
 import com.alexgilleran.icesoap.requester.SOAPRequester;
 
 /**
@@ -65,11 +64,14 @@ public class RequestImpl<ResultType> implements Request<ResultType> {
 	 *            The SOAP Action to pass in the HTTP header - can be null
 	 * @param resultClass
 	 *            The class of the type to return from the request.
+	 * @param requester
+	 *            The implementation of {@link SOAPRequester} to use for
+	 *            requests.
 	 */
-	public RequestImpl(String url, SOAPEnvelope soapEnv, String soapAction,
-			Class<ResultType> resultClass) {
+	protected RequestImpl(String url, SOAPEnvelope soapEnv, String soapAction,
+			Class<ResultType> resultClass, SOAPRequester requester) {
 		this(url, soapEnv, soapAction, new IceSoapParserImpl<ResultType>(
-				resultClass));
+				resultClass), requester);
 	}
 
 	/**
@@ -83,13 +85,17 @@ public class RequestImpl<ResultType> implements Request<ResultType> {
 	 *            The SOAP Action to pass in the HTTP header - can be null
 	 * @param parser
 	 *            The {@link IceSoapParser} to use to parse the response.
+	 * @param requester
+	 *            The implementation of {@link SOAPRequester} to use for
+	 *            requests.
 	 */
-	public RequestImpl(String url, SOAPEnvelope soapEnv, String soapAction,
-			IceSoapParser<ResultType> parser) {
+	protected RequestImpl(String url, SOAPEnvelope soapEnv, String soapAction,
+			IceSoapParser<ResultType> parser, SOAPRequester requester) {
 		this.parser = parser;
 		this.url = url;
 		this.soapEnv = soapEnv;
 		this.soapAction = soapAction;
+		this.soapRequester = requester;
 	}
 
 	/**
@@ -127,7 +133,7 @@ public class RequestImpl<ResultType> implements Request<ResultType> {
 	 * @throws SOAPException
 	 */
 	protected InputStream getResponse() throws SOAPException {
-		return getSoapRequester().doSoapRequest(soapEnv, url, soapAction);
+		return soapRequester.doSoapRequest(soapEnv, url, soapAction);
 	}
 
 	/**
@@ -186,30 +192,6 @@ public class RequestImpl<ResultType> implements Request<ResultType> {
 	@Override
 	public boolean isComplete() {
 		return complete;
-	}
-
-	/**
-	 * Gets an instance of SOAPRequester to perform requests.
-	 * 
-	 * @return The SOAPRequester instance
-	 */
-	public SOAPRequester getSoapRequester() {
-		if (soapRequester == null) {
-			return ApacheSOAPRequester.getInstance();
-		} else {
-			return soapRequester;
-		}
-	}
-
-	/**
-	 * Sets the SOAP Requester to use - if this is not set, the default
-	 * {@link ApacheSOAPRequester} implementation will be used.
-	 * 
-	 * @param soapRequester
-	 *            The SOAP requester to use.
-	 */
-	public void setSoapRequester(SOAPRequester soapRequester) {
-		this.soapRequester = soapRequester;
 	}
 
 	/**

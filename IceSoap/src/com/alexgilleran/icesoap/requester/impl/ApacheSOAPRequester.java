@@ -1,4 +1,4 @@
-package com.alexgilleran.icesoap.requester;
+package com.alexgilleran.icesoap.requester.impl;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,6 +22,7 @@ import org.apache.http.params.HttpParams;
 
 import com.alexgilleran.icesoap.envelope.SOAPEnvelope;
 import com.alexgilleran.icesoap.exception.SOAPException;
+import com.alexgilleran.icesoap.requester.SOAPRequester;
 
 /**
  * Singleton implementation of {@link SOAPRequester}, using the Apache HTTP
@@ -56,25 +57,6 @@ public class ApacheSOAPRequester implements SOAPRequester {
 
 	/** Apache HTTP Client for making HTTP requests */
 	private HttpClient httpClient = buildHttpClient();
-	/** Instance for the singleton instance of the class */
-	private static SOAPRequester INSTANCE;
-
-	private ApacheSOAPRequester() {
-		// Private constructor - singleton.
-	}
-
-	/**
-	 * Gets the instance of SOAPRequester
-	 * 
-	 * @return the instance of SOAPRequester.
-	 */
-	public static SOAPRequester getInstance() {
-		if (INSTANCE == null) {
-			INSTANCE = new ApacheSOAPRequester();
-		}
-
-		return INSTANCE;
-	}
 
 	/**
 	 * {@inheritDoc}
