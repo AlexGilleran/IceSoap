@@ -36,7 +36,7 @@ public interface SOAPEnvelope extends XMLParentNode {
 	public XMLParentNode getHeader();
 
 	/**
-	 * Returns the soapenv:Body node of the envelope, to be modified
+	 * Returns the <soapenv:Body> node of the envelope, to be modified
 	 * 
 	 * @return The body node of the envelope
 	 */

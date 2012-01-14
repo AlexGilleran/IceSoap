@@ -26,8 +26,7 @@ public class ListRequestImpl<ResultType> extends RequestImpl<List<ResultType>>
 	/** The parser to use to parse the result */
 	private IceSoapListParser<ResultType> parser;
 	/** The registry to use to dispatch item-related events */
-	private ListObserverRegistry<ResultType> itemRegistry = new ListObserverRegistry<ResultType>(
-			this);
+	private ListObserverRegistry<ResultType> itemRegistry = new ListObserverRegistry<ResultType>();
 
 	/**
 	 * Creates a new list request without having to specify a parser.
@@ -90,7 +89,7 @@ public class ListRequestImpl<ResultType> extends RequestImpl<List<ResultType>>
 	public void registerObserver(SOAPListObserver<ResultType> observer) {
 		super.registerObserver(observer);
 
-		itemRegistry.addObserver(observer);
+		itemRegistry.registerObserver(observer);
 	}
 
 	/**
@@ -100,7 +99,7 @@ public class ListRequestImpl<ResultType> extends RequestImpl<List<ResultType>>
 	public void deregisterObserver(SOAPListObserver<ResultType> observer) {
 		super.deregisterObserver(observer);
 
-		itemRegistry.removeObserver(observer);
+		itemRegistry.deregisterObserver(observer);
 	}
 
 	/**

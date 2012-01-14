@@ -29,8 +29,6 @@ import com.alexgilleran.icesoap.xpath.elements.XPathElement;
  *            parsers, but can be anything.
  */
 public class XPathRepository<T> {
-	// TODO: This could be quicker if lookups were done against a tree, although
-	// probably at the cost of a bit more memory and a lot more complexity.
 
 	/**
 	 * Holds an index of XPathElements against their names to facilitate faster

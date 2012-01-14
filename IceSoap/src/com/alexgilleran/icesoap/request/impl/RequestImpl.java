@@ -27,8 +27,7 @@ import com.alexgilleran.icesoap.requester.SOAPRequester;
  */
 public class RequestImpl<ResultType> implements Request<ResultType> {
 	/** Registry of observers to send events to */
-	private ObserverRegistry<ResultType> registry = new ObserverRegistry<ResultType>(
-			this);
+	private ObserverRegistry<ResultType> registry = new ObserverRegistry<ResultType>();
 	/** Parser to use to parse the response */
 	private IceSoapParser<ResultType> parser;
 	/** The URL to post the request to */
@@ -167,7 +166,7 @@ public class RequestImpl<ResultType> implements Request<ResultType> {
 	 */
 	@Override
 	public void registerObserver(SOAPObserver<ResultType> observer) {
-		registry.addObserver(observer);
+		registry.registerObserver(observer);
 	}
 
 	/**
@@ -175,7 +174,7 @@ public class RequestImpl<ResultType> implements Request<ResultType> {
 	 */
 	@Override
 	public void deregisterObserver(SOAPObserver<ResultType> observer) {
-		registry.removeObserver(observer);
+		registry.deregisterObserver(observer);
 	}
 
 	/**

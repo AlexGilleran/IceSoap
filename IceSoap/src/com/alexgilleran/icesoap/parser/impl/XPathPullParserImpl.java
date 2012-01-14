@@ -21,8 +21,6 @@ import com.alexgilleran.icesoap.xpath.elements.impl.SingleSlashXPathElement;
  * @author Alex Gilleran
  * 
  */
-// TODO: Move some of the state of this into an extension of XPathElement to
-// improve cohesion.
 public class XPathPullParserImpl implements XPathPullParser {
 	/** The wrapped {@link XmlPullParser} */
 	private XmlPullParser parser = PullParserFactory.getInstance()

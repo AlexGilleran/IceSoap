@@ -80,6 +80,9 @@ public class XPathFactory {
 	 * Implementation of Jaxen XPathHandler used to parse XPaths to the IceSoap
 	 * format.
 	 * 
+	 * As only a subset of XPath is supported by IceSoap, many methods simply do
+	 * nothing.
+	 * 
 	 * @author Alex Gilleran
 	 * 
 	 */

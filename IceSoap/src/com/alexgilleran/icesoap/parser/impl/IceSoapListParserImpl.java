@@ -5,30 +5,76 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.alexgilleran.icesoap.annotation.XMLField;
 import com.alexgilleran.icesoap.exception.XMLParsingException;
 import com.alexgilleran.icesoap.parser.ItemObserver;
 import com.alexgilleran.icesoap.parser.IceSoapListParser;
 import com.alexgilleran.icesoap.parser.XPathPullParser;
 import com.alexgilleran.icesoap.xpath.elements.XPathElement;
 
-public class IceSoapListParserImpl<T> extends BaseIceSoapParserImpl<List<T>>
-		implements IceSoapListParser<T> {
-	private BaseIceSoapParserImpl<T> parser;
+/**
+ * Implementation of {@link IceSoapListParser}
+ * 
+ * @author Alex Gilleran
+ * 
+ * @param <ListItemType>
+ *            The type of each item in the list that will be parsed.
+ */
+public class IceSoapListParserImpl<ListItemType> extends
+		BaseIceSoapParserImpl<List<ListItemType>> implements
+		IceSoapListParser<ListItemType> {
+	/**
+	 * The parser to use for parsing individual items in the list. This is
+	 * programmed to the implementation so it can use the
+	 * {@link BaseIceSoapParserImpl}{@link #parse(XPathPullParser)} method that
+	 * should only ever be used in this class.
+	 */
+	private BaseIceSoapParserImpl<ListItemType> parser;
+	/** The XPath of the list items within the XML document */
 	private XPathElement objectXPath;
-	private Set<ItemObserver<T>> observers = new HashSet<ItemObserver<T>>();
+	/** A set of observers to notify of new items as they're parsed. */
+	private Set<ItemObserver<ListItemType>> observers = new HashSet<ItemObserver<ListItemType>>();
 
-	public IceSoapListParserImpl(Class<T> clazz) {
+	/**
+	 * Instantiates a new list parser.
+	 * 
+	 * @param clazz
+	 *            The class of the item that will be parsed as part of the list.
+	 */
+	public IceSoapListParserImpl(Class<ListItemType> clazz) {
 		super(retrieveRootXPath(clazz));
 
-		this.parser = new IceSoapParserImpl<T>(clazz);
+		this.parser = new IceSoapParserImpl<ListItemType>(clazz);
 	}
 
-	public IceSoapListParserImpl(Class<T> clazz, XPathElement containingXPath) {
-		this(clazz, containingXPath, new IceSoapParserImpl<T>(clazz, containingXPath));
+	/**
+	 * Instantiates a new list parser.
+	 * 
+	 * @param clazz
+	 *            The class of the item that will be parsed as part of the list.
+	 * @param containingXPath
+	 *            The XPath of the XML element that contains the list.
+	 */
+	public IceSoapListParserImpl(Class<ListItemType> clazz,
+			XPathElement containingXPath) {
+		this(clazz, containingXPath, new IceSoapParserImpl<ListItemType>(clazz,
+				containingXPath));
 	}
 
-	protected IceSoapListParserImpl(Class<T> clazz,
-			XPathElement containingXPath, BaseIceSoapParserImpl<T> parser) {
+	/**
+	 * Instantiates a new list parser. This is protected because it's generally
+	 * only used when a parser encounters a {@link List} field annotated with
+	 * {@link XMLField} and needs to parse it.
+	 * 
+	 * @param clazz
+	 *            The class of the item that will be parsed as part of the list.
+	 * @param containingXPath
+	 *            The XPath of the XML element that contains the list.
+	 * @param parser
+	 */
+	protected IceSoapListParserImpl(Class<ListItemType> clazz,
+			XPathElement containingXPath,
+			BaseIceSoapParserImpl<ListItemType> parser) {
 		super(containingXPath);
 
 		objectXPath = super.retrieveRootXPath(clazz);
@@ -36,30 +82,58 @@ public class IceSoapListParserImpl<T> extends BaseIceSoapParserImpl<List<T>>
 		this.parser = parser;
 	}
 
-	public void registerItemObserver(ItemObserver<T> observer) {
+	/**
+	 * Registers an observer. This observer will be called every time a new item
+	 * is parsed.
+	 * 
+	 * @param observer
+	 *            The observer to register.
+	 */
+	public void registerItemObserver(ItemObserver<ListItemType> observer) {
 		observers.add(observer);
 	}
 
-	public void deregisterItemObserver(ItemObserver<T> observer) {
+	/**
+	 * Deregisters an observer. This will no longer receive parsing events.
+	 * 
+	 * @param the
+	 *            observer to register.
+	 */
+	public void deregisterItemObserver(ItemObserver<ListItemType> observer) {
 		observers.remove(observer);
 	}
 
-	private void notifyObservers(T newItem) {
-		for (ItemObserver<T> observer : observers) {
+	/**
+	 * Notifies the observers of this parser that a new item has been completely
+	 * parsed.
+	 * 
+	 * @param newItem
+	 *            The new item that's been parsed.
+	 */
+	private void notifyObservers(ListItemType newItem) {
+		for (ItemObserver<ListItemType> observer : observers) {
 			observer.onNewItem(newItem);
 		}
 	}
 
-	public List<T> initializeParsedObject() {
-		return new ArrayList<T>();
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected List<ListItemType> initializeParsedObject() {
+		return new ArrayList<ListItemType>();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	protected List<T> onNewParsingEvent(XPathPullParser xmlPullParser, List<T> listSoFar)
+	protected List<ListItemType> onNewParsingEvent(
+			XPathPullParser xmlPullParser, List<ListItemType> listSoFar)
 			throws XMLParsingException {
 		if (objectXPath == null
 				|| objectXPath.matches(xmlPullParser.getCurrentElement())) {
-			T object = parser.parse(xmlPullParser);
+			ListItemType object = parser.parse(xmlPullParser);
 
 			if (object != null) {
 				listSoFar.add(object);
@@ -69,5 +143,4 @@ public class IceSoapListParserImpl<T> extends BaseIceSoapParserImpl<List<T>>
 
 		return listSoFar;
 	}
-
 }
