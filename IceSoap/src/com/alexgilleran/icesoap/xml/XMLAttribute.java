@@ -4,7 +4,7 @@
 package com.alexgilleran.icesoap.xml;
 
 /**
- * Represents an attribute on an XML element.
+ * Represents an attribute on an XML node.
  * 
  * @author Alex Gilleran
  * 

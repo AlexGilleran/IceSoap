@@ -9,18 +9,19 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 import com.alexgilleran.icesoap.xml.XMLNode;
-import com.alexgilleran.icesoap.xml.XMLTextElement;
-import com.alexgilleran.icesoap.xml.impl.XMLNodeImpl;
-import com.alexgilleran.icesoap.xml.impl.XMLTextElementImpl;
+import com.alexgilleran.icesoap.xml.XMLParentNode;
+import com.alexgilleran.icesoap.xml.XMLTextNode;
+import com.alexgilleran.icesoap.xml.impl.XMLParentNodeImpl;
+import com.alexgilleran.icesoap.xml.impl.XMLTextNodeImpl;
 
 /**
- * Tests the functionality of {@link XMLNodeImpl}, starting with a blank slate,
- * rather than the pre-populated state of {@link XMLNodeTest}.
+ * Tests the functionality of {@link XMLParentNodeImpl}, starting with a blank
+ * slate, rather than the pre-populated state of {@link XMLNodeTest}.
  * 
  * @author Alex Gilleran
  * 
  */
-public class XMLNodeTestEmpty extends XMLElementTest<XMLNodeImpl> {
+public class XMLNodeTestEmpty extends XMLElementTest<XMLParentNodeImpl> {
 	/** Basic namespace to pass up the class hierarchy */
 	private final static String DEFAULT_NAMESPACE = "http://www.xmlnodeempty.com/lulzy";
 	/** Basic name to pass up the class hierarchy */
@@ -31,8 +32,8 @@ public class XMLNodeTestEmpty extends XMLElementTest<XMLNodeImpl> {
 	}
 
 	@Override
-	protected XMLNodeImpl constructElement(String namespace, String name) {
-		return new XMLNodeImpl(namespace, name);
+	protected XMLParentNodeImpl constructElement(String namespace, String name) {
+		return new XMLParentNodeImpl(namespace, name);
 	}
 
 	@Test
@@ -43,40 +44,46 @@ public class XMLNodeTestEmpty extends XMLElementTest<XMLNodeImpl> {
 		final String name2 = "name2";
 
 		// Check that the object is empty
-		assertTrue(getXMLObject().getSubElements().isEmpty());
+		assertTrue(getXMLObject().getChildNodes().isEmpty());
 
 		// Add a node
-		getXMLObject().addNode(namespace1, name1);
+		getXMLObject().addParentNode(namespace1, name1);
 
 		// Assert that there's now one object
-		assertEquals(1, getXMLObject().getSubElements().size());
+		assertEquals(1, getXMLObject().getChildNodes().size());
 
 		// Check that the details have gone in as expected
-		assertTrue(XMLNode.class.isAssignableFrom(getXMLObject()
-				.getSubElements().get(0).getClass()));
-		assertEquals(name1, getXMLObject().getSubElements().get(0).getName());
-		assertEquals(namespace1, getXMLObject().getSubElements().get(0)
-				.getNamespace());
+		assertTrue(XMLParentNode.class.isAssignableFrom(getXMLObject()
+				.getChildNodes().get(0).getClass()));
+		assertEquals(name1,
+				((XMLNode) getXMLObject().getChildNodes().get(0)).getName());
+		assertEquals(namespace1,
+				((XMLNode) getXMLObject().getChildNodes().get(0))
+						.getNamespace());
 
 		// Add another node
-		getXMLObject().addNode(namespace2, name2);
+		getXMLObject().addParentNode(namespace2, name2);
 
 		// Assert that there are now two elements
-		assertEquals(2, getXMLObject().getSubElements().size());
+		assertEquals(2, getXMLObject().getChildNodes().size());
 
 		// Check that the details of the first element is still correct
-		assertTrue(XMLNode.class.isAssignableFrom(getXMLObject()
-				.getSubElements().get(0).getClass()));
-		assertEquals(name1, getXMLObject().getSubElements().get(0).getName());
-		assertEquals(namespace1, getXMLObject().getSubElements().get(0)
-				.getNamespace());
+		assertTrue(XMLParentNode.class.isAssignableFrom(getXMLObject()
+				.getChildNodes().get(0).getClass()));
+		assertEquals(name1,
+				((XMLNode) getXMLObject().getChildNodes().get(0)).getName());
+		assertEquals(namespace1,
+				((XMLNode) getXMLObject().getChildNodes().get(0))
+						.getNamespace());
 
 		// Check that the details of the new element are correct
-		assertTrue(XMLNode.class.isAssignableFrom(getXMLObject()
-				.getSubElements().get(1).getClass()));
-		assertEquals(name2, getXMLObject().getSubElements().get(1).getName());
-		assertEquals(namespace2, getXMLObject().getSubElements().get(1)
-				.getNamespace());
+		assertTrue(XMLParentNode.class.isAssignableFrom(getXMLObject()
+				.getChildNodes().get(1).getClass()));
+		assertEquals(name2,
+				((XMLNode) getXMLObject().getChildNodes().get(1)).getName());
+		assertEquals(namespace2,
+				((XMLNode) getXMLObject().getChildNodes().get(1))
+						.getNamespace());
 	}
 
 	@Test
@@ -88,43 +95,50 @@ public class XMLNodeTestEmpty extends XMLElementTest<XMLNodeImpl> {
 		final String value2 = "value2";
 
 		// Check that the object is empty
-		assertTrue(getXMLObject().getSubElements().isEmpty());
+		assertTrue(getXMLObject().getChildNodes().isEmpty());
 
 		// Add a node
-		getXMLObject().addElement(new XMLNodeImpl(namespace1, name1));
+		getXMLObject().addElement(new XMLParentNodeImpl(namespace1, name1));
 
 		// Assert that there's now one object
-		assertEquals(1, getXMLObject().getSubElements().size());
+		assertEquals(1, getXMLObject().getChildNodes().size());
 
 		// Check that the details have gone in as expected
-		assertTrue(XMLNode.class.isAssignableFrom(getXMLObject()
-				.getSubElements().get(0).getClass()));
-		assertEquals(name1, getXMLObject().getSubElements().get(0).getName());
-		assertEquals(namespace1, getXMLObject().getSubElements().get(0)
-				.getNamespace());
+		assertTrue(XMLParentNode.class.isAssignableFrom(getXMLObject()
+				.getChildNodes().get(0).getClass()));
+		assertEquals(name1,
+				((XMLNode) getXMLObject().getChildNodes().get(0)).getName());
+		assertEquals(namespace1,
+				((XMLNode) getXMLObject().getChildNodes().get(0))
+						.getNamespace());
 
 		// Add a text element
 		getXMLObject().addElement(
-				new XMLTextElementImpl(namespace2, name2, value2));
+				new XMLTextNodeImpl(namespace2, name2, value2));
 
 		// Assert that there are now two elements
-		assertEquals(2, getXMLObject().getSubElements().size());
+		assertEquals(2, getXMLObject().getChildNodes().size());
 
 		// Check that the details of the first element is still correct
-		assertTrue(XMLNode.class.isAssignableFrom(getXMLObject()
-				.getSubElements().get(0).getClass()));
-		assertEquals(name1, getXMLObject().getSubElements().get(0).getName());
-		assertEquals(namespace1, getXMLObject().getSubElements().get(0)
-				.getNamespace());
+		assertTrue(XMLParentNode.class.isAssignableFrom(getXMLObject()
+				.getChildNodes().get(0).getClass()));
+		assertEquals(name1,
+				((XMLNode) getXMLObject().getChildNodes().get(0)).getName());
+		assertEquals(namespace1,
+				((XMLNode) getXMLObject().getChildNodes().get(0))
+						.getNamespace());
 
 		// Check that the details of the new element are correct
-		assertTrue(XMLTextElement.class.isAssignableFrom(getXMLObject()
-				.getSubElements().get(1).getClass()));
-		assertEquals(name2, getXMLObject().getSubElements().get(1).getName());
-		assertEquals(namespace2, getXMLObject().getSubElements().get(1)
-				.getNamespace());
-		assertEquals(value2, ((XMLTextElement) getXMLObject().getSubElements()
-				.get(1)).getValue());
+		assertTrue(XMLTextNode.class.isAssignableFrom(getXMLObject()
+				.getChildNodes().get(1).getClass()));
+		assertEquals(name2,
+				((XMLNode) getXMLObject().getChildNodes().get(1)).getName());
+		assertEquals(namespace2,
+				((XMLNode) getXMLObject().getChildNodes().get(1))
+						.getNamespace());
+		assertEquals(value2,
+				((XMLTextNode) getXMLObject().getChildNodes().get(1))
+						.getValue());
 	}
 
 	@Test
@@ -137,46 +151,55 @@ public class XMLNodeTestEmpty extends XMLElementTest<XMLNodeImpl> {
 		final String value2 = "value2";
 
 		// Check that the object is empty
-		assertTrue(getXMLObject().getSubElements().isEmpty());
+		assertTrue(getXMLObject().getChildNodes().isEmpty());
 
 		// Add a text element
-		getXMLObject().addTextElement(namespace1, name1, value1);
+		getXMLObject().addTextNode(namespace1, name1, value1);
 
 		// Assert that there's now one object
-		assertEquals(1, getXMLObject().getSubElements().size());
+		assertEquals(1, getXMLObject().getChildNodes().size());
 
 		// Check that the details have gone in as expected
-		assertTrue(XMLTextElement.class.isAssignableFrom(getXMLObject()
-				.getSubElements().get(0).getClass()));
-		assertEquals(name1, getXMLObject().getSubElements().get(0).getName());
-		assertEquals(namespace1, getXMLObject().getSubElements().get(0)
-				.getNamespace());
-		assertEquals(value1, ((XMLTextElement) getXMLObject().getSubElements()
-				.get(0)).getValue());
+		assertTrue(XMLTextNode.class.isAssignableFrom(getXMLObject()
+				.getChildNodes().get(0).getClass()));
+		assertEquals(name1,
+				((XMLNode) getXMLObject().getChildNodes().get(0)).getName());
+		assertEquals(namespace1,
+				((XMLNode) getXMLObject().getChildNodes().get(0))
+						.getNamespace());
+		assertEquals(value1,
+				((XMLTextNode) getXMLObject().getChildNodes().get(0))
+						.getValue());
 
 		// Add another text element
-		getXMLObject().addTextElement(namespace2, name2, value2);
+		getXMLObject().addTextNode(namespace2, name2, value2);
 
 		// Assert that there are now two elements
-		assertEquals(2, getXMLObject().getSubElements().size());
+		assertEquals(2, getXMLObject().getChildNodes().size());
 
 		// Check that the details of the first element is still correct
-		assertTrue(XMLTextElement.class.isAssignableFrom(getXMLObject()
-				.getSubElements().get(0).getClass()));
-		assertEquals(name1, getXMLObject().getSubElements().get(0).getName());
-		assertEquals(namespace1, getXMLObject().getSubElements().get(0)
-				.getNamespace());
-		assertEquals(value1, ((XMLTextElement) getXMLObject().getSubElements()
-				.get(0)).getValue());
+		assertTrue(XMLTextNode.class.isAssignableFrom(getXMLObject()
+				.getChildNodes().get(0).getClass()));
+		assertEquals(name1,
+				((XMLNode) getXMLObject().getChildNodes().get(0)).getName());
+		assertEquals(namespace1,
+				((XMLNode) getXMLObject().getChildNodes().get(0))
+						.getNamespace());
+		assertEquals(value1,
+				((XMLTextNode) getXMLObject().getChildNodes().get(0))
+						.getValue());
 
 		// Check that the details of the new element are correct
-		assertTrue(XMLTextElement.class.isAssignableFrom(getXMLObject()
-				.getSubElements().get(1).getClass()));
-		assertEquals(name2, getXMLObject().getSubElements().get(1).getName());
-		assertEquals(namespace2, getXMLObject().getSubElements().get(1)
-				.getNamespace());
-		assertEquals(value2, ((XMLTextElement) getXMLObject().getSubElements()
-				.get(1)).getValue());
+		assertTrue(XMLTextNode.class.isAssignableFrom(getXMLObject()
+				.getChildNodes().get(1).getClass()));
+		assertEquals(name2,
+				((XMLNode) getXMLObject().getChildNodes().get(1)).getName());
+		assertEquals(namespace2,
+				((XMLNode) getXMLObject().getChildNodes().get(1))
+						.getNamespace());
+		assertEquals(value2,
+				((XMLTextNode) getXMLObject().getChildNodes().get(1))
+						.getValue());
 	}
 
 	/**
@@ -217,6 +240,6 @@ public class XMLNodeTestEmpty extends XMLElementTest<XMLNodeImpl> {
 	 */
 	@Test
 	public void testEmpty() {
-		assertTrue(getXMLObject().getSubElements().isEmpty());
+		assertTrue(getXMLObject().getChildNodes().isEmpty());
 	}
 }

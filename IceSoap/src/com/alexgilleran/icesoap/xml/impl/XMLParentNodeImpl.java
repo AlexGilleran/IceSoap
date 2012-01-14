@@ -8,29 +8,29 @@ import java.util.List;
 import org.xmlpull.v1.XmlSerializer;
 
 import com.alexgilleran.icesoap.xml.XMLElement;
-import com.alexgilleran.icesoap.xml.XMLNode;
-import com.alexgilleran.icesoap.xml.XMLTextElement;
+import com.alexgilleran.icesoap.xml.XMLParentNode;
+import com.alexgilleran.icesoap.xml.XMLTextNode;
 
 /**
- * Implementation of {@link XMLNode}
+ * Implementation of {@link XMLParentNode}
  * 
  * @author Alex Gilleran
  * 
  */
-public class XMLNodeImpl extends XMLElementBase implements XMLNode {
+public class XMLParentNodeImpl extends XMLNodeBase implements XMLParentNode {
 	/** List of subelements of the node */
 	private List<XMLElement> subElements = new ArrayList<XMLElement>();
 
 	/**
-	 * Instantiates a new {@link XMLNodeImpl} with the specified namespace and
-	 * name.
+	 * Instantiates a new {@link XMLParentNodeImpl} with the specified namespace
+	 * and name.
 	 * 
 	 * @param namespace
 	 *            The namespace for the new node.
 	 * @param name
 	 *            The name for the new node.
 	 */
-	public XMLNodeImpl(String namespace, String name) {
+	public XMLParentNodeImpl(String namespace, String name) {
 		super(namespace, name);
 	}
 
@@ -38,7 +38,7 @@ public class XMLNodeImpl extends XMLElementBase implements XMLNode {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<XMLElement> getSubElements() {
+	public List<XMLElement> getChildNodes() {
 		return Collections.unmodifiableList(subElements);
 	}
 
@@ -46,8 +46,8 @@ public class XMLNodeImpl extends XMLElementBase implements XMLNode {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public XMLNode addNode(String namespace, String name) {
-		XMLNodeImpl newNode = new XMLNodeImpl(namespace, name);
+	public XMLParentNode addParentNode(String namespace, String name) {
+		XMLParentNodeImpl newNode = new XMLParentNodeImpl(namespace, name);
 
 		subElements.add(newNode);
 
@@ -68,10 +68,9 @@ public class XMLNodeImpl extends XMLElementBase implements XMLNode {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public XMLTextElement addTextElement(String namespace, String name,
-			String value) {
-		XMLTextElementImpl newTextElement = new XMLTextElementImpl(namespace,
-				name, value);
+	public XMLTextNode addTextNode(String namespace, String name, String value) {
+		XMLTextNodeImpl newTextElement = new XMLTextNodeImpl(namespace, name,
+				value);
 
 		subElements.add(newTextElement);
 
@@ -106,7 +105,7 @@ public class XMLNodeImpl extends XMLElementBase implements XMLNode {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		XMLNodeImpl other = (XMLNodeImpl) obj;
+		XMLParentNodeImpl other = (XMLParentNodeImpl) obj;
 		if (subElements == null) {
 			if (other.subElements != null)
 				return false;

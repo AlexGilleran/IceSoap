@@ -10,7 +10,7 @@ package com.alexgilleran.icesoap.xml;
  * @author Alex Gilleran
  * 
  */
-public interface XMLTextElement extends XMLElement {
+public interface XMLTextNode extends XMLNode {
 
 	/**
 	 * Gets the text value for the text element.

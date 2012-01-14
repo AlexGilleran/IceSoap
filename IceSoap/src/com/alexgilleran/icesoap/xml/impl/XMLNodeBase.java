@@ -12,7 +12,7 @@ import org.xmlpull.v1.XmlSerializer;
 
 import com.alexgilleran.icesoap.parser.impl.PullParserFactory;
 import com.alexgilleran.icesoap.xml.XMLAttribute;
-import com.alexgilleran.icesoap.xml.XMLElement;
+import com.alexgilleran.icesoap.xml.XMLNode;
 
 /**
  * Base implementation for XML Elements - both nodes and leaves.
@@ -20,8 +20,8 @@ import com.alexgilleran.icesoap.xml.XMLElement;
  * @author Alex Gilleran
  * 
  */
-public abstract class XMLElementBase extends XMLObjectBase implements
-		XMLElement {
+public abstract class XMLNodeBase extends XMLObjectBase implements
+		XMLNode {
 	/** Name for xsi:type attribute */
 	private static final String TYPE_ATTRIBUTE_NAME = "type";
 	/** Namespace prefixes declared in this element (map of prefixes to urls) */
@@ -42,7 +42,7 @@ public abstract class XMLElementBase extends XMLObjectBase implements
 	 * @param name
 	 *            The name of the element.
 	 */
-	public XMLElementBase(String namespace, String name) {
+	public XMLNodeBase(String namespace, String name) {
 		super(namespace, name);
 	}
 
@@ -72,7 +72,7 @@ public abstract class XMLElementBase extends XMLObjectBase implements
 		// If there's been no type set, make a new attribute to represent it and
 		// remember it in case it needs changing in the future
 		if (this.type == null) {
-			this.type = addAttribute(XMLElement.NS_URI_XSI,
+			this.type = addAttribute(XMLNode.NS_URI_XSI,
 					TYPE_ATTRIBUTE_NAME, type);
 		} else {
 			this.type.setValue(type);
@@ -189,7 +189,7 @@ public abstract class XMLElementBase extends XMLObjectBase implements
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		XMLElementBase other = (XMLElementBase) obj;
+		XMLNodeBase other = (XMLNodeBase) obj;
 		if (attributes == null) {
 			if (other.attributes != null)
 				return false;

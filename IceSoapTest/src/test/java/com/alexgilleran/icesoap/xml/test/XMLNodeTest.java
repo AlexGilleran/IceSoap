@@ -12,21 +12,22 @@ import org.junit.Test;
 
 import com.alexgilleran.icesoap.xml.XMLElement;
 import com.alexgilleran.icesoap.xml.XMLNode;
-import com.alexgilleran.icesoap.xml.XMLTextElement;
-import com.alexgilleran.icesoap.xml.impl.XMLNodeImpl;
+import com.alexgilleran.icesoap.xml.XMLParentNode;
+import com.alexgilleran.icesoap.xml.XMLTextNode;
+import com.alexgilleran.icesoap.xml.impl.XMLParentNodeImpl;
 
 /**
- * Tests the inherited functionality of {@link XMLNodeImpl} by starting with a
- * populated element.
+ * Tests the inherited functionality of {@link XMLParentNodeImpl} by starting
+ * with a populated element.
  * 
  * Note that tests for addition functions like
- * {@link XMLNode#addElement(com.alexgilleran.icesoap.xml.XMLElement)} are
+ * {@link XMLParentNode#addElement(com.alexgilleran.icesoap.xml.XMLNode)} are
  * contained in {@link XMLNodeTestEmpty}.
  * 
  * @author Alex Gilleran
  * 
  */
-public class XMLNodeTest extends XMLElementTest<XMLNodeImpl> {
+public class XMLNodeTest extends XMLElementTest<XMLParentNodeImpl> {
 	/** Basic namespace to pass up the class hierarchy */
 	private final static String DEFAULT_NAMESPACE = "http://www.xmlnode.com/lulzy";
 	/** Basic name to pass up the class hierarchy */
@@ -46,13 +47,14 @@ public class XMLNodeTest extends XMLElementTest<XMLNodeImpl> {
 	}
 
 	@Override
-	protected XMLNodeImpl constructElement(String namespace, String name) {
-		XMLNodeImpl baseNode = new XMLNodeImpl(namespace, name);
+	protected XMLParentNodeImpl constructElement(String namespace, String name) {
+		XMLParentNodeImpl baseNode = new XMLParentNodeImpl(namespace, name);
 
-		XMLNode node1 = baseNode.addNode(NAMESPACE_NODE_1, NAME_NODE_1);
-		node1.addNode(NAMESPACE_NODE_2, NAME_NODE_2);
+		XMLParentNode node1 = baseNode.addParentNode(NAMESPACE_NODE_1,
+				NAME_NODE_1);
+		node1.addParentNode(NAMESPACE_NODE_2, NAME_NODE_2);
 
-		baseNode.addTextElement(NAMESPACE_TEXT_NODE, NAME_TEXT_NODE,
+		baseNode.addTextNode(NAMESPACE_TEXT_NODE, NAME_TEXT_NODE,
 				VALUE_TEXT_NODE);
 
 		return baseNode;
@@ -64,27 +66,27 @@ public class XMLNodeTest extends XMLElementTest<XMLNodeImpl> {
 	 */
 	@Test
 	public void testGetSubElements() {
-		List<XMLElement> baseNodeElements = getXMLObject().getSubElements();
+		List<XMLElement> baseNodeElements = getXMLObject().getChildNodes();
 
 		assertEquals(2, baseNodeElements.size());
 
-		assertTrue(XMLNode.class.isAssignableFrom(baseNodeElements.get(0)
+		assertTrue(XMLParentNode.class.isAssignableFrom(baseNodeElements.get(0)
 				.getClass()));
-		XMLNode node1 = (XMLNode) baseNodeElements.get(0);
+		XMLParentNode node1 = (XMLParentNode) baseNodeElements.get(0);
 		assertEquals(NAME_NODE_1, node1.getName());
 		assertEquals(NAMESPACE_NODE_1, node1.getNamespace());
 
-		List<XMLElement> node1SubElements = node1.getSubElements();
+		List<XMLElement> node1SubElements = node1.getChildNodes();
 		assertEquals(1, node1SubElements.size());
-		assertTrue(XMLNode.class.isAssignableFrom(node1SubElements.get(0)
+		assertTrue(XMLParentNode.class.isAssignableFrom(node1SubElements.get(0)
 				.getClass()));
-		XMLNode node2 = (XMLNode) node1SubElements.get(0);
+		XMLParentNode node2 = (XMLParentNode) node1SubElements.get(0);
 		assertEquals(NAME_NODE_2, node2.getName());
 		assertEquals(NAMESPACE_NODE_2, node2.getNamespace());
 
-		assertTrue(XMLTextElement.class.isAssignableFrom(baseNodeElements
-				.get(1).getClass()));
-		XMLTextElement textElement = (XMLTextElement) baseNodeElements.get(1);
+		assertTrue(XMLTextNode.class.isAssignableFrom(baseNodeElements.get(1)
+				.getClass()));
+		XMLTextNode textElement = (XMLTextNode) baseNodeElements.get(1);
 		assertEquals(NAME_TEXT_NODE, textElement.getName());
 		assertEquals(NAMESPACE_TEXT_NODE, textElement.getNamespace());
 		assertEquals(VALUE_TEXT_NODE, textElement.getValue());
@@ -105,12 +107,13 @@ public class XMLNodeTest extends XMLElementTest<XMLNodeImpl> {
 
 		getXMLObject().declarePrefix(defaultPrefix, DEFAULT_NAMESPACE);
 
-		getXMLObject().getSubElements().get(0)
-				.declarePrefix(prefixNode1, NAMESPACE_NODE_1);
-		((XMLNode) getXMLObject().getSubElements().get(0)).getSubElements()
-				.get(0).declarePrefix(prefixNode2, NAMESPACE_NODE_2);
-		getXMLObject().getSubElements().get(1)
-				.declarePrefix(prefixText, NAMESPACE_TEXT_NODE);
+		((XMLNode) getXMLObject().getChildNodes().get(0)).declarePrefix(
+				prefixNode1, NAMESPACE_NODE_1);
+		((XMLNode) ((XMLParentNode) getXMLObject().getChildNodes().get(0))
+				.getChildNodes().get(0)).declarePrefix(prefixNode2,
+				NAMESPACE_NODE_2);
+		((XMLNode) getXMLObject().getChildNodes().get(1)).declarePrefix(
+				prefixText, NAMESPACE_TEXT_NODE);
 
 		StringBuilder builder = new StringBuilder();
 		builder.append("<").append(defaultPrefix).append(":")

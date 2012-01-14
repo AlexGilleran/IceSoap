@@ -4,11 +4,11 @@
 package com.alexgilleran.icesoap.xml.impl;
 
 import com.alexgilleran.icesoap.xml.XMLAttribute;
-import com.alexgilleran.icesoap.xml.XMLElement;
+import com.alexgilleran.icesoap.xml.XMLNode;
 
 /**
  * Abstract class for implementations of {@link XMLAttribute} and
- * {@link XMLElement}
+ * {@link XMLNode}
  * 
  * @author Alex Gilleran
  * 

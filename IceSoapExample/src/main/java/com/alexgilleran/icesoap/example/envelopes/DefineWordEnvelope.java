@@ -1,6 +1,6 @@
 package com.alexgilleran.icesoap.example.envelopes;
 
-import com.alexgilleran.icesoap.xml.XMLNode;
+import com.alexgilleran.icesoap.xml.XMLParentNode;
 
 //<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:web="http://services.aonaware.com/webservices/">
 //<soapenv:Header/>
@@ -13,9 +13,9 @@ import com.alexgilleran.icesoap.xml.XMLNode;
 //</soapenv:Envelope>
 public class DefineWordEnvelope extends BaseDictionaryEnvelope {
 	public DefineWordEnvelope(String dictId, String word) {
-		XMLNode defineInDict = getBody().addNode(getAonAwareNamespace(),
+		XMLParentNode defineInDict = getBody().addParentNode(getAonAwareNamespace(),
 				"DefineInDict");
-		defineInDict.addTextElement(getAonAwareNamespace(), "dictId", dictId);
-		defineInDict.addTextElement(getAonAwareNamespace(), "word", word);
+		defineInDict.addTextNode(getAonAwareNamespace(), "dictId", dictId);
+		defineInDict.addTextNode(getAonAwareNamespace(), "word", word);
 	}
 }

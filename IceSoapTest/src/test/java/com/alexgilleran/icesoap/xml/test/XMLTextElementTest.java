@@ -8,16 +8,16 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import com.alexgilleran.icesoap.xml.impl.XMLTextElementImpl;
+import com.alexgilleran.icesoap.xml.impl.XMLTextNodeImpl;
 
 /**
- * Tests that the {@link XMLTextElementImpl} class, which represents basic XML
+ * Tests that the {@link XMLTextNodeImpl} class, which represents basic XML
  * Text nodes in the format {@code <element>value</element>}, works as desired.
  * 
  * @author Alex Gilleran
  * 
  */
-public class XMLTextElementTest extends XMLElementTest<XMLTextElementImpl> {
+public class XMLTextElementTest extends XMLElementTest<XMLTextNodeImpl> {
 	/** Basic namespace to pass up the class hierarchy */
 	private final static String DEFAULT_NAMESPACE = "http://www.example.com";
 	/** Basic name to pass up the class hierarchy */
@@ -33,8 +33,8 @@ public class XMLTextElementTest extends XMLElementTest<XMLTextElementImpl> {
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected XMLTextElementImpl constructElement(String namespace, String name) {
-		return new XMLTextElementImpl(namespace, name, DEFAULT_VALUE);
+	protected XMLTextNodeImpl constructElement(String namespace, String name) {
+		return new XMLTextNodeImpl(namespace, name, DEFAULT_VALUE);
 	}
 
 /**

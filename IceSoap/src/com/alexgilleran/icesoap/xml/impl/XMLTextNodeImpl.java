@@ -4,16 +4,15 @@ import java.io.IOException;
 
 import org.xmlpull.v1.XmlSerializer;
 
-import com.alexgilleran.icesoap.xml.XMLTextElement;
+import com.alexgilleran.icesoap.xml.XMLTextNode;
 
 /**
- * Implementation of {@link XMLTextElement}
+ * Implementation of {@link XMLTextNode}
  * 
  * @author Alex Gilleran
  * 
  */
-public class XMLTextElementImpl extends XMLElementBase implements
-		XMLTextElement {
+public class XMLTextNodeImpl extends XMLNodeBase implements XMLTextNode {
 	/** The blank value - returned if the value is null */
 	private static final String BLANK_VALUE = "";
 	/** The text value of the text element. */
@@ -29,7 +28,7 @@ public class XMLTextElementImpl extends XMLElementBase implements
 	 * @param value
 	 *            The value of the text element.
 	 */
-	public XMLTextElementImpl(String namespace, String name, String value) {
+	public XMLTextNodeImpl(String namespace, String name, String value) {
 		super(namespace, name);
 
 		this.value = value;
@@ -72,7 +71,7 @@ public class XMLTextElementImpl extends XMLElementBase implements
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		XMLTextElementImpl other = (XMLTextElementImpl) obj;
+		XMLTextNodeImpl other = (XMLTextNodeImpl) obj;
 		if (value == null) {
 			if (other.value != null)
 				return false;

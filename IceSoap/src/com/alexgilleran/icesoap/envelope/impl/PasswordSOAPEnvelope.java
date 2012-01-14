@@ -1,8 +1,8 @@
 package com.alexgilleran.icesoap.envelope.impl;
 
-import com.alexgilleran.icesoap.xml.XMLNode;
-import com.alexgilleran.icesoap.xml.XMLTextElement;
-import com.alexgilleran.icesoap.xml.impl.XMLNodeImpl;
+import com.alexgilleran.icesoap.xml.XMLParentNode;
+import com.alexgilleran.icesoap.xml.XMLTextNode;
+import com.alexgilleran.icesoap.xml.impl.XMLParentNodeImpl;
 
 /**
  * Example envelope - adds a WSSE Security tag that specifies a username and
@@ -17,7 +17,7 @@ public class PasswordSOAPEnvelope extends BaseSOAPEnvelope {
 	/** URI for WSSE namespace */
 	private static final String NS_URI_WSSE = "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd";
 	/** The WSSE security node */
-	protected XMLNode securityNode;
+	protected XMLParentNode securityNode;
 
 	/**
 	 * Instantiates a new password envelope, creating a default envelope to wrap
@@ -34,7 +34,7 @@ public class PasswordSOAPEnvelope extends BaseSOAPEnvelope {
 	}
 
 	private void setupWSSENode(String username, String password) {
-		securityNode = getHeader().addNode(NS_URI_WSSE, "Security");
+		securityNode = getHeader().addParentNode(NS_URI_WSSE, "Security");
 		securityNode.declarePrefix(NS_PREFIX_WSSE, NS_URI_WSSE);
 		securityNode.addAttribute(BaseSOAPEnvelope.NS_URI_SOAPENV,
 				"mustUnderstand", "1");
@@ -51,11 +51,11 @@ public class PasswordSOAPEnvelope extends BaseSOAPEnvelope {
 	 *            The password to add
 	 * @return the UsernameToken element.
 	 */
-	protected XMLNode getUserNameToken(String username, String password) {
-		XMLNode usernameToken = new XMLNodeImpl(NS_URI_WSSE, "UsernameToken");
-		usernameToken.addTextElement(NS_URI_WSSE, "Username", username);
+	protected XMLParentNode getUserNameToken(String username, String password) {
+		XMLParentNode usernameToken = new XMLParentNodeImpl(NS_URI_WSSE, "UsernameToken");
+		usernameToken.addTextNode(NS_URI_WSSE, "Username", username);
 
-		XMLTextElement passwordLeaf = usernameToken.addTextElement(NS_URI_WSSE,
+		XMLTextNode passwordLeaf = usernameToken.addTextNode(NS_URI_WSSE,
 				"Password", password);
 		passwordLeaf
 				.addAttribute(

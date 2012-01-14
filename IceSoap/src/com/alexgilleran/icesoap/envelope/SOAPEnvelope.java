@@ -1,6 +1,6 @@
 package com.alexgilleran.icesoap.envelope;
 
-import com.alexgilleran.icesoap.xml.XMLNode;
+import com.alexgilleran.icesoap.xml.XMLParentNode;
 
 /**
  * A representation of a SOAP envelope. Methods to retrieve the SOAP Header and
@@ -19,7 +19,7 @@ import com.alexgilleran.icesoap.xml.XMLNode;
  * @author Alex Gilleran
  * 
  */
-public interface SOAPEnvelope extends XMLNode {
+public interface SOAPEnvelope extends XMLParentNode {
 	public final static String NS_PREFIX_SOAPENV = "soapenv";
 	public final static String NS_URI_SOAPENV = "http://schemas.xmlsoap.org/soap/envelope/";
 	public final static String NS_PREFIX_SOAPENC = "soapenc";
@@ -33,12 +33,12 @@ public interface SOAPEnvelope extends XMLNode {
 	 * 
 	 * @return The header node of the envelope
 	 */
-	public XMLNode getHeader();
+	public XMLParentNode getHeader();
 
 	/**
 	 * Returns the soapenv:Body node of the envelope, to be modified
 	 * 
 	 * @return The body node of the envelope
 	 */
-	public XMLNode getBody();
+	public XMLParentNode getBody();
 }

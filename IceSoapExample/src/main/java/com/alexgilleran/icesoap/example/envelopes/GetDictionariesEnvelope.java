@@ -12,6 +12,6 @@ public class GetDictionariesEnvelope extends BaseDictionaryEnvelope {
 	public GetDictionariesEnvelope() {
 		super();
 
-		getBody().addNode(super.getAonAwareNamespace(), "DictionaryList");
+		getBody().addParentNode(super.getAonAwareNamespace(), "DictionaryList");
 	}
 }

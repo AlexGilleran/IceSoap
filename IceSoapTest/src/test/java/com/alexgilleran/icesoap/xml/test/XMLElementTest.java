@@ -13,9 +13,9 @@ import java.util.Set;
 import org.junit.Test;
 
 import com.alexgilleran.icesoap.xml.XMLAttribute;
-import com.alexgilleran.icesoap.xml.XMLElement;
+import com.alexgilleran.icesoap.xml.XMLNode;
 import com.alexgilleran.icesoap.xml.impl.XMLAttributeImpl;
-import com.alexgilleran.icesoap.xml.impl.XMLElementBase;
+import com.alexgilleran.icesoap.xml.impl.XMLNodeBase;
 
 /**
  * Runs a number of tests on the XMLElement object, asserting that the base code
@@ -25,7 +25,7 @@ import com.alexgilleran.icesoap.xml.impl.XMLElementBase;
  * @author Alex Gilleran
  * 
  */
-public abstract class XMLElementTest<TypeUnderTest extends XMLElementBase>
+public abstract class XMLElementTest<TypeUnderTest extends XMLNodeBase>
 		extends XMLObjectTest<TypeUnderTest> {
 	public XMLElementTest(String namespace, String name) {
 		super(namespace, name);
@@ -44,7 +44,7 @@ public abstract class XMLElementTest<TypeUnderTest extends XMLElementBase>
 	}
 
 	/**
-	 * Constructs a new class that extends {@link XMLElementBase}. The object
+	 * Constructs a new class that extends {@link XMLNodeBase}. The object
 	 * that is returned from this method should:
 	 * 
 	 * <ul>
@@ -56,10 +56,10 @@ public abstract class XMLElementTest<TypeUnderTest extends XMLElementBase>
 	 * Having data within the element itself is fine.
 	 * 
 	 * @param namespace
-	 *            The namespace to set on the new {@link XMLElementBase}
+	 *            The namespace to set on the new {@link XMLNodeBase}
 	 * @param name
-	 *            The name to set on the new {@link XMLElementBase}
-	 * @return An instance of an {@link XMLElementBase} extending class.
+	 *            The name to set on the new {@link XMLNodeBase}
+	 * @return An instance of an {@link XMLNodeBase} extending class.
 	 */
 	protected abstract TypeUnderTest constructElement(String namespace,
 			String name);
@@ -178,8 +178,8 @@ public abstract class XMLElementTest<TypeUnderTest extends XMLElementBase>
 		assertEquals(0, getXMLObject().getAttributes().size());
 
 		// Declare the xsi namespace
-		getXMLObject().declarePrefix(XMLElement.NS_PREFIX_XSI,
-				XMLElement.NS_URI_XSI);
+		getXMLObject().declarePrefix(XMLNode.NS_PREFIX_XSI,
+				XMLNode.NS_URI_XSI);
 
 		// Set the type - this will create an attribute for xsi:type
 		getXMLObject().setType(type);
@@ -191,14 +191,14 @@ public abstract class XMLElementTest<TypeUnderTest extends XMLElementBase>
 
 		// Ensure the attribute is correct
 		assertEquals(type, typeAtt.getValue());
-		assertEquals(XMLElement.NS_URI_XSI, typeAtt.getNamespace());
+		assertEquals(XMLNode.NS_URI_XSI, typeAtt.getNamespace());
 		assertEquals(typeName, typeAtt.getName());
 
 		// Test the type is toStringing properly
 		String asString = getXMLObject().toString();
 		assertTrue(
 				asString,
-				asString.contains(XMLElement.NS_PREFIX_XSI + ":" + typeName
+				asString.contains(XMLNode.NS_PREFIX_XSI + ":" + typeName
 						+ "=\"" + type + "\""));
 
 		// Set the type again
@@ -211,11 +211,11 @@ public abstract class XMLElementTest<TypeUnderTest extends XMLElementBase>
 
 		// Ensure the attribute is still correct and has the new value
 		assertEquals(anotherType, typeAtt.getValue());
-		assertEquals(XMLElement.NS_URI_XSI, typeAtt.getNamespace());
+		assertEquals(XMLNode.NS_URI_XSI, typeAtt.getNamespace());
 		assertEquals(typeName, typeAtt.getName());
 
 		asString = getXMLObject().toString();
-		assertTrue(asString.contains(XMLElement.NS_PREFIX_XSI + ":" + typeName
+		assertTrue(asString.contains(XMLNode.NS_PREFIX_XSI + ":" + typeName
 				+ "=\"" + anotherType + "\""));
 	}
 

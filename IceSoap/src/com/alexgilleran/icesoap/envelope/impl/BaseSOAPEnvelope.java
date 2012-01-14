@@ -5,9 +5,9 @@ import java.io.IOException;
 import org.xmlpull.v1.XmlSerializer;
 
 import com.alexgilleran.icesoap.envelope.SOAPEnvelope;
-import com.alexgilleran.icesoap.xml.XMLElement;
 import com.alexgilleran.icesoap.xml.XMLNode;
-import com.alexgilleran.icesoap.xml.impl.XMLNodeImpl;
+import com.alexgilleran.icesoap.xml.XMLParentNode;
+import com.alexgilleran.icesoap.xml.impl.XMLParentNodeImpl;
 
 /**
  * Concrete implementation of {@link SOAPEnvelope}. Automatically sets up the
@@ -17,11 +17,11 @@ import com.alexgilleran.icesoap.xml.impl.XMLNodeImpl;
  * @author Alex Gilleran
  * 
  */
-public class BaseSOAPEnvelope extends XMLNodeImpl implements SOAPEnvelope {
+public class BaseSOAPEnvelope extends XMLParentNodeImpl implements SOAPEnvelope {
 	/** The SOAP header element */
-	private XMLNode header;
+	private XMLParentNode header;
 	/** The SOAP body element */
-	private XMLNode body;
+	private XMLParentNode body;
 
 	/**
 	 * Initialises the class - sets up the basic "soapenv", "soapenc", "xsd" and
@@ -32,18 +32,18 @@ public class BaseSOAPEnvelope extends XMLNodeImpl implements SOAPEnvelope {
 
 		this.declarePrefix(NS_PREFIX_SOAPENV, NS_URI_SOAPENV);
 		this.declarePrefix(NS_PREFIX_SOAPENC, NS_URI_SOAPENC);
-		this.declarePrefix(XMLElement.NS_PREFIX_XSD, XMLElement.NS_URI_XSD);
-		this.declarePrefix(XMLElement.NS_PREFIX_XSI, XMLElement.NS_URI_XSI);
+		this.declarePrefix(XMLNode.NS_PREFIX_XSD, XMLNode.NS_URI_XSD);
+		this.declarePrefix(XMLNode.NS_PREFIX_XSI, XMLNode.NS_URI_XSI);
 
-		header = this.addNode(NS_URI_SOAPENV, "Header");
-		body = this.addNode(NS_URI_SOAPENV, "Body");
+		header = this.addParentNode(NS_URI_SOAPENV, "Header");
+		body = this.addParentNode(NS_URI_SOAPENV, "Body");
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public XMLNode getHeader() {
+	public XMLParentNode getHeader() {
 		return header;
 	}
 
@@ -51,7 +51,7 @@ public class BaseSOAPEnvelope extends XMLNodeImpl implements SOAPEnvelope {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public XMLNode getBody() {
+	public XMLParentNode getBody() {
 		return body;
 	}
 
