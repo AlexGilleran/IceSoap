@@ -21,19 +21,34 @@ import com.alexgilleran.icesoap.observer.SOAPObserver;
 import com.alexgilleran.icesoap.request.Request;
 import com.google.inject.Inject;
 
+/**
+ * Simple Activity to display a definition
+ * 
+ * @author Alex Gilleran
+ * 
+ */
 public class DefineActivity extends RoboActivity {
+	/** Key of the dictionary id extra that must be passed in an intent */
 	public static final String DICT_ID_KEY = "dictidkey";
+	/** Key of the dictionary name extra that must be passed in an intent */
 	public static final String DICT_NAME_KEY = "dictnamekey";
 
+	/** Creates requests */
 	@Inject
 	private DictionaryRequestFactory requestFactory;
 
+	/** {@link TextView} that displays the dictionary name */
 	private TextView dictNameTextView;
+	/** {@link TextView} that displays the definition content. */
 	private TextView definitionTextView;
+	/** {@link EditText} used for inputing a word to define */
 	private EditText wordEditText;
+	/** {@link Button} to trigger the retrieval of the definition */
 	private Button retrieveButton;
 
+	/** Name of the dictionary to look up */
 	private String dictionaryNamePrefix;
+	/** ID of the dictionary to look up */
 	private String dictionaryId;
 
 	@Override
@@ -42,6 +57,9 @@ public class DefineActivity extends RoboActivity {
 		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		setContentView(R.layout.define);
 
+		// Note that I've grabbed view elements the annoying native Android way
+		// rather than the smooth Roboguice way - this is just so that things
+		// are less confusing for those unfamiliar with Roboguice
 		dictNameTextView = (TextView) findViewById(R.id.define_dictionary_name_textview);
 		definitionTextView = (TextView) findViewById(R.id.define_definition_textview);
 		wordEditText = (EditText) findViewById(R.id.define_word_edittext);
@@ -55,10 +73,19 @@ public class DefineActivity extends RoboActivity {
 		setDictionaryName(getIntent().getStringExtra(DICT_NAME_KEY));
 	}
 
+	/**
+	 * Sets the name of the dictionary being used in the UI
+	 * 
+	 * @param name
+	 *            The name to use
+	 */
 	private void setDictionaryName(String name) {
 		dictNameTextView.setText(dictionaryNamePrefix + name);
 	}
 
+	/**
+	 * Invokes the web service to retrieve a dictionary definition
+	 */
 	private OnClickListener goButtonListener = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
@@ -66,6 +93,13 @@ public class DefineActivity extends RoboActivity {
 		}
 	};
 
+	/**
+	 * Activates the progress spinner in the corner of the window and invokes
+	 * the SOAP request for the definition.
+	 * 
+	 * @param word
+	 *            The word to define.
+	 */
 	private void retrieveDefinition(String word) {
 		setProgressBarIndeterminateVisibility(true);
 		requestFactory.getDefinition(dictionaryId, word).execute(
@@ -91,23 +125,30 @@ public class DefineActivity extends RoboActivity {
 		return builder.create();
 	}
 
+	/**
+	 * Listens for responses from the dictionary service - when they come
+	 * through, it displays the definition.
+	 */
 	private SOAPObserver<Definition> definitionObserver = new SOAPObserver<Definition>() {
 		@Override
 		public void onCompletion(Request<Definition> request) {
 			String definition;
 
+			// If the request comes back with nothing, display an error message,
+			// otherwise display the definition.
 			if (request.getResult() != null) {
 				definition = request.getResult().getWordDefinition();
 			} else {
 				definition = getString(R.string.define_no_result_message);
 			}
-
 			definitionTextView.setText(definition);
+
 			setProgressBarIndeterminateVisibility(false);
 		}
 
 		@Override
 		public void onException(Request<Definition> request, SOAPException e) {
+			// Log the exception and show an error dialog.
 			Log.e(DefineActivity.class.getSimpleName(), e.getMessage(), e);
 			showDialog(0);
 		}

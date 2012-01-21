@@ -3,6 +3,7 @@ package com.alexgilleran.icesoap.example.domain;
 import com.alexgilleran.icesoap.annotation.XMLField;
 import com.alexgilleran.icesoap.annotation.XMLObject;
 
+// The envelope being imitated:
 //<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
 //<soap:Body>
 //   <DefineInDictResponse xmlns="http://services.aonaware.com/webservices/">
@@ -29,23 +30,47 @@ import com.alexgilleran.icesoap.annotation.XMLObject;
 //</soap:Body>
 //</soap:Envelope>
 
+/**
+ * A definition of a word.
+ */
 @XMLObject("//Definitions/Definition")
 public class Definition {
+	/** The word being defined */
 	@XMLField("Word")
 	private String word;
+
+	/**
+	 * The dictionary being used for the definition - note that the entire
+	 * Dictionary type is parsed here, according to the {@link XMLField}
+	 * annotations in {@link Dictionary}
+	 */
 	@XMLField("Dictionary")
 	private Dictionary dictionary;
+
+	/** The definition of the word */
 	@XMLField("WordDefinition")
 	private String wordDefinition;
 
+	/**
+	 * 
+	 * @return The word being defined
+	 */
 	public String getWord() {
 		return word;
 	}
 
+	/**
+	 * 
+	 * @return The dictionary providing the definition.
+	 */
 	public Dictionary getDictionary() {
 		return dictionary;
 	}
 
+	/**
+	 * 
+	 * @return The definition as a String
+	 */
 	public String getWordDefinition() {
 		return wordDefinition;
 	}

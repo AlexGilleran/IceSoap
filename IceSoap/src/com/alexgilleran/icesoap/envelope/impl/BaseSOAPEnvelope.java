@@ -14,6 +14,11 @@ import com.alexgilleran.icesoap.xml.impl.XMLParentNodeImpl;
  * basic namespaces, <envelope> tags etc, as well as creating a head and body
  * tag to be manipulated by decorators.
  * 
+ * Note that this is <i>not</i> an abstract class - when you're creating a new
+ * envelope, you can either extend this class to keep your envelope's logic
+ * contained within its own class, or instantiate a new instance of this class
+ * and build it up using public methods.
+ * 
  * @author Alex Gilleran
  * 
  */
