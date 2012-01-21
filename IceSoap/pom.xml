@@ -4,9 +4,33 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.alexgilleran</groupId>
 	<artifactId>icesoap</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<packaging>jar</packaging>
 	<name>IceSoap</name>
+	<description>An easy, asynchronous SOAP library for Android</description>
+	<url>http://code.google.com/p/icesoap</url>
+
+	<licenses>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<scm>
+		<connection>scm:git:https://code.google.com/p/icesoap</connection>
+		<developerConnection>scm:git:https://code.google.com/p/icesoap</developerConnection>
+		<url>https://code.google.com/p/icesoap</url>
+	</scm>
+
+	<developers>
+		<developer>
+			<name>Alex Gilleran</name>
+			<url>http://www.alexgilleran.com</url>
+			<email>alex@alexgilleran.com</email>
+		</developer>
+	</developers>
 
 	<dependencies>
 		<dependency>
@@ -51,6 +75,7 @@
 			</exclusions>
 		</dependency>
 	</dependencies>
+
 	<build>
 		<finalName>${project.artifactId}</finalName>
 		<sourceDirectory>src</sourceDirectory>
@@ -104,8 +129,8 @@
 					</configuration>
 					<executions>
 						<execution>
-							<id>make-assembly</id> <!-- this is used for inheritance merges -->
-							<phase>package</phase> <!-- bind to the packaging phase -->
+							<id>make-assembly</id>
+							<phase>package</phase>
 							<goals>
 								<goal>single</goal>
 							</goals>
@@ -124,6 +149,19 @@
 						<platform>3</platform>
 					</sdk>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-gpg-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>sign-artifacts</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>sign</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
