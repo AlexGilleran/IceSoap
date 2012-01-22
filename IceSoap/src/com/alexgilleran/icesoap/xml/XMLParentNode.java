@@ -30,13 +30,13 @@ public interface XMLParentNode extends XMLNode {
 	 *            The name to set for the new node
 	 * @return The newly created node.
 	 */
-	XMLParentNode addParentNode(String namespace, String name);
+	XMLParentNode addNode(String namespace, String name);
 
 	/**
-	 * Adds the passed {@link XMLNode} to the end of the node.
+	 * Adds the passed {@link XMLElement} to the end of the node.
 	 * 
 	 * @param node
-	 *            The {@link XMLNode} to add to the node.
+	 *            The {@link XMLElement} to add to the node.
 	 * @return The element that's just been added.
 	 */
 	XMLElement addElement(XMLElement node);

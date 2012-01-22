@@ -46,7 +46,7 @@ public class XMLParentNodeImpl extends XMLNodeBase implements XMLParentNode {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public XMLParentNode addParentNode(String namespace, String name) {
+	public XMLParentNode addNode(String namespace, String name) {
 		XMLParentNodeImpl newNode = new XMLParentNodeImpl(namespace, name);
 
 		subElements.add(newNode);

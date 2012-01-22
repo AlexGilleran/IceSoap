@@ -34,7 +34,7 @@ public class PasswordSOAPEnvelope extends BaseSOAPEnvelope {
 	}
 
 	private void setupWSSENode(String username, String password) {
-		securityNode = getHeader().addParentNode(NS_URI_WSSE, "Security");
+		securityNode = getHeader().addNode(NS_URI_WSSE, "Security");
 		securityNode.declarePrefix(NS_PREFIX_WSSE, NS_URI_WSSE);
 		securityNode.addAttribute(BaseSOAPEnvelope.NS_URI_SOAPENV,
 				"mustUnderstand", "1");

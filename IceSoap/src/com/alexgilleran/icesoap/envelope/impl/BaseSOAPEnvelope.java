@@ -40,8 +40,8 @@ public class BaseSOAPEnvelope extends XMLParentNodeImpl implements SOAPEnvelope 
 		this.declarePrefix(XMLNode.NS_PREFIX_XSD, XMLNode.NS_URI_XSD);
 		this.declarePrefix(XMLNode.NS_PREFIX_XSI, XMLNode.NS_URI_XSI);
 
-		header = this.addParentNode(NS_URI_SOAPENV, "Header");
-		body = this.addParentNode(NS_URI_SOAPENV, "Body");
+		header = this.addNode(NS_URI_SOAPENV, "Header");
+		body = this.addNode(NS_URI_SOAPENV, "Body");
 	}
 
 	/**

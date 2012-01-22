@@ -37,7 +37,7 @@ public class BaseRequestTest<E> {
 	protected SOAPEnvelope getDummyEnvelope() {
 		// Set up an envelope to send
 		SOAPEnvelope envelope = new PasswordSOAPEnvelope("username", "password");
-		envelope.getBody().addParentNode("http://testns.com", "testname")
+		envelope.getBody().addNode("http://testns.com", "testname")
 				.addTextNode(null, "textelement", "value");
 		return envelope;
 	}

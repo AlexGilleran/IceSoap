@@ -47,7 +47,7 @@ public class XMLNodeTestEmpty extends XMLElementTest<XMLParentNodeImpl> {
 		assertTrue(getXMLObject().getChildNodes().isEmpty());
 
 		// Add a node
-		getXMLObject().addParentNode(namespace1, name1);
+		getXMLObject().addNode(namespace1, name1);
 
 		// Assert that there's now one object
 		assertEquals(1, getXMLObject().getChildNodes().size());
@@ -62,7 +62,7 @@ public class XMLNodeTestEmpty extends XMLElementTest<XMLParentNodeImpl> {
 						.getNamespace());
 
 		// Add another node
-		getXMLObject().addParentNode(namespace2, name2);
+		getXMLObject().addNode(namespace2, name2);
 
 		// Assert that there are now two elements
 		assertEquals(2, getXMLObject().getChildNodes().size());

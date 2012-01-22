@@ -50,9 +50,9 @@ public class XMLNodeTest extends XMLElementTest<XMLParentNodeImpl> {
 	protected XMLParentNodeImpl constructElement(String namespace, String name) {
 		XMLParentNodeImpl baseNode = new XMLParentNodeImpl(namespace, name);
 
-		XMLParentNode node1 = baseNode.addParentNode(NAMESPACE_NODE_1,
+		XMLParentNode node1 = baseNode.addNode(NAMESPACE_NODE_1,
 				NAME_NODE_1);
-		node1.addParentNode(NAMESPACE_NODE_2, NAME_NODE_2);
+		node1.addNode(NAMESPACE_NODE_2, NAME_NODE_2);
 
 		baseNode.addTextNode(NAMESPACE_TEXT_NODE, NAME_TEXT_NODE,
 				VALUE_TEXT_NODE);
