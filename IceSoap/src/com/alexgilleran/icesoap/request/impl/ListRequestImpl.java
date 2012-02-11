@@ -11,7 +11,7 @@ import com.alexgilleran.icesoap.parser.IceSoapListParser;
 import com.alexgilleran.icesoap.parser.ItemObserver;
 import com.alexgilleran.icesoap.parser.impl.IceSoapListParserImpl;
 import com.alexgilleran.icesoap.request.ListRequest;
-import com.alexgilleran.icesoap.requester.SOAPRequester;
+import com.alexgilleran.icesoap.request.SOAPRequester;
 
 /**
  * Implementation of {@link ListRequest}

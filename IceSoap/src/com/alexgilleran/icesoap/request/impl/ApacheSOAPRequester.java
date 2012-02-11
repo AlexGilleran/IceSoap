@@ -1,4 +1,4 @@
-package com.alexgilleran.icesoap.requester.impl;
+package com.alexgilleran.icesoap.request.impl;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,7 +22,7 @@ import org.apache.http.params.HttpParams;
 
 import com.alexgilleran.icesoap.envelope.SOAPEnvelope;
 import com.alexgilleran.icesoap.exception.SOAPException;
-import com.alexgilleran.icesoap.requester.SOAPRequester;
+import com.alexgilleran.icesoap.request.SOAPRequester;
 
 /**
  * Singleton implementation of {@link SOAPRequester}, using the Apache HTTP
@@ -62,7 +62,7 @@ public class ApacheSOAPRequester implements SOAPRequester {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public InputStream doSoapRequest(SOAPEnvelope envelope, String targetUrl)
+	public Response doSoapRequest(SOAPEnvelope envelope, String targetUrl)
 			throws SOAPException {
 		return doSoapRequest(envelope, targetUrl, BLANK_SOAP_ACTION);
 	}
@@ -70,7 +70,7 @@ public class ApacheSOAPRequester implements SOAPRequester {
 	/**
 	 * {@inheritDoc}
 	 */
-	public InputStream doSoapRequest(SOAPEnvelope envelope, String url,
+	public Response doSoapRequest(SOAPEnvelope envelope, String url,
 			String soapAction) throws SOAPException {
 		try {
 			return doHttpPost(buildPostRequest(url, envelope.toString(),
@@ -92,7 +92,7 @@ public class ApacheSOAPRequester implements SOAPRequester {
 	 * @throws IOException
 	 * @throws SOAPException
 	 */
-	private InputStream doHttpPost(HttpPost httpPost)
+	private Response doHttpPost(HttpPost httpPost)
 			throws ClientProtocolException, IOException, SOAPException {
 
 		// Execute HTTP Post Request
@@ -107,7 +107,7 @@ public class ApacheSOAPRequester implements SOAPRequester {
 
 		HttpEntity res = new BufferedHttpEntity(response.getEntity());
 
-		return res.getContent();
+		return new Response(res.getContent(), status);
 	}
 
 	/**

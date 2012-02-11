@@ -7,8 +7,7 @@ import com.alexgilleran.icesoap.envelope.SOAPEnvelope;
 import com.alexgilleran.icesoap.request.ListRequest;
 import com.alexgilleran.icesoap.request.Request;
 import com.alexgilleran.icesoap.request.RequestFactory;
-import com.alexgilleran.icesoap.requester.SOAPRequester;
-import com.alexgilleran.icesoap.requester.impl.ApacheSOAPRequester;
+import com.alexgilleran.icesoap.request.SOAPRequester;
 
 /**
  * Factory for requests - retains a single instance of {@link SOAPRequester} to

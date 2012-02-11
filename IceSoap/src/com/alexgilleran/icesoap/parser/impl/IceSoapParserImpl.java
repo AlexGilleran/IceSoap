@@ -104,16 +104,16 @@ public class IceSoapParserImpl<ReturnType> extends
 			XPathElement rootXPath) {
 		super(rootXPath);
 
-		if (targetClass.getAnnotation(XMLObject.class) == null) {
-			throw new ClassDefException(
-					"Attempted to create an "
-							+ IceSoapParser.class.getSimpleName()
-							+ " for "
-							+ targetClass.getSimpleName()
-							+ ", which was not annotated with "
-							+ XMLObject.class.getSimpleName()
-							+ ". Please annotate this class if it is to be used for parsing");
-		}
+		// if (targetClass.getAnnotation(XMLObject.class) == null) {
+		// throw new ClassDefException(
+		// "Attempted to create an "
+		// + IceSoapParser.class.getSimpleName()
+		// + " for "
+		// + targetClass.getSimpleName()
+		// + ", which was not annotated with "
+		// + XMLObject.class.getSimpleName()
+		// + ". Please annotate this class if it is to be used for parsing");
+		// }
 
 		this.targetClass = targetClass;
 		fieldXPaths = getFieldXPaths(targetClass);
@@ -129,6 +129,18 @@ public class IceSoapParserImpl<ReturnType> extends
 	private XPathRepository<Field> getFieldXPaths(Class<ReturnType> targetClass) {
 		XPathRepository<Field> fieldXPaths = new XPathRepository<Field>();
 
+		Class<?> currentClass = targetClass;
+
+		while (!currentClass.equals(Object.class)) {
+			addXPathFieldsToRepo(currentClass, fieldXPaths);
+			currentClass = currentClass.getSuperclass();
+		}
+
+		return fieldXPaths;
+	}
+
+	private void addXPathFieldsToRepo(Class<?> targetClass,
+			XPathRepository<Field> fieldXPaths) {
 		for (Field field : targetClass.getDeclaredFields()) {
 			XMLField xPath = field.getAnnotation(XMLField.class);
 
@@ -146,8 +158,6 @@ public class IceSoapParserImpl<ReturnType> extends
 				fieldXPaths.put(lastFieldElement, field);
 			}
 		}
-
-		return fieldXPaths;
 	}
 
 	/**

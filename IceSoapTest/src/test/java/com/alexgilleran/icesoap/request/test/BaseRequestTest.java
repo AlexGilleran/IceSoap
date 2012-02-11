@@ -15,8 +15,9 @@ import com.alexgilleran.icesoap.exception.SOAPException;
 import com.alexgilleran.icesoap.exception.XMLParsingException;
 import com.alexgilleran.icesoap.request.Request;
 import com.alexgilleran.icesoap.request.RequestFactory;
+import com.alexgilleran.icesoap.request.SOAPRequester;
 import com.alexgilleran.icesoap.request.impl.RequestFactoryImpl;
-import com.alexgilleran.icesoap.requester.SOAPRequester;
+import com.alexgilleran.icesoap.request.impl.Response;
 
 public class BaseRequestTest<E> {
 
@@ -47,7 +48,24 @@ public class BaseRequestTest<E> {
 		SOAPEnvelope envelope = getDummyEnvelope();
 
 		expect(mockRequester.doSoapRequest(envelope, DUMMY_URL, null))
-				.andReturn(inputStream);
+				.andReturn(new Response(inputStream, 400));
+		replay(mockRequester);
+
+		request.execute();
+
+		while (!request.isComplete()) {
+
+		}
+
+		assertNull(request.getException());
+	}
+
+	protected void doFailedRequest(Request<E> request, InputStream inputStream)
+			throws SOAPException, XMLParsingException {
+		SOAPEnvelope envelope = getDummyEnvelope();
+
+		expect(mockRequester.doSoapRequest(envelope, DUMMY_URL, null))
+				.andReturn(new Response(inputStream, 500));
 		replay(mockRequester);
 
 		request.execute();

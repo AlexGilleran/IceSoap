@@ -15,6 +15,7 @@ import org.xmlpull.v1.XmlPullParserException;
 import com.alexgilleran.icesoap.exception.XMLParsingException;
 import com.alexgilleran.icesoap.parser.IceSoapParser;
 import com.alexgilleran.icesoap.parser.impl.IceSoapParserImpl;
+import com.alexgilleran.icesoap.parser.test.xmlclasses.AddressChild;
 import com.alexgilleran.icesoap.parser.test.xmlclasses.PurchaseOrder;
 
 /**
@@ -81,4 +82,31 @@ public class IceSoapParserTest {
 				.getShipDate());
 		assertEquals(null, po.getItem926aa().getComment());
 	}
+
+	/**
+	 * Tests that when an object is passed in, both its fields and the fields of
+	 * parent objects will be populated
+	 * 
+	 * @throws XMLParsingException
+	 */
+	@Test
+	public void testInheritedFields() throws XMLParsingException {
+		IceSoapParser<AddressChild> parser = new IceSoapParserImpl<AddressChild>(
+				AddressChild.class);
+
+		AddressChild address = parser.parse(SampleXml.getPurchaseOrder());
+
+		// These should work no matter what
+		assertEquals("CA", address.getState());
+		assertEquals(10999, address.getZip());
+		assertEquals("USA", address.getCountry());
+
+		// If inheritance isn't working, these will fail.
+		assertEquals("Shipping", address.getType());
+		assertEquals("Ellen Adams", address.getName());
+		assertEquals("123 Maple Street", address.getStreet());
+		assertEquals("Mill Valley", address.getCity());
+
+	}
+
 }

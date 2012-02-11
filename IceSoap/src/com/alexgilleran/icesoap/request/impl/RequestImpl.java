@@ -12,7 +12,7 @@ import com.alexgilleran.icesoap.observer.registry.ObserverRegistry;
 import com.alexgilleran.icesoap.parser.IceSoapParser;
 import com.alexgilleran.icesoap.parser.impl.IceSoapParserImpl;
 import com.alexgilleran.icesoap.request.Request;
-import com.alexgilleran.icesoap.requester.SOAPRequester;
+import com.alexgilleran.icesoap.request.SOAPRequester;
 
 /**
  * Implementation of {@link Request}
@@ -132,7 +132,7 @@ public class RequestImpl<ResultType> implements Request<ResultType> {
 	 * @throws SOAPException
 	 */
 	protected InputStream getResponse() throws SOAPException {
-		return soapRequester.doSoapRequest(soapEnv, url, soapAction);
+		return soapRequester.doSoapRequest(soapEnv, url, soapAction).getData();
 	}
 
 	/**

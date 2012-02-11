@@ -233,7 +233,7 @@ public abstract class BaseIceSoapParserImpl<ReturnType> implements
 	 * @return Root xpath or null if none is specified
 	 */
 	protected static XPathElement retrieveRootXPath(Class<?> targetClass) {
-		XMLObject xPathAnnot = targetClass.getAnnotation(XMLObject.class);
+		XMLObject xPathAnnot = getXMLObjectAnnot(targetClass);
 
 		if (xPathAnnot != null) {
 			return compileXPath(xPathAnnot, targetClass);
@@ -245,6 +245,20 @@ public abstract class BaseIceSoapParserImpl<ReturnType> implements
 					+ XMLObject.class.getSimpleName()
 					+ " annotation - please add this annotation");
 		}
+	}
+
+	private static XMLObject getXMLObjectAnnot(Class<?> targetClass) {
+		while (!targetClass.equals(Object.class)) {
+			XMLObject annotation = targetClass.getAnnotation(XMLObject.class);
+
+			if (annotation != null) {
+				return annotation;
+			}
+
+			targetClass = targetClass.getSuperclass();
+		}
+
+		return null;
 	}
 
 	/**
@@ -283,8 +297,8 @@ public abstract class BaseIceSoapParserImpl<ReturnType> implements
 	 * @return The last element of the compiled xpath.
 	 * @see #compileXPath(String, String)
 	 */
-	protected final static XPathElement compileXPath(
-			XMLObject soapObjectAnnot, Class<?> sourceClass) {
+	protected final static XPathElement compileXPath(XMLObject soapObjectAnnot,
+			Class<?> sourceClass) {
 		if (soapObjectAnnot.value() != "") {
 			return compileXPath(soapObjectAnnot.value(),
 					sourceClass.getSimpleName());

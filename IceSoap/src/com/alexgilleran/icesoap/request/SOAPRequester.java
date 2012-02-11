@@ -1,10 +1,10 @@
-package com.alexgilleran.icesoap.requester;
+package com.alexgilleran.icesoap.request;
 
 import java.io.IOException;
-import java.io.InputStream;
 
 import com.alexgilleran.icesoap.envelope.SOAPEnvelope;
 import com.alexgilleran.icesoap.exception.SOAPException;
+import com.alexgilleran.icesoap.request.impl.Response;
 
 /**
  * Handles SOAP requests
@@ -23,7 +23,7 @@ public interface SOAPRequester {
 	 * @return An InputStream representing the
 	 * @throws IOException
 	 */
-	public InputStream doSoapRequest(SOAPEnvelope envelope, String targetUrl)
+	public Response doSoapRequest(SOAPEnvelope envelope, String targetUrl)
 			throws SOAPException;
 
 	/**
@@ -39,7 +39,7 @@ public interface SOAPRequester {
 	 * @return An InputStream representing the
 	 * @throws IOException
 	 */
-	public InputStream doSoapRequest(SOAPEnvelope envelope, String targetUrl,
+	public Response doSoapRequest(SOAPEnvelope envelope, String targetUrl,
 			String soapAction) throws SOAPException;
 
 	/**
