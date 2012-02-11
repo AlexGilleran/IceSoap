@@ -24,9 +24,9 @@
   	</parent>
 
 	<scm>
-		<connection>scm:git:https://code.google.com/p/icesoap</connection>
-		<developerConnection>scm:git:https://code.google.com/p/icesoap</developerConnection>
-		<url>https://code.google.com/p/icesoap</url>
+		<connection>scm:git:https://icesoap.googlecode.com/git/IceSoap/</connection>
+		<developerConnection>scm:git:https://icesoap.googlecode.com/git/IceSoap/</developerConnection>
+		<url>https://icesoap.googlecode.com/git/IceSoap/</url>
 	</scm>
 
 	<developers>
