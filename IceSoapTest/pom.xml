@@ -115,4 +115,10 @@
 			</plugins>
 		</pluginManagement>
 	</build>
+	
+	<parent>
+        <groupId>org.sonatype.oss</groupId>
+        <artifactId>oss-parent</artifactId>
+        <version>6</version>
+    </parent>
 </project>
