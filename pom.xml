@@ -11,8 +11,8 @@
 
     <modules>
         <module>icesoap</module>
-        <module>icesoap.test</module>
-        <module>icesoap.example</module>
+        <module>icesoaptest</module>
+        <module>icesoapexample</module>
     </modules>
 
     <parent>
