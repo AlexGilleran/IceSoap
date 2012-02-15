@@ -36,9 +36,9 @@ public class ApacheSOAPRequester implements SOAPRequester {
 	/** Soap action to use if none is specified. */
 	private static final String BLANK_SOAP_ACTION = "";
 	/** Port for HTTPS communication */
-	private static final int HTTPS_PORT = 443;
+	private static final int DEFAULT_HTTPS_PORT = 443;
 	/** Port for HTTP communication */
-	private static final int HTTP_PORT = 80;
+	private static final int DEFAULT_HTTP_PORT = 80;
 	/** Name of HTTPS */
 	private static final String HTTPS_NAME = "https";
 	/** Name of HTTP */
@@ -123,17 +123,22 @@ public class ApacheSOAPRequester implements SOAPRequester {
 		HttpConnectionParams.setSoTimeout(httpParameters,
 				DEFAULT_SOCKET_TIMEOUT);
 
-		SchemeRegistry schemeRegistry = new SchemeRegistry();
-
-		schemeRegistry.register(new Scheme(HTTP_NAME, PlainSocketFactory
-				.getSocketFactory(), HTTP_PORT));
-		schemeRegistry.register(new Scheme(HTTPS_NAME, SSLSocketFactory
-				.getSocketFactory(), HTTPS_PORT));
+		SchemeRegistry schemeRegistry = getSchemeRegistry();
 
 		ThreadSafeClientConnManager cm = new ThreadSafeClientConnManager(
 				httpParameters, schemeRegistry);
 
 		return new DefaultHttpClient(cm, httpParameters);
+	}
+
+	protected SchemeRegistry getSchemeRegistry() {
+		SchemeRegistry schemeRegistry = new SchemeRegistry();
+
+		schemeRegistry.register(new Scheme(HTTP_NAME, PlainSocketFactory
+				.getSocketFactory(), DEFAULT_HTTP_PORT));
+		schemeRegistry.register(new Scheme(HTTPS_NAME, SSLSocketFactory
+				.getSocketFactory(), DEFAULT_HTTPS_PORT));
+		return schemeRegistry;
 	}
 
 	/**
