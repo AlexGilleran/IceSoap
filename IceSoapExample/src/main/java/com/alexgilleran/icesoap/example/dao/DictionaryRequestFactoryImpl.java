@@ -11,8 +11,8 @@ import com.alexgilleran.icesoap.example.envelopes.GetDictionariesEnvelope;
 import com.alexgilleran.icesoap.request.ListRequest;
 import com.alexgilleran.icesoap.request.Request;
 import com.alexgilleran.icesoap.request.RequestFactory;
+import com.alexgilleran.icesoap.request.SOAPRequester;
 import com.alexgilleran.icesoap.request.impl.RequestFactoryImpl;
-import com.alexgilleran.icesoap.requester.SOAPRequester;
 import com.google.inject.Singleton;
 
 /**

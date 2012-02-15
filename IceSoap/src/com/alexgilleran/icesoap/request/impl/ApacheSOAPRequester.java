@@ -12,6 +12,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.conn.scheme.PlainSocketFactory;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
+import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.entity.BufferedHttpEntity;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -35,7 +36,7 @@ public class ApacheSOAPRequester implements SOAPRequester {
 	/** Soap action to use if none is specified. */
 	private static final String BLANK_SOAP_ACTION = "";
 	/** Port for HTTPS communication */
-	private static final int HTTPS_PORT = 8006;
+	private static final int HTTPS_PORT = 443;
 	/** Port for HTTP communication */
 	private static final int HTTP_PORT = 80;
 	/** Name of HTTPS */
@@ -126,11 +127,8 @@ public class ApacheSOAPRequester implements SOAPRequester {
 
 		schemeRegistry.register(new Scheme(HTTP_NAME, PlainSocketFactory
 				.getSocketFactory(), HTTP_PORT));
-		schemeRegistry.register(new Scheme(HTTPS_NAME, PlainSocketFactory
+		schemeRegistry.register(new Scheme(HTTPS_NAME, SSLSocketFactory
 				.getSocketFactory(), HTTPS_PORT));
-		// schemeRegistry.register(new Scheme("https", new
-		// EasySSLSocketFactory(),
-		// 8006));
 
 		ThreadSafeClientConnManager cm = new ThreadSafeClientConnManager(
 				httpParameters, schemeRegistry);
