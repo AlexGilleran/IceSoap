@@ -6,7 +6,7 @@ import java.util.List;
 import com.alexgilleran.icesoap.exception.SOAPException;
 import com.alexgilleran.icesoap.observer.BaseSOAPObserver;
 import com.alexgilleran.icesoap.observer.SOAPObserver;
-import com.alexgilleran.icesoap.request.Request;
+import com.alexgilleran.icesoap.request.BaseRequest;
 
 /**
  * Helper class that holds a collection of {@link SOAPObserver}s and allows them
@@ -45,7 +45,7 @@ public class ObserverRegistry<TypeToReturn, SOAPFaultType> {
 	}
 
 	/**
-	 * Notifies all observers of a {@link Request} of an {@link Exception} that
+	 * Notifies all observers of a {@link BaseRequest} of an {@link Exception} that
 	 * has occurred during request processing.
 	 * 
 	 * This is necessary due to the complications of passing checked exceptions
@@ -56,7 +56,7 @@ public class ObserverRegistry<TypeToReturn, SOAPFaultType> {
 	 * @param exception
 	 *            The exception that has occurred.
 	 */
-	public void notifyException(Request<TypeToReturn, SOAPFaultType> request,
+	public void notifyException(BaseRequest<TypeToReturn, SOAPFaultType> request,
 			SOAPException exception) {
 		for (BaseSOAPObserver<TypeToReturn, SOAPFaultType> observer : observers) {
 			observer.onException(request, exception);
@@ -69,7 +69,7 @@ public class ObserverRegistry<TypeToReturn, SOAPFaultType> {
 	 * @param request
 	 *            The request that's completed.
 	 */
-	public void notifyComplete(Request<TypeToReturn, SOAPFaultType> request) {
+	public void notifyComplete(BaseRequest<TypeToReturn, SOAPFaultType> request) {
 		for (BaseSOAPObserver<TypeToReturn, SOAPFaultType> observer : observers) {
 			observer.onCompletion(request);
 		}

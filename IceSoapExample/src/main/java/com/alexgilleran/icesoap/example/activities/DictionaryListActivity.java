@@ -22,7 +22,8 @@ import com.alexgilleran.icesoap.example.dao.DictionaryRequestFactory;
 import com.alexgilleran.icesoap.example.domain.Dictionary;
 import com.alexgilleran.icesoap.exception.SOAPException;
 import com.alexgilleran.icesoap.observer.SOAPListObserver;
-import com.alexgilleran.icesoap.request.Request;
+import com.alexgilleran.icesoap.request.BaseRequest;
+import com.alexgilleran.icesoap.soapfault.SOAP11Fault;
 import com.google.inject.Inject;
 
 /**
@@ -133,31 +134,27 @@ public class DictionaryListActivity extends RoboActivity {
 	 * showing a dialog box on errors.
 	 */
 	private SOAPListObserver<Dictionary> soapObserver = new SOAPListObserver<Dictionary>() {
-		/**
-		 * {@inheritDoc}
-		 */
 		@Override
-		public void onException(Request<List<Dictionary>> request,
+		public void onNewItem(
+				BaseRequest<List<Dictionary>, SOAP11Fault> request,
+				Dictionary item) {
+			dictListAdapter.add(item);
+
+		}
+
+		@Override
+		public void onCompletion(
+				BaseRequest<List<Dictionary>, SOAP11Fault> request) {
+			setProgressBarIndeterminateVisibility(false);
+		}
+
+		@Override
+		public void onException(
+				BaseRequest<List<Dictionary>, SOAP11Fault> request,
 				SOAPException e) {
 			Log.e(DictionaryListActivity.class.getSimpleName(), e.getMessage(),
 					e);
 			showDialog(0);
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public void onCompletion(Request<List<Dictionary>> request) {
-			setProgressBarIndeterminateVisibility(false);
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public void onNewItem(Request<List<Dictionary>> request, Dictionary item) {
-			dictListAdapter.add(item);
 		}
 	};
 }

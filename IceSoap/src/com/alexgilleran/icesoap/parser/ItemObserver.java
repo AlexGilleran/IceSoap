@@ -3,14 +3,14 @@
  */
 package com.alexgilleran.icesoap.parser;
 
-import com.alexgilleran.icesoap.request.Request;
+import com.alexgilleran.icesoap.request.BaseRequest;
 
 /**
  * Defines classes that can be set up to recieve new item events from a
  * {@link IceSoapListParser}
  * 
  * Note that this is distinct from the {@link ItemObserver} class used by
- * parsers, as it is tightly coupled to {@link Request}.
+ * parsers, as it is tightly coupled to {@link BaseRequest}.
  * 
  * @author Alex Gilleran
  * 

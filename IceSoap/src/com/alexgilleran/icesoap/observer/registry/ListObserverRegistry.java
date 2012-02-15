@@ -9,11 +9,11 @@ import java.util.List;
 import com.alexgilleran.icesoap.observer.BaseSOAPListObserver;
 import com.alexgilleran.icesoap.observer.SOAPListObserver;
 import com.alexgilleran.icesoap.observer.SOAPObserver;
-import com.alexgilleran.icesoap.request.ListRequest;
-import com.alexgilleran.icesoap.request.Request;
+import com.alexgilleran.icesoap.request.BaseListRequest;
+import com.alexgilleran.icesoap.request.BaseRequest;
 
 /**
- * Extension of {@link ObserverRegistry} to deal with {@link ListRequest}s.
+ * Extension of {@link ObserverRegistry} to deal with {@link BaseListRequest}s.
  * Contains extra methods to deal specifically with individual items in a list.
  * 
  * @author Alex Gilleran
@@ -59,7 +59,7 @@ public class ListObserverRegistry<T, SOAPFaultType> extends
 	 * @param item
 	 *            The item itself.
 	 */
-	public void notifyNewItem(Request<List<T>, SOAPFaultType> request, T item) {
+	public void notifyNewItem(BaseRequest<List<T>, SOAPFaultType> request, T item) {
 		for (BaseSOAPListObserver<T, SOAPFaultType> observer : listObservers) {
 			observer.onNewItem(request, item);
 		}

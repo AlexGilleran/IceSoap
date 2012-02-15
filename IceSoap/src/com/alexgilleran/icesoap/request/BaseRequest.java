@@ -1,0 +1,101 @@
+package com.alexgilleran.icesoap.request;
+
+import java.util.List;
+
+import android.os.AsyncTask;
+
+import com.alexgilleran.icesoap.observer.BaseSOAPObserver;
+import com.alexgilleran.icesoap.observer.SOAPObserver;
+
+/**
+ * Encapsulates all the code for making a SOAP Request - to use, create an
+ * object that implements the {@link SOAPObserver} class (generally this is
+ * easiest using anonymous objects from the activity or fragment) and attach it
+ * using the {@link BaseRequest#registerObserver(SOAPObserver)} method. Then invoke
+ * {@link BaseRequest#execute()} - the request will be performed on a background
+ * thread, and methods of the {@link SOAPObserver} will be called on the UI
+ * thread.
+ * 
+ * @author Alex Gilleran
+ * 
+ * @param <ResultType>
+ *            The type of the object to retrieve from this request. If the type
+ *            is a {@link List}, you may want to consider using
+ *            {@link BaseListRequest} instead.
+ */
+public interface BaseRequest<ResultType, SOAPFaultType> {
+	/**
+	 * Executes the request
+	 */
+	void execute();
+
+	/**
+	 * Registers the provided observer then executes the request - this is
+	 * equivalent to calling {@link #registerObserver(SOAPObserver)}, then
+	 * {@link #execute()}
+	 * 
+	 * @param observer
+	 *            An observer to register
+	 */
+	void execute(BaseSOAPObserver<ResultType, SOAPFaultType> observer);
+
+	/**
+	 * Adds an observer to the request - the observer's methods will be called
+	 * on certain events.
+	 * 
+	 * @param observer
+	 *            The observer to add.
+	 */
+	void registerObserver(BaseSOAPObserver<ResultType, SOAPFaultType> observer);
+
+	/**
+	 * Remove an observer
+	 * 
+	 * @param observer
+	 *            The observer to remove.
+	 */
+	void deregisterObserver(BaseSOAPObserver<ResultType, SOAPFaultType> observer);
+
+	/**
+	 * Cancels the request - akin to cancelling an {@link AsyncTask}
+	 */
+	void cancel();
+
+	/**
+	 * Gets the result of the request - if the request is still running, gets
+	 * the result so far.
+	 * 
+	 * @return The result so far.
+	 */
+	ResultType getResult();
+
+	/**
+	 * Whether the request is currently executing - if it's not executing, it
+	 * might be stopped or it might not have started yet.
+	 * 
+	 * @return true if executing, otherwise false.
+	 */
+	boolean isExecuting();
+
+	/**
+	 * Reveals whether the request is complete yet.
+	 * 
+	 * @return true if complete, otherwise false.
+	 */
+	boolean isComplete();
+
+	/**
+	 * Retrieves an exception if one has been encountered
+	 * 
+	 * @return The encountered exception if one exists, otherwise null
+	 */
+	Throwable getException();
+
+	/**
+	 * Gets the SOAP Fault that has been encountered, if one has been
+	 * encountered.
+	 * 
+	 * @return the SOAP Fault.
+	 */
+	SOAPFaultType getSOAPFault();
+}

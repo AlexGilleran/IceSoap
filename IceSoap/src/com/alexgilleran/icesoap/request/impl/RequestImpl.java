@@ -11,11 +11,11 @@ import com.alexgilleran.icesoap.observer.BaseSOAPObserver;
 import com.alexgilleran.icesoap.observer.registry.ObserverRegistry;
 import com.alexgilleran.icesoap.parser.IceSoapParser;
 import com.alexgilleran.icesoap.parser.impl.IceSoapParserImpl;
-import com.alexgilleran.icesoap.request.Request;
+import com.alexgilleran.icesoap.request.BaseRequest;
 import com.alexgilleran.icesoap.request.SOAPRequester;
 
 /**
- * Implementation of {@link Request}
+ * Implementation of {@link BaseRequest}
  * 
  * A {@link RequestImpl}, in essence, is a composition of a {@link SOAPEnvelope}
  * for the request, a {@link IceSoapParser} for the response, and some code to
@@ -26,7 +26,7 @@ import com.alexgilleran.icesoap.request.SOAPRequester;
  * @param <ResultType>
  */
 public class RequestImpl<ResultType, SOAPFaultType> implements
-		Request<ResultType, SOAPFaultType> {
+		BaseRequest<ResultType, SOAPFaultType> {
 	/** Registry of observers to send events to */
 	private ObserverRegistry<ResultType, SOAPFaultType> registry = new ObserverRegistry<ResultType, SOAPFaultType>();
 	/** Parser to use to parse the response */

@@ -6,16 +6,15 @@ import android.os.AsyncTask;
 
 import com.alexgilleran.icesoap.envelope.SOAPEnvelope;
 import com.alexgilleran.icesoap.observer.BaseSOAPListObserver;
-import com.alexgilleran.icesoap.observer.SOAPListObserver;
 import com.alexgilleran.icesoap.observer.registry.ListObserverRegistry;
 import com.alexgilleran.icesoap.parser.IceSoapListParser;
 import com.alexgilleran.icesoap.parser.ItemObserver;
 import com.alexgilleran.icesoap.parser.impl.IceSoapListParserImpl;
-import com.alexgilleran.icesoap.request.ListRequest;
+import com.alexgilleran.icesoap.request.BaseListRequest;
 import com.alexgilleran.icesoap.request.SOAPRequester;
 
 /**
- * Implementation of {@link ListRequest}
+ * Implementation of {@link BaseListRequest}
  * 
  * @author Alex Gilleran
  * 
@@ -24,7 +23,7 @@ import com.alexgilleran.icesoap.request.SOAPRequester;
  */
 public class ListRequestImpl<ResultType, SOAPFaultType> extends
 		RequestImpl<List<ResultType>, SOAPFaultType> implements
-		ListRequest<ResultType, SOAPFaultType> {
+		BaseListRequest<ResultType, SOAPFaultType> {
 	/** The parser to use to parse the result */
 	private IceSoapListParser<ResultType> parser;
 	/** The registry to use to dispatch item-related events */

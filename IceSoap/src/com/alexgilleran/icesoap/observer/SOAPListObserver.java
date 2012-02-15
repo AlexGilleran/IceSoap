@@ -3,11 +3,11 @@
  */
 package com.alexgilleran.icesoap.observer;
 
-import com.alexgilleran.icesoap.request.ListRequest;
+import com.alexgilleran.icesoap.request.BaseListRequest;
 import com.alexgilleran.icesoap.soapfault.SOAP11Fault;
 
 /**
- * An extension of {@link SOAPObserver} to deal with {@link ListRequest}s.
+ * An extension of {@link SOAPObserver} to deal with {@link BaseListRequest}s.
  * 
  * @author Alex Gilleran
  * 

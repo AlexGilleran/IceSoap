@@ -1,7 +1,7 @@
 package com.alexgilleran.icesoap.observer;
 
 import com.alexgilleran.icesoap.exception.SOAPException;
-import com.alexgilleran.icesoap.request.Request;
+import com.alexgilleran.icesoap.request.BaseRequest;
 
 /**
  * Used to receive events from a running SOAP Request on the Android UI thread.
@@ -16,19 +16,19 @@ import com.alexgilleran.icesoap.request.Request;
 public interface BaseSOAPObserver<ReturnType, SOAPFaultType> {
 
 	/**
-	 * Called when the running SOAP {@link Request} completes
+	 * Called when the running SOAP {@link BaseRequest} completes
 	 * 
 	 * @param request
-	 *            The {@link Request} instance that has completed - retrieve the
-	 *            result object from it using {@link Request#getResult()}
+	 *            The {@link BaseRequest} instance that has completed - retrieve the
+	 *            result object from it using {@link BaseRequest#getResult()}
 	 */
-	public abstract void onCompletion(Request<ReturnType, SOAPFaultType> request);
+	public abstract void onCompletion(BaseRequest<ReturnType, SOAPFaultType> request);
 
 	/**
 	 * Called if the running SOAP request hits an exception during execution.
 	 * 
 	 * @param request
-	 *            The {@link Request} instance that has encountered an
+	 *            The {@link BaseRequest} instance that has encountered an
 	 *            exception.
 	 * @param e
 	 *            The exception that's been encountered.
@@ -38,6 +38,6 @@ public interface BaseSOAPObserver<ReturnType, SOAPFaultType> {
 	 *            reached at all), this will be null.
 	 */
 	public abstract void onException(
-			Request<ReturnType, SOAPFaultType> request, SOAPException e);
+			BaseRequest<ReturnType, SOAPFaultType> request, SOAPException e);
 
 }

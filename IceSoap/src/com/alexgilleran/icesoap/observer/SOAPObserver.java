@@ -1,7 +1,7 @@
 package com.alexgilleran.icesoap.observer;
 
 import com.alexgilleran.icesoap.exception.SOAPException;
-import com.alexgilleran.icesoap.request.Request;
+import com.alexgilleran.icesoap.request.BaseRequest;
 import com.alexgilleran.icesoap.soapfault.SOAP11Fault;
 
 /**
@@ -22,6 +22,6 @@ public interface SOAPObserver<ReturnType> extends
 	 * 1.2 Faults, or need to parse extra details of the SOAP Fault, please use
 	 * {@link BaseSOAPObserver} directly.
 	 */
-	public abstract void onException(Request<ReturnType, SOAP11Fault> request,
+	public abstract void onException(BaseRequest<ReturnType, SOAP11Fault> request,
 			SOAPException e);
 }
