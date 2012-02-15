@@ -3,27 +3,17 @@
  */
 package com.alexgilleran.icesoap.observer;
 
-import java.util.List;
-
 import com.alexgilleran.icesoap.request.ListRequest;
-import com.alexgilleran.icesoap.request.Request;
+import com.alexgilleran.icesoap.soapfault.SOAP11Fault;
 
 /**
  * An extension of {@link SOAPObserver} to deal with {@link ListRequest}s.
  * 
  * @author Alex Gilleran
  * 
+ * @param <ReturnType>
+ *            The type of the object that will be retrieved from this request.
  */
 public interface SOAPListObserver<ReturnType> extends
-		SOAPObserver<List<ReturnType>> {
-	/**
-	 * Called (on the UI thread) when a new list item is received and parsed
-	 * form a running {@link ListRequest}.
-	 * 
-	 * @param request
-	 *            The request that the item was parsed by
-	 * @param item
-	 *            The item instance.
-	 */
-	public void onNewItem(Request<List<ReturnType>> request, ReturnType item);
+		BaseSOAPListObserver<ReturnType, SOAP11Fault> {
 }

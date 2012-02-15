@@ -2,6 +2,7 @@ package com.alexgilleran.icesoap.request;
 
 import java.util.List;
 
+import com.alexgilleran.icesoap.observer.BaseSOAPListObserver;
 import com.alexgilleran.icesoap.observer.SOAPListObserver;
 import com.alexgilleran.icesoap.observer.SOAPObserver;
 
@@ -17,7 +18,8 @@ import com.alexgilleran.icesoap.observer.SOAPObserver;
  * @param <ResultType>
  *            The type of the object that this request will return a list of.
  */
-public interface ListRequest<ResultType> extends Request<List<ResultType>> {
+public interface ListRequest<ResultType, SOAPFaultType> extends
+		Request<List<ResultType>, SOAPFaultType> {
 	/**
 	 * Registers the provided observer then executes the request - this is
 	 * equivalent to calling {@link #registerObserver(SOAPListObserver)}, then
@@ -26,7 +28,7 @@ public interface ListRequest<ResultType> extends Request<List<ResultType>> {
 	 * @param observer
 	 *            An observer to register
 	 */
-	void execute(SOAPListObserver<ResultType> observer);
+	void execute(BaseSOAPListObserver<ResultType, SOAPFaultType> observer);
 
 	/**
 	 * Registers an observer for new item, exception and completion events.
@@ -39,7 +41,8 @@ public interface ListRequest<ResultType> extends Request<List<ResultType>> {
 	 * @param observer
 	 *            The observer to register.
 	 */
-	void registerObserver(SOAPListObserver<ResultType> observer);
+	void registerObserver(
+			BaseSOAPListObserver<ResultType, SOAPFaultType> observer);
 
 	/**
 	 * De-registers an observer
@@ -47,5 +50,6 @@ public interface ListRequest<ResultType> extends Request<List<ResultType>> {
 	 * @param observer
 	 *            The observer to deregister.
 	 */
-	void deregisterObserver(SOAPListObserver<ResultType> observer);
+	void deregisterObserver(
+			BaseSOAPListObserver<ResultType, SOAPFaultType> observer);
 }

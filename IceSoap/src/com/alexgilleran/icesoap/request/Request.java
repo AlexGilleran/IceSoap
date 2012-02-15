@@ -4,6 +4,7 @@ import java.util.List;
 
 import android.os.AsyncTask;
 
+import com.alexgilleran.icesoap.observer.BaseSOAPObserver;
 import com.alexgilleran.icesoap.observer.SOAPObserver;
 
 /**
@@ -22,7 +23,7 @@ import com.alexgilleran.icesoap.observer.SOAPObserver;
  *            is a {@link List}, you may want to consider using
  *            {@link ListRequest} instead.
  */
-public interface Request<ResultType> {
+public interface Request<ResultType, SOAPFaultType> {
 	/**
 	 * Executes the request
 	 */
@@ -36,7 +37,7 @@ public interface Request<ResultType> {
 	 * @param observer
 	 *            An observer to register
 	 */
-	void execute(SOAPObserver<ResultType> observer);
+	void execute(BaseSOAPObserver<ResultType, SOAPFaultType> observer);
 
 	/**
 	 * Adds an observer to the request - the observer's methods will be called
@@ -45,7 +46,7 @@ public interface Request<ResultType> {
 	 * @param observer
 	 *            The observer to add.
 	 */
-	void registerObserver(SOAPObserver<ResultType> observer);
+	void registerObserver(BaseSOAPObserver<ResultType, SOAPFaultType> observer);
 
 	/**
 	 * Remove an observer
@@ -53,7 +54,7 @@ public interface Request<ResultType> {
 	 * @param observer
 	 *            The observer to remove.
 	 */
-	void deregisterObserver(SOAPObserver<ResultType> observer);
+	void deregisterObserver(BaseSOAPObserver<ResultType, SOAPFaultType> observer);
 
 	/**
 	 * Cancels the request - akin to cancelling an {@link AsyncTask}
@@ -89,4 +90,12 @@ public interface Request<ResultType> {
 	 * @return The encountered exception if one exists, otherwise null
 	 */
 	Throwable getException();
+
+	/**
+	 * Gets the SOAP Fault that has been encountered, if one has been
+	 * encountered.
+	 * 
+	 * @return the SOAP Fault.
+	 */
+	SOAPFaultType getSOAPFault();
 }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.alexgilleran.icesoap.exception.SOAPException;
+import com.alexgilleran.icesoap.observer.BaseSOAPObserver;
 import com.alexgilleran.icesoap.observer.SOAPObserver;
 import com.alexgilleran.icesoap.request.Request;
 
@@ -16,9 +17,9 @@ import com.alexgilleran.icesoap.request.Request;
  * @param <TypeToReturn>
  *            The type of the object that will be returned from the SOAP call.
  */
-public class ObserverRegistry<TypeToReturn> {
+public class ObserverRegistry<TypeToReturn, SOAPFaultType> {
 	/** The observers that will be notified of new events */
-	private List<SOAPObserver<TypeToReturn>> observers = new ArrayList<SOAPObserver<TypeToReturn>>();
+	private List<BaseSOAPObserver<TypeToReturn, SOAPFaultType>> observers = new ArrayList<BaseSOAPObserver<TypeToReturn, SOAPFaultType>>();
 
 	/**
 	 * Registers an observer - when any notify events are called, this will be
@@ -27,7 +28,8 @@ public class ObserverRegistry<TypeToReturn> {
 	 * @param observer
 	 *            the observer to add.
 	 */
-	public void registerObserver(SOAPObserver<TypeToReturn> observer) {
+	public void registerObserver(
+			BaseSOAPObserver<TypeToReturn, SOAPFaultType> observer) {
 		observers.add(observer);
 	}
 
@@ -37,7 +39,8 @@ public class ObserverRegistry<TypeToReturn> {
 	 * @param observer
 	 *            The observer to deregister.
 	 */
-	public void deregisterObserver(SOAPObserver<TypeToReturn> observer) {
+	public void deregisterObserver(
+			BaseSOAPObserver<TypeToReturn, SOAPFaultType> observer) {
 		observers.remove(observer);
 	}
 
@@ -53,9 +56,9 @@ public class ObserverRegistry<TypeToReturn> {
 	 * @param exception
 	 *            The exception that has occurred.
 	 */
-	public void notifyException(Request<TypeToReturn> request,
+	public void notifyException(Request<TypeToReturn, SOAPFaultType> request,
 			SOAPException exception) {
-		for (SOAPObserver<TypeToReturn> observer : observers) {
+		for (BaseSOAPObserver<TypeToReturn, SOAPFaultType> observer : observers) {
 			observer.onException(request, exception);
 		}
 	}
@@ -66,8 +69,8 @@ public class ObserverRegistry<TypeToReturn> {
 	 * @param request
 	 *            The request that's completed.
 	 */
-	public void notifyComplete(Request<TypeToReturn> request) {
-		for (SOAPObserver<TypeToReturn> observer : observers) {
+	public void notifyComplete(Request<TypeToReturn, SOAPFaultType> request) {
+		for (BaseSOAPObserver<TypeToReturn, SOAPFaultType> observer : observers) {
 			observer.onCompletion(request);
 		}
 	}

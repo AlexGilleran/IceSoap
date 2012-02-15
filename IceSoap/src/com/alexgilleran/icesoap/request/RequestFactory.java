@@ -32,9 +32,9 @@ public interface RequestFactory {
 	 * @return A request with the passed parameters, ready to have observers
 	 *         registered and be executed.
 	 */
-	public <ReturnType> Request<ReturnType> buildRequest(String url,
-			SOAPEnvelope soapEnvelope, String soapAction,
-			Class<ReturnType> resultClass);
+	public <ReturnType, SOAPFaultType> Request<ReturnType, SOAPFaultType> buildRequest(
+			String url, SOAPEnvelope soapEnvelope, String soapAction,
+			Class<ReturnType> resultClass, Class<SOAPFaultType> soapFaultClass);
 
 	/**
 	 * Builds a {@link ListRequest} with the passed parameters. Use this sort of
@@ -57,7 +57,7 @@ public interface RequestFactory {
 	 * @return A request with the passed parameters, ready to have observers
 	 *         registered and be executed.
 	 */
-	public <ReturnType> ListRequest<ReturnType> buildListRequest(String url,
-			SOAPEnvelope soapEnvelope, String soapAction,
-			Class<ReturnType> resultClass);
+	public <ReturnType, SOAPFaultType> ListRequest<ReturnType, SOAPFaultType> buildListRequest(
+			String url, SOAPEnvelope soapEnvelope, String soapAction,
+			Class<ReturnType> resultClass, Class<SOAPFaultType> soapFaultClass);
 }

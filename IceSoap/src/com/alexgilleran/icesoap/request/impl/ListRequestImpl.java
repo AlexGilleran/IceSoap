@@ -5,6 +5,7 @@ import java.util.List;
 import android.os.AsyncTask;
 
 import com.alexgilleran.icesoap.envelope.SOAPEnvelope;
+import com.alexgilleran.icesoap.observer.BaseSOAPListObserver;
 import com.alexgilleran.icesoap.observer.SOAPListObserver;
 import com.alexgilleran.icesoap.observer.registry.ListObserverRegistry;
 import com.alexgilleran.icesoap.parser.IceSoapListParser;
@@ -21,12 +22,13 @@ import com.alexgilleran.icesoap.request.SOAPRequester;
  * @param <ResultType>
  *            The type of the contents of the list to retrieve.
  */
-public class ListRequestImpl<ResultType> extends RequestImpl<List<ResultType>>
-		implements ListRequest<ResultType> {
+public class ListRequestImpl<ResultType, SOAPFaultType> extends
+		RequestImpl<List<ResultType>, SOAPFaultType> implements
+		ListRequest<ResultType, SOAPFaultType> {
 	/** The parser to use to parse the result */
 	private IceSoapListParser<ResultType> parser;
 	/** The registry to use to dispatch item-related events */
-	private ListObserverRegistry<ResultType> itemRegistry = new ListObserverRegistry<ResultType>();
+	private ListObserverRegistry<ResultType, SOAPFaultType> itemRegistry = new ListObserverRegistry<ResultType, SOAPFaultType>();
 
 	/**
 	 * Creates a new list request without having to specify a parser.
@@ -77,7 +79,7 @@ public class ListRequestImpl<ResultType> extends RequestImpl<List<ResultType>>
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void execute(SOAPListObserver<ResultType> observer) {
+	public void execute(BaseSOAPListObserver<ResultType, SOAPFaultType> observer) {
 		registerObserver(observer);
 		execute();
 	}
@@ -86,7 +88,8 @@ public class ListRequestImpl<ResultType> extends RequestImpl<List<ResultType>>
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void registerObserver(SOAPListObserver<ResultType> observer) {
+	public void registerObserver(
+			BaseSOAPListObserver<ResultType, SOAPFaultType> observer) {
 		super.registerObserver(observer);
 
 		itemRegistry.registerObserver(observer);
@@ -96,7 +99,8 @@ public class ListRequestImpl<ResultType> extends RequestImpl<List<ResultType>>
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void deregisterObserver(SOAPListObserver<ResultType> observer) {
+	public void deregisterObserver(
+			BaseSOAPListObserver<ResultType, SOAPFaultType> observer) {
 		super.deregisterObserver(observer);
 
 		itemRegistry.deregisterObserver(observer);

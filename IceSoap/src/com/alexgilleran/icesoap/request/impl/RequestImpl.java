@@ -7,7 +7,7 @@ import android.os.AsyncTask;
 import com.alexgilleran.icesoap.envelope.SOAPEnvelope;
 import com.alexgilleran.icesoap.exception.SOAPException;
 import com.alexgilleran.icesoap.exception.XMLParsingException;
-import com.alexgilleran.icesoap.observer.SOAPObserver;
+import com.alexgilleran.icesoap.observer.BaseSOAPObserver;
 import com.alexgilleran.icesoap.observer.registry.ObserverRegistry;
 import com.alexgilleran.icesoap.parser.IceSoapParser;
 import com.alexgilleran.icesoap.parser.impl.IceSoapParserImpl;
@@ -25,9 +25,10 @@ import com.alexgilleran.icesoap.request.SOAPRequester;
  * 
  * @param <ResultType>
  */
-public class RequestImpl<ResultType> implements Request<ResultType> {
+public class RequestImpl<ResultType, SOAPFaultType> implements
+		Request<ResultType, SOAPFaultType> {
 	/** Registry of observers to send events to */
-	private ObserverRegistry<ResultType> registry = new ObserverRegistry<ResultType>();
+	private ObserverRegistry<ResultType, SOAPFaultType> registry = new ObserverRegistry<ResultType, SOAPFaultType>();
 	/** Parser to use to parse the response */
 	private IceSoapParser<ResultType> parser;
 	/** The URL to post the request to */
@@ -46,6 +47,9 @@ public class RequestImpl<ResultType> implements Request<ResultType> {
 	private SOAPRequester soapRequester;
 	/** The SOAPAction to perform */
 	private String soapAction;
+	/** A SOAPFaultType, if one has been encountered */
+	private SOAPFaultType soapFault;
+
 	/**
 	 * If an exception is caught, it is stored here until it can be thrown on
 	 * the UI thread
@@ -156,7 +160,7 @@ public class RequestImpl<ResultType> implements Request<ResultType> {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void execute(SOAPObserver<ResultType> observer) {
+	public void execute(BaseSOAPObserver<ResultType, SOAPFaultType> observer) {
 		registerObserver(observer);
 		execute();
 	}
@@ -165,7 +169,8 @@ public class RequestImpl<ResultType> implements Request<ResultType> {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void registerObserver(SOAPObserver<ResultType> observer) {
+	public void registerObserver(
+			BaseSOAPObserver<ResultType, SOAPFaultType> observer) {
 		registry.registerObserver(observer);
 	}
 
@@ -173,7 +178,8 @@ public class RequestImpl<ResultType> implements Request<ResultType> {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void deregisterObserver(SOAPObserver<ResultType> observer) {
+	public void deregisterObserver(
+			BaseSOAPObserver<ResultType, SOAPFaultType> observer) {
 		registry.deregisterObserver(observer);
 	}
 
@@ -199,6 +205,14 @@ public class RequestImpl<ResultType> implements Request<ResultType> {
 	@Override
 	public Throwable getException() {
 		return caughtException;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public SOAPFaultType getSOAPFault() {
+		return soapFault;
 	}
 
 	/**
@@ -291,7 +305,7 @@ public class RequestImpl<ResultType> implements Request<ResultType> {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		RequestImpl<?> other = (RequestImpl<?>) obj;
+		RequestImpl<?, ?> other = (RequestImpl<?, ?>) obj;
 		if (caughtException == null) {
 			if (other.caughtException != null)
 				return false;

@@ -43,21 +43,21 @@ public class RequestFactoryImpl implements RequestFactory {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public <ReturnType> Request<ReturnType> buildRequest(String url,
-			SOAPEnvelope soapEnvelope, String soapAction,
-			Class<ReturnType> resultClass) {
-		return new RequestImpl<ReturnType>(url, soapEnvelope, soapAction,
-				resultClass, requester);
+	public <ReturnType, SOAPFaultType> Request<ReturnType, SOAPFaultType> buildRequest(
+			String url, SOAPEnvelope soapEnvelope, String soapAction,
+			Class<ReturnType> resultClass, Class<SOAPFaultType> soapFaultType) {
+		return new RequestImpl<ReturnType, SOAPFaultType>(url, soapEnvelope,
+				soapAction, resultClass, requester);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public <ReturnType> ListRequest<ReturnType> buildListRequest(String url,
-			SOAPEnvelope soapEnvelope, String soapAction,
-			Class<ReturnType> resultClass) {
-		return new ListRequestImpl<ReturnType>(url, soapEnvelope, soapAction,
-				resultClass, requester);
+	public <ReturnType, SOAPFaultType> ListRequest<ReturnType, SOAPFaultType> buildListRequest(
+			String url, SOAPEnvelope soapEnvelope, String soapAction,
+			Class<ReturnType> resultClass, Class<SOAPFaultType> soapFaultType) {
+		return new ListRequestImpl<ReturnType, SOAPFaultType>(url,
+				soapEnvelope, soapAction, resultClass, requester);
 	}
 }

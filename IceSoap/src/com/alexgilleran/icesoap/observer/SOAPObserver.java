@@ -2,6 +2,7 @@ package com.alexgilleran.icesoap.observer;
 
 import com.alexgilleran.icesoap.exception.SOAPException;
 import com.alexgilleran.icesoap.request.Request;
+import com.alexgilleran.icesoap.soapfault.SOAP11Fault;
 
 /**
  * Used to receive events from a running SOAP Request on the Android UI thread.
@@ -11,25 +12,16 @@ import com.alexgilleran.icesoap.request.Request;
  * @param <ReturnType>
  *            The type of the object that will be retrieved from this request.
  */
-public interface SOAPObserver<ReturnType> {
+public interface SOAPObserver<ReturnType> extends
+		BaseSOAPObserver<ReturnType, SOAP11Fault> {
 
 	/**
-	 * Called when the running SOAP {@link Request} completes
+	 * {@inheritDoc}
 	 * 
-	 * @param request
-	 *            The {@link Request} instance that has completed - retrieve the
-	 *            result object from it using {@link Request#getResult()}
+	 * Note that this uses SOAP11Faults by default - if you need to consume SOAP
+	 * 1.2 Faults, or need to parse extra details of the SOAP Fault, please use
+	 * {@link BaseSOAPObserver} directly.
 	 */
-	public void onCompletion(Request<ReturnType> request);
-
-	/**
-	 * Called if the running SOAP request hits an exception during execution.
-	 * 
-	 * @param request
-	 *            The {@link Request} instance that has encountered an
-	 *            exception.
-	 * @param e
-	 *            The exception that's been encountered.
-	 */
-	public void onException(Request<ReturnType> request, SOAPException e);
+	public abstract void onException(Request<ReturnType, SOAP11Fault> request,
+			SOAPException e);
 }

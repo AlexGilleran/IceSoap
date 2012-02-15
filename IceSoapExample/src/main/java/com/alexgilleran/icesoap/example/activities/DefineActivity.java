@@ -17,8 +17,10 @@ import com.alexgilleran.icesoap.example.R;
 import com.alexgilleran.icesoap.example.dao.DictionaryRequestFactory;
 import com.alexgilleran.icesoap.example.domain.Definition;
 import com.alexgilleran.icesoap.exception.SOAPException;
+import com.alexgilleran.icesoap.observer.BaseSOAPObserver;
 import com.alexgilleran.icesoap.observer.SOAPObserver;
 import com.alexgilleran.icesoap.request.Request;
+import com.alexgilleran.icesoap.soapfault.SOAP11Fault;
 import com.google.inject.Inject;
 
 /**
@@ -129,7 +131,7 @@ public class DefineActivity extends RoboActivity {
 	 * Listens for responses from the dictionary service - when they come
 	 * through, it displays the definition.
 	 */
-	private SOAPObserver<Definition> definitionObserver = new SOAPObserver<Definition>() {
+	private BaseSOAPObserver<Definition, SOAP11Fault> definitionObserver = new BaseSOAPObserver<Definition, SOAP11Fault>() {
 		@Override
 		public void onCompletion(Request<Definition> request) {
 			String definition;
@@ -147,7 +149,7 @@ public class DefineActivity extends RoboActivity {
 		}
 
 		@Override
-		public void onException(Request<Definition> request, SOAPException e) {
+		public void onException(Request<Definition> request, SOAPException e, SOAP11Fault fault) {
 			// Log the exception and show an error dialog.
 			Log.e(DefineActivity.class.getSimpleName(), e.getMessage(), e);
 			showDialog(0);
