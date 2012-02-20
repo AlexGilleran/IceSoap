@@ -60,12 +60,20 @@ public class RequestFactoryImpl implements RequestFactory {
 	public <ReturnType, SOAPFaultType> BaseListRequest<ReturnType, SOAPFaultType> buildListRequest(
 			String url, SOAPEnvelope soapEnvelope, String soapAction,
 			Class<ReturnType> resultClass, Class<SOAPFaultType> soapFaultType) {
-		return new ListRequestImpl<ReturnType, SOAPFaultType>(url,
+		return new BaseListRequestImpl<ReturnType, SOAPFaultType>(url,
 				soapEnvelope, soapAction, resultClass, soapRequester);
 	}
 
 	@Override
 	public <ReturnType> Request<ReturnType> buildRequest(String url,
+			SOAPEnvelope soapEnvelope, String soapAction,
+			Class<ReturnType> resultClass) {
+		return new ListRequestImpl<ReturnType, SOAPFaultType>(url,
+				soapEnvelope, soapAction, resultClass, soapRequester);
+	}
+
+	@Override
+	public <ReturnType> ListRequest<ReturnType> buildListRequest(String url,
 			SOAPEnvelope soapEnvelope, String soapAction,
 			Class<ReturnType> resultClass) {
 		// TODO Auto-generated method stub

@@ -72,9 +72,10 @@ public class RequestImpl<ResultType, SOAPFaultType> implements
 	 *            requests.
 	 */
 	protected RequestImpl(String url, SOAPEnvelope soapEnv, String soapAction,
-			Class<ResultType> resultClass, SOAPRequester requester) {
+			Class<ResultType> resultClass, Class<SOAPFaultType> faultTypeClass,
+			SOAPRequester requester) {
 		this(url, soapEnv, soapAction, new IceSoapParserImpl<ResultType>(
-				resultClass), requester);
+				resultClass), faultTypeClass, requester);
 	}
 
 	/**
@@ -93,7 +94,8 @@ public class RequestImpl<ResultType, SOAPFaultType> implements
 	 *            requests.
 	 */
 	protected RequestImpl(String url, SOAPEnvelope soapEnv, String soapAction,
-			IceSoapParser<ResultType> parser, SOAPRequester requester) {
+			IceSoapParser<ResultType> parser,
+			Class<SOAPFaultType> faultTypeClass, SOAPRequester requester) {
 		this.parser = parser;
 		this.url = url;
 		this.soapEnv = soapEnv;

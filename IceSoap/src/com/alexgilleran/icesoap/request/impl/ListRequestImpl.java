@@ -45,7 +45,7 @@ public class ListRequestImpl<ResultType, SOAPFaultType> extends
 	 *            requests.
 	 */
 	protected ListRequestImpl(String url, SOAPEnvelope soapEnv,
-			String soapAction, Class<ResultType> resultClass,
+			String soapAction, Class<ResultType> resultClass, Class<SOAPFaultType> soapFaultClass,
 			SOAPRequester requester) {
 		this(url, soapEnv, new IceSoapListParserImpl<ResultType>(resultClass),
 				soapAction, requester);
