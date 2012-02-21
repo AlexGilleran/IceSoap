@@ -10,7 +10,6 @@ import com.alexgilleran.icesoap.request.ListRequest;
 import com.alexgilleran.icesoap.request.Request;
 import com.alexgilleran.icesoap.request.RequestFactory;
 import com.alexgilleran.icesoap.request.SOAPRequester;
-import com.alexgilleran.icesoap.soapfault.SOAP11Fault;
 
 /**
  * Factory for requests - retains a single instance of {@link SOAPRequester} to
@@ -49,8 +48,9 @@ public class RequestFactoryImpl implements RequestFactory {
 	public <ReturnType, SOAPFaultType> BaseRequest<ReturnType, SOAPFaultType> buildRequest(
 			String url, SOAPEnvelope soapEnvelope, String soapAction,
 			Class<ReturnType> resultClass, Class<SOAPFaultType> soapFaultType) {
-		return new RequestImpl<ReturnType, SOAPFaultType>(url, soapEnvelope,
-				soapAction, resultClass, soapRequester);
+		return new BaseRequestImpl<ReturnType, SOAPFaultType>(url,
+				soapEnvelope, soapAction, resultClass, soapFaultType,
+				soapRequester);
 	}
 
 	/**
@@ -61,15 +61,15 @@ public class RequestFactoryImpl implements RequestFactory {
 			String url, SOAPEnvelope soapEnvelope, String soapAction,
 			Class<ReturnType> resultClass, Class<SOAPFaultType> soapFaultType) {
 		return new BaseListRequestImpl<ReturnType, SOAPFaultType>(url,
-				soapEnvelope, soapAction, resultClass, soapRequester);
+				soapEnvelope, soapAction, resultClass, soapFaultType,
+				soapRequester);
 	}
 
 	@Override
 	public <ReturnType> Request<ReturnType> buildRequest(String url,
 			SOAPEnvelope soapEnvelope, String soapAction,
 			Class<ReturnType> resultClass) {
-		return new ListRequestImpl<ReturnType, SOAPFaultType>(url,
-				soapEnvelope, soapAction, resultClass, soapRequester);
+		return null;
 	}
 
 	@Override
