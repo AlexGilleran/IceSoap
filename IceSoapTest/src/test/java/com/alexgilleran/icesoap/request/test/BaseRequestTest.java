@@ -17,7 +17,6 @@ import com.alexgilleran.icesoap.request.Request;
 import com.alexgilleran.icesoap.request.RequestFactory;
 import com.alexgilleran.icesoap.request.SOAPRequester;
 import com.alexgilleran.icesoap.request.impl.RequestFactoryImpl;
-import com.alexgilleran.icesoap.request.impl.Response;
 
 public class BaseRequestTest<E> {
 
@@ -48,7 +47,9 @@ public class BaseRequestTest<E> {
 		SOAPEnvelope envelope = getDummyEnvelope();
 
 		expect(mockRequester.doSoapRequest(envelope, DUMMY_URL, null))
-				.andReturn(new Response(inputStream, 400));
+				.andReturn(
+						new com.alexgilleran.icesoap.request.impl.Response(
+								inputStream, 400));
 		replay(mockRequester);
 
 		request.execute();
@@ -65,7 +66,9 @@ public class BaseRequestTest<E> {
 		SOAPEnvelope envelope = getDummyEnvelope();
 
 		expect(mockRequester.doSoapRequest(envelope, DUMMY_URL, null))
-				.andReturn(new Response(inputStream, 500));
+				.andReturn(
+						new com.alexgilleran.icesoap.request.impl.Response(
+								inputStream, 500));
 		replay(mockRequester);
 
 		request.execute();
