@@ -5,15 +5,15 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.junit.Assert.assertNull;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 import org.junit.Before;
 
 import com.alexgilleran.icesoap.envelope.SOAPEnvelope;
 import com.alexgilleran.icesoap.envelope.impl.PasswordSOAPEnvelope;
-import com.alexgilleran.icesoap.exception.SOAPException;
 import com.alexgilleran.icesoap.exception.XMLParsingException;
-import com.alexgilleran.icesoap.request.Request;
+import com.alexgilleran.icesoap.request.BaseRequest;
 import com.alexgilleran.icesoap.request.RequestFactory;
 import com.alexgilleran.icesoap.request.SOAPRequester;
 import com.alexgilleran.icesoap.request.impl.RequestFactoryImpl;
@@ -21,6 +21,8 @@ import com.alexgilleran.icesoap.request.impl.RequestFactoryImpl;
 public class BaseRequestTest<E> {
 
 	protected static final String DUMMY_URL = "http://www.example.com/services/exampleservice";
+	protected static final String SOAP_ACTION = "soapaction";
+
 	private RequestFactory requestFactory;
 	private SOAPRequester mockRequester;
 
@@ -42,14 +44,14 @@ public class BaseRequestTest<E> {
 		return envelope;
 	}
 
-	protected void doRequest(Request<E> request, InputStream inputStream)
-			throws SOAPException, XMLParsingException {
+	protected void doRequest(BaseRequest<E, ?> request, InputStream inputStream)
+			throws IOException, XMLParsingException {
 		SOAPEnvelope envelope = getDummyEnvelope();
 
-		expect(mockRequester.doSoapRequest(envelope, DUMMY_URL, null))
+		expect(mockRequester.doSoapRequest(envelope, DUMMY_URL, SOAP_ACTION))
 				.andReturn(
 						new com.alexgilleran.icesoap.request.impl.Response(
-								inputStream, 400));
+								inputStream, 200));
 		replay(mockRequester);
 
 		request.execute();
@@ -61,11 +63,12 @@ public class BaseRequestTest<E> {
 		assertNull(request.getException());
 	}
 
-	protected void doFailedRequest(Request<E> request, InputStream inputStream)
-			throws SOAPException, XMLParsingException {
+	protected <FaultType> void doFailedRequest(
+			BaseRequest<E, FaultType> request, InputStream inputStream)
+			throws IOException, XMLParsingException {
 		SOAPEnvelope envelope = getDummyEnvelope();
 
-		expect(mockRequester.doSoapRequest(envelope, DUMMY_URL, null))
+		expect(mockRequester.doSoapRequest(envelope, DUMMY_URL, SOAP_ACTION))
 				.andReturn(
 						new com.alexgilleran.icesoap.request.impl.Response(
 								inputStream, 500));
@@ -76,8 +79,6 @@ public class BaseRequestTest<E> {
 		while (!request.isComplete()) {
 
 		}
-
-		assertNull(request.getException());
 	}
 
 	public SOAPRequester getMockRequester() {

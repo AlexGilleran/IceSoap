@@ -7,6 +7,21 @@ import java.io.InputStream;
 //<soapenv:Body>
 
 public class SampleResponse {
+	public static String FAULT_CODE = "faultCode";
+	public static String FAULT_STRING = "faultString";
+	public static String FAULT_ACTOR = "faultActor";
+
+	private final static String SOAP11_FAULT = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:response=\"http://example.com/response\">"
+			+ "<soapenv:Header/>"//
+			+ "<soapenv:Body>"//
+			+ "<soapenv:Fault>"//
+			+ "<faultcode>" + FAULT_CODE + "</faultcode>"//
+			+ "<faultstring>" + FAULT_STRING + "</faultstring>"//
+			+ "<faultactor>" + FAULT_ACTOR + "</faultactor>"//
+			+ "</soapenv:Fault>"//
+			+ "</soapenv:Body>"//
+			+ "</soapenv:Envelope>";//
+
 	private final static String SINGLE_RESPONSE = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:response=\"http://example.com/response\">"
 			+ "<soapenv:Header/>"//
 			+ "<soapenv:Body>"//
@@ -44,5 +59,9 @@ public class SampleResponse {
 
 	public static InputStream getListResponse() {
 		return new ByteArrayInputStream(LIST_RESPONSE.getBytes());
+	}
+
+	public static InputStream getSoap11Fault() {
+		return new ByteArrayInputStream(SOAP11_FAULT.getBytes());
 	}
 }

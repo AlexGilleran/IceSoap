@@ -20,6 +20,21 @@ public class SOAP11Fault {
 	@XMLField("faultactor")
 	private String faultActor;
 
+	public SOAP11Fault() {
+
+	}
+
+	/**
+	 * @param faultCode
+	 * @param faultString
+	 * @param faultActor
+	 */
+	public SOAP11Fault(String faultCode, String faultString, String faultActor) {
+		this.faultCode = faultCode;
+		this.faultString = faultString;
+		this.faultActor = faultActor;
+	}
+
 	/**
 	 * @return The contents of the {@code faultCode} element, as a String.
 	 */
@@ -41,5 +56,51 @@ public class SOAP11Fault {
 	 */
 	public String getFaultActor() {
 		return faultActor;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((faultActor == null) ? 0 : faultActor.hashCode());
+		result = prime * result
+				+ ((faultCode == null) ? 0 : faultCode.hashCode());
+		result = prime * result
+				+ ((faultString == null) ? 0 : faultString.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		SOAP11Fault other = (SOAP11Fault) obj;
+		if (faultActor == null) {
+			if (other.faultActor != null)
+				return false;
+		} else if (!faultActor.equals(other.faultActor))
+			return false;
+		if (faultCode == null) {
+			if (other.faultCode != null)
+				return false;
+		} else if (!faultCode.equals(other.faultCode))
+			return false;
+		if (faultString == null) {
+			if (other.faultString != null)
+				return false;
+		} else if (!faultString.equals(other.faultString))
+			return false;
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "SOAP11Fault [faultCode=" + faultCode + ", faultString="
+				+ faultString + ", faultActor=" + faultActor + "]";
 	}
 }

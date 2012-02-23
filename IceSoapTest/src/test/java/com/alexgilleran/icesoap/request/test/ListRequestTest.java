@@ -5,13 +5,13 @@ import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.alexgilleran.icesoap.exception.SOAPException;
 import com.alexgilleran.icesoap.exception.XMLParsingException;
 import com.alexgilleran.icesoap.observer.SOAPListObserver;
 import com.alexgilleran.icesoap.request.ListRequest;
@@ -26,10 +26,10 @@ public class ListRequestTest extends BaseRequestTest<List<Response>> {
 
 	@Test
 	@SuppressWarnings("unchecked")
-	public void testRequest() throws XMLParsingException, SOAPException {
+	public void testRequest() throws XMLParsingException, IOException {
 		// Set up a parser for the response
 		ListRequest<Response> request = getRequestFactory().buildListRequest(
-				DUMMY_URL, getDummyEnvelope(), null, Response.class);
+				DUMMY_URL, getDummyEnvelope(), SOAP_ACTION, Response.class);
 
 		// Create a mock observer and put in the expected call (we expect it to
 		// come back with the request)

@@ -43,8 +43,6 @@ public class ApacheSOAPRequester implements SOAPRequester {
 	private static final String HTTPS_NAME = "https";
 	/** Name of HTTP */
 	private static final String HTTP_NAME = "http";
-	/** Status returned if SOAP Request has executed successfully */
-	private static final int HTTP_OK_STATUS = 200;
 	/** HTTP content type submitted in HTTP POST request for SOAP calls */
 	private static final String XML_CONTENT_TYPE = "text/xml; charset=UTF-8";
 	/** Label for content-type header */
@@ -64,7 +62,7 @@ public class ApacheSOAPRequester implements SOAPRequester {
 	 */
 	@Override
 	public Response doSoapRequest(SOAPEnvelope envelope, String targetUrl)
-			throws SOAPException {
+			throws IOException {
 		return doSoapRequest(envelope, targetUrl, BLANK_SOAP_ACTION);
 	}
 
@@ -72,15 +70,8 @@ public class ApacheSOAPRequester implements SOAPRequester {
 	 * {@inheritDoc}
 	 */
 	public Response doSoapRequest(SOAPEnvelope envelope, String url,
-			String soapAction) throws SOAPException {
-		try {
-			return doHttpPost(buildPostRequest(url, envelope.toString(),
-					soapAction));
-
-			// Wrap any exceptions and rethrow.
-		} catch (IOException e) {
-			throw new SOAPException(e);
-		}
+			String soapAction) throws IOException {
+		return doHttpPost(buildPostRequest(url, envelope.toString(), soapAction));
 	}
 
 	/**
@@ -94,21 +85,15 @@ public class ApacheSOAPRequester implements SOAPRequester {
 	 * @throws SOAPException
 	 */
 	private Response doHttpPost(HttpPost httpPost)
-			throws ClientProtocolException, IOException, SOAPException {
+			throws ClientProtocolException, IOException {
 
 		// Execute HTTP Post Request
 		HttpResponse response = httpClient.execute(httpPost);
 
-		int status = response.getStatusLine().getStatusCode();
-
-		if (status != HTTP_OK_STATUS) {
-			throw new SOAPException("HTTP Request Failure: "
-					+ response.getStatusLine().toString());
-		}
-
 		HttpEntity res = new BufferedHttpEntity(response.getEntity());
 
-		return new Response(res.getContent(), status);
+		return new Response(res.getContent(), response.getStatusLine()
+				.getStatusCode());
 	}
 
 	/**

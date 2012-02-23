@@ -3,7 +3,6 @@ package com.alexgilleran.icesoap.request;
 import java.io.IOException;
 
 import com.alexgilleran.icesoap.envelope.SOAPEnvelope;
-import com.alexgilleran.icesoap.exception.SOAPException;
 import com.alexgilleran.icesoap.request.impl.Response;
 
 /**
@@ -24,7 +23,7 @@ public interface SOAPRequester {
 	 * @throws IOException
 	 */
 	public Response doSoapRequest(SOAPEnvelope envelope, String targetUrl)
-			throws SOAPException;
+			throws IOException;
 
 	/**
 	 * Performs a SOAP request
@@ -40,7 +39,7 @@ public interface SOAPRequester {
 	 * @throws IOException
 	 */
 	public Response doSoapRequest(SOAPEnvelope envelope, String targetUrl,
-			String soapAction) throws SOAPException;
+			String soapAction) throws IOException;
 
 	/**
 	 * Set the timeout for making connections to the server.
