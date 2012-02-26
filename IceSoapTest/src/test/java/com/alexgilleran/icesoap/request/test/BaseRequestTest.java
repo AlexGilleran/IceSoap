@@ -11,9 +11,9 @@ import java.io.InputStream;
 import org.junit.Before;
 
 import com.alexgilleran.icesoap.envelope.SOAPEnvelope;
-import com.alexgilleran.icesoap.envelope.impl.PasswordSOAPEnvelope;
+import com.alexgilleran.icesoap.envelope.impl.PasswordSOAP11Envelope;
 import com.alexgilleran.icesoap.exception.XMLParsingException;
-import com.alexgilleran.icesoap.request.BaseRequest;
+import com.alexgilleran.icesoap.request.Request;
 import com.alexgilleran.icesoap.request.RequestFactory;
 import com.alexgilleran.icesoap.request.SOAPRequester;
 import com.alexgilleran.icesoap.request.impl.RequestFactoryImpl;
@@ -38,13 +38,13 @@ public class BaseRequestTest<E> {
 
 	protected SOAPEnvelope getDummyEnvelope() {
 		// Set up an envelope to send
-		SOAPEnvelope envelope = new PasswordSOAPEnvelope("username", "password");
+		SOAPEnvelope envelope = new PasswordSOAP11Envelope("username", "password");
 		envelope.getBody().addNode("http://testns.com", "testname")
 				.addTextNode(null, "textelement", "value");
 		return envelope;
 	}
 
-	protected void doRequest(BaseRequest<E, ?> request, InputStream inputStream)
+	protected void doRequest(Request<E, ?> request, InputStream inputStream)
 			throws IOException, XMLParsingException {
 		SOAPEnvelope envelope = getDummyEnvelope();
 
@@ -64,7 +64,7 @@ public class BaseRequestTest<E> {
 	}
 
 	protected <FaultType> void doFailedRequest(
-			BaseRequest<E, FaultType> request, InputStream inputStream)
+			Request<E, FaultType> request, InputStream inputStream)
 			throws IOException, XMLParsingException {
 		SOAPEnvelope envelope = getDummyEnvelope();
 

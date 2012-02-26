@@ -19,8 +19,10 @@ import java.text.SimpleDateFormat;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 public @interface XMLField {
+	public final static String BLANK_XPATH_STRING = "";
+
 	/** The XPath of the field, as a String. */
-	String value();
+	String value() default (BLANK_XPATH_STRING);
 
 	/**
 	 * The format to use for parsing this field, if it's a date - in the same

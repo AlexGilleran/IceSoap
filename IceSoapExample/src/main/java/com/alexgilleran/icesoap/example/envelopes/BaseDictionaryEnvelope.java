@@ -1,6 +1,6 @@
 package com.alexgilleran.icesoap.example.envelopes;
 
-import com.alexgilleran.icesoap.envelope.impl.BaseSOAPEnvelope;
+import com.alexgilleran.icesoap.envelope.impl.BaseSOAP11Envelope;
 
 /**
  * Base class for envelopes used to communicate with the dictionary service.
@@ -12,7 +12,7 @@ import com.alexgilleran.icesoap.envelope.impl.BaseSOAPEnvelope;
  * @author Alex Gilleran
  * 
  */
-public abstract class BaseDictionaryEnvelope extends BaseSOAPEnvelope {
+public abstract class BaseDictionaryEnvelope extends BaseSOAP11Envelope {
 	/** The namespace of the AonAware services */
 	private final static String AON_AWARE_NAMESPACE = "http://services.aonaware.com/webservices/";
 

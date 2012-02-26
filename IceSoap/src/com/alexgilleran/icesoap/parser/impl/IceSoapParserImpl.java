@@ -103,19 +103,8 @@ public class IceSoapParserImpl<ReturnType> extends
 	public IceSoapParserImpl(Class<ReturnType> targetClass,
 			XPathElement rootXPath) {
 		super(rootXPath);
-
-		// if (targetClass.getAnnotation(XMLObject.class) == null) {
-		// throw new ClassDefException(
-		// "Attempted to create an "
-		// + IceSoapParser.class.getSimpleName()
-		// + " for "
-		// + targetClass.getSimpleName()
-		// + ", which was not annotated with "
-		// + XMLObject.class.getSimpleName()
-		// + ". Please annotate this class if it is to be used for parsing");
-		// }
-
 		this.targetClass = targetClass;
+
 		fieldXPaths = getFieldXPaths(targetClass);
 	}
 
@@ -139,20 +128,40 @@ public class IceSoapParserImpl<ReturnType> extends
 		return fieldXPaths;
 	}
 
+	/**
+	 * Adds the fields from the specified class to the passed
+	 * {@link XPathRepository}, with the XPaths specified in the
+	 * {@link XMLField} annotations.
+	 * 
+	 * @param targetClass
+	 *            The class to draw fields from
+	 * @param fieldXPaths
+	 *            The repository to add fields too
+	 */
 	private void addXPathFieldsToRepo(Class<?> targetClass,
 			XPathRepository<Field> fieldXPaths) {
 		for (Field field : targetClass.getDeclaredFields()) {
 			XMLField xPath = field.getAnnotation(XMLField.class);
 
 			if (xPath != null) {
-				XPathElement lastFieldElement = compileXPath(xPath, field);
-				XPathElement firstFieldElement = lastFieldElement
-						.getFirstElement();
+				// Annotation is present - get the XPath from it
+				XPathElement lastFieldElement;
 
-				if (firstFieldElement.isRelative()) {
-					// If the element is relative, add it to the absolute XPath
-					// of its enclosing object.
-					firstFieldElement.setPreviousElement(getRootXPath());
+				if (!xPath.value().equals(XMLField.BLANK_XPATH_STRING)) {
+					// If the XPath has a value specified, compile it
+					lastFieldElement = compileXPath(xPath, field);
+					XPathElement firstFieldElement = lastFieldElement
+							.getFirstElement();
+
+					if (firstFieldElement.isRelative()) {
+						// If the element is relative, add it to the absolute
+						// XPath
+						// of its enclosing object.
+						firstFieldElement.setPreviousElement(getRootXPath());
+					}
+				} else {
+					// XPath has no value - set to the root value
+					lastFieldElement = getRootXPath();
 				}
 
 				fieldXPaths.put(lastFieldElement, field);

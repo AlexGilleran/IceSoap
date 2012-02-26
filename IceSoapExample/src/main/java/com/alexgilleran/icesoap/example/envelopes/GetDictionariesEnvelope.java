@@ -1,7 +1,7 @@
 package com.alexgilleran.icesoap.example.envelopes;
 
 import com.alexgilleran.icesoap.envelope.SOAPEnvelope;
-import com.alexgilleran.icesoap.envelope.impl.BaseSOAPEnvelope;
+import com.alexgilleran.icesoap.envelope.impl.BaseSOAP11Envelope;
 
 // The envelope being created:
 //<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:web="http://services.aonaware.com/webservices/">
@@ -15,7 +15,7 @@ import com.alexgilleran.icesoap.envelope.impl.BaseSOAPEnvelope;
  * An envelope that gets a list of dictionaries from the service.
  * 
  * This envelope is actually very simple - it could've just as easily been
- * created by instantiating a new {@link BaseSOAPEnvelope} and using the public
+ * created by instantiating a new {@link BaseSOAP11Envelope} and using the public
  * methods on the {@link SOAPEnvelope} interface to build up the envelope.
  */
 public class GetDictionariesEnvelope extends BaseDictionaryEnvelope {

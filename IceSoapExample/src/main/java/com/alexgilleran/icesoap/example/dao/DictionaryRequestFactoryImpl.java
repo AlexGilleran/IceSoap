@@ -8,8 +8,8 @@ import com.alexgilleran.icesoap.example.domain.Definition;
 import com.alexgilleran.icesoap.example.domain.Dictionary;
 import com.alexgilleran.icesoap.example.envelopes.DefineWordEnvelope;
 import com.alexgilleran.icesoap.example.envelopes.GetDictionariesEnvelope;
-import com.alexgilleran.icesoap.request.ListRequest;
-import com.alexgilleran.icesoap.request.Request;
+import com.alexgilleran.icesoap.request.SOAP11ListRequest;
+import com.alexgilleran.icesoap.request.SOAP11Request;
 import com.alexgilleran.icesoap.request.RequestFactory;
 import com.alexgilleran.icesoap.request.SOAPRequester;
 import com.alexgilleran.icesoap.request.impl.RequestFactoryImpl;
@@ -42,14 +42,14 @@ public class DictionaryRequestFactoryImpl implements DictionaryRequestFactory {
 	private RequestFactory requestFactory = new RequestFactoryImpl();
 
 	@Override
-	public ListRequest<Dictionary> getAllDictionaries() {
+	public SOAP11ListRequest<Dictionary> getAllDictionaries() {
 		SOAPEnvelope envelope = new GetDictionariesEnvelope();
 		return requestFactory.buildListRequest(url, envelope,
 				dictionariesSoapAction, Dictionary.class);
 	}
 
 	@Override
-	public Request<Definition> getDefinition(String dictionaryId, String word) {
+	public SOAP11Request<Definition> getDefinition(String dictionaryId, String word) {
 		return requestFactory.buildRequest(url, new DefineWordEnvelope(
 				dictionaryId, word), defineSoapAction, Definition.class);
 	}

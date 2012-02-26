@@ -20,13 +20,6 @@ import com.alexgilleran.icesoap.xml.XMLParentNode;
  * 
  */
 public interface SOAPEnvelope extends XMLParentNode {
-	public final static String NS_PREFIX_SOAPENV = "soapenv";
-	public final static String NS_URI_SOAPENV = "http://schemas.xmlsoap.org/soap/envelope/";
-	public final static String NS_PREFIX_SOAPENC = "soapenc";
-	public final static String NS_URI_SOAPENC = "http://schemas.xmlsoap.org/soap/encoding/";
-	public final static String NODE_NAME = "Envelope";
-	public final static String NODE_NAMESPACE = NS_URI_SOAPENV;
-	public final static String ENCODING_UTF8 = "UTF-8";
 
 	/**
 	 * Returns the <soapenv:Header> node of the envelope, to be modified
@@ -41,4 +34,23 @@ public interface SOAPEnvelope extends XMLParentNode {
 	 * @return The body node of the envelope
 	 */
 	public XMLParentNode getBody();
+
+	/**
+	 * Sets the encoding of the envelope when it's serialised - defaults to
+	 * "UTF-8"
+	 * 
+	 * @param encoding
+	 *            As a string - the string should be the same format as would be
+	 *            in an XML declaration - e.g. the "UTF-8" in
+	 *            {@code <?xml version="1.0" encoding="UTF-8"?>}
+	 */
+	public void setEncoding(String encoding);
+
+	/**
+	 * 
+	 * @return Gets the encoding as a String in the same format as would be in
+	 *         an XML declaration - e.g. the "UTF-8" in
+	 *         {@code <?xml version="1.0" encoding="UTF-8"?>}
+	 */
+	public String getEncoding();
 }

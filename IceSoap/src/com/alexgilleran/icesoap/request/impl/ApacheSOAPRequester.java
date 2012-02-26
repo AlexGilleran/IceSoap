@@ -123,6 +123,7 @@ public class ApacheSOAPRequester implements SOAPRequester {
 				.getSocketFactory(), DEFAULT_HTTP_PORT));
 		schemeRegistry.register(new Scheme(HTTPS_NAME, SSLSocketFactory
 				.getSocketFactory(), DEFAULT_HTTPS_PORT));
+
 		return schemeRegistry;
 	}
 

@@ -6,14 +6,14 @@ package com.alexgilleran.icesoap.observer.registry;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.alexgilleran.icesoap.observer.BaseSOAPListObserver;
 import com.alexgilleran.icesoap.observer.SOAPListObserver;
-import com.alexgilleran.icesoap.observer.SOAPObserver;
-import com.alexgilleran.icesoap.request.BaseListRequest;
-import com.alexgilleran.icesoap.request.BaseRequest;
+import com.alexgilleran.icesoap.observer.SOAP11ListObserver;
+import com.alexgilleran.icesoap.observer.SOAP11Observer;
+import com.alexgilleran.icesoap.request.ListRequest;
+import com.alexgilleran.icesoap.request.Request;
 
 /**
- * Extension of {@link ObserverRegistry} to deal with {@link BaseListRequest}s.
+ * Extension of {@link ObserverRegistry} to deal with {@link ListRequest}s.
  * Contains extra methods to deal specifically with individual items in a list.
  * 
  * @author Alex Gilleran
@@ -22,17 +22,17 @@ import com.alexgilleran.icesoap.request.BaseRequest;
 public class ListObserverRegistry<T, SOAPFaultType> extends
 		ObserverRegistry<List<T>, SOAPFaultType> {
 	/** A list of observers that are specifically list-based */
-	private List<BaseSOAPListObserver<T, SOAPFaultType>> listObservers = new ArrayList<BaseSOAPListObserver<T, SOAPFaultType>>();
+	private List<SOAPListObserver<T, SOAPFaultType>> listObservers = new ArrayList<SOAPListObserver<T, SOAPFaultType>>();
 
 	/**
 	 * Adds a list observer. Node that this observer will receive all events on
-	 * the {@link SOAPListObserver} interface, rather than just those on the
-	 * {@link SOAPObserver}.
+	 * the {@link SOAP11ListObserver} interface, rather than just those on the
+	 * {@link SOAP11Observer}.
 	 * 
 	 * @param observer
 	 *            The observer to add.
 	 */
-	public void registerObserver(BaseSOAPListObserver<T, SOAPFaultType> observer) {
+	public void registerObserver(SOAPListObserver<T, SOAPFaultType> observer) {
 		super.registerObserver(observer);
 
 		listObservers.add(observer);
@@ -45,7 +45,7 @@ public class ListObserverRegistry<T, SOAPFaultType> extends
 	 *            The observer to remove.
 	 */
 	public void deregisterObserver(
-			BaseSOAPListObserver<T, SOAPFaultType> observer) {
+			SOAPListObserver<T, SOAPFaultType> observer) {
 		super.deregisterObserver(observer);
 
 		listObservers.remove(observer);
@@ -59,8 +59,8 @@ public class ListObserverRegistry<T, SOAPFaultType> extends
 	 * @param item
 	 *            The item itself.
 	 */
-	public void notifyNewItem(BaseRequest<List<T>, SOAPFaultType> request, T item) {
-		for (BaseSOAPListObserver<T, SOAPFaultType> observer : listObservers) {
+	public void notifyNewItem(Request<List<T>, SOAPFaultType> request, T item) {
+		for (SOAPListObserver<T, SOAPFaultType> observer : listObservers) {
 			observer.onNewItem(request, item);
 		}
 	}

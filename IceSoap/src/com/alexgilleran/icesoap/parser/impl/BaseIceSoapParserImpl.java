@@ -13,7 +13,7 @@ import com.alexgilleran.icesoap.exception.XPathParsingException;
 import com.alexgilleran.icesoap.exception.XMLParsingException;
 import com.alexgilleran.icesoap.parser.IceSoapParser;
 import com.alexgilleran.icesoap.parser.XPathPullParser;
-import com.alexgilleran.icesoap.request.BaseRequest;
+import com.alexgilleran.icesoap.request.Request;
 import com.alexgilleran.icesoap.xpath.XPathFactory;
 import com.alexgilleran.icesoap.xpath.elements.XPathElement;
 
@@ -55,7 +55,7 @@ public abstract class BaseIceSoapParserImpl<ReturnType> implements
 							+ " and an absolute XPath, or make sure to only use it as a field in other "
 							+ XMLObject.class.getSimpleName()
 							+ "-annotated classes rather than passing it directly to a "
-							+ BaseRequest.class.getSimpleName() + " or "
+							+ Request.class.getSimpleName() + " or "
 							+ IceSoapParser.class.getSimpleName() + " object");
 		}
 	}
@@ -274,16 +274,7 @@ public abstract class BaseIceSoapParserImpl<ReturnType> implements
 	 */
 	protected final static XPathElement compileXPath(XMLField soapFieldAnnot,
 			Field sourceField) {
-		if (soapFieldAnnot.value() != null) {
-			return compileXPath(soapFieldAnnot.value(), sourceField.toString());
-		} else {
-			throw new ClassDefException(
-					"The "
-							+ XMLField.class.getSimpleName()
-							+ " annotation on field "
-							+ sourceField.toString()
-							+ " did not specify a mandatory XPath expression for a value.");
-		}
+		return compileXPath(soapFieldAnnot.value(), sourceField.toString());
 	}
 
 	/**
@@ -327,7 +318,7 @@ public abstract class BaseIceSoapParserImpl<ReturnType> implements
 		} catch (XPathParsingException e) {
 			throw new ClassDefException("The xpath expression " + xpathString
 					+ " specified for " + source
-					+ " was an invalid XPath expression");
+					+ " was an invalid XPath expression", e);
 		}
 	}
 

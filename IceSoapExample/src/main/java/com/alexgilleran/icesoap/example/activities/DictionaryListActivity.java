@@ -21,8 +21,8 @@ import com.alexgilleran.icesoap.example.R;
 import com.alexgilleran.icesoap.example.dao.DictionaryRequestFactory;
 import com.alexgilleran.icesoap.example.domain.Dictionary;
 import com.alexgilleran.icesoap.exception.SOAPException;
-import com.alexgilleran.icesoap.observer.SOAPListObserver;
-import com.alexgilleran.icesoap.request.BaseRequest;
+import com.alexgilleran.icesoap.observer.SOAP11ListObserver;
+import com.alexgilleran.icesoap.request.Request;
 import com.alexgilleran.icesoap.soapfault.SOAP11Fault;
 import com.google.inject.Inject;
 
@@ -133,10 +133,10 @@ public class DictionaryListActivity extends RoboActivity {
 	 * functionality such as stopping the progress bar on request completion and
 	 * showing a dialog box on errors.
 	 */
-	private SOAPListObserver<Dictionary> soapObserver = new SOAPListObserver<Dictionary>() {
+	private SOAP11ListObserver<Dictionary> soapObserver = new SOAP11ListObserver<Dictionary>() {
 		@Override
 		public void onNewItem(
-				BaseRequest<List<Dictionary>, SOAP11Fault> request,
+				Request<List<Dictionary>, SOAP11Fault> request,
 				Dictionary item) {
 			dictListAdapter.add(item);
 
@@ -144,13 +144,13 @@ public class DictionaryListActivity extends RoboActivity {
 
 		@Override
 		public void onCompletion(
-				BaseRequest<List<Dictionary>, SOAP11Fault> request) {
+				Request<List<Dictionary>, SOAP11Fault> request) {
 			setProgressBarIndeterminateVisibility(false);
 		}
 
 		@Override
 		public void onException(
-				BaseRequest<List<Dictionary>, SOAP11Fault> request,
+				Request<List<Dictionary>, SOAP11Fault> request,
 				SOAPException e) {
 			Log.e(DictionaryListActivity.class.getSimpleName(), e.getMessage(),
 					e);

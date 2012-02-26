@@ -13,8 +13,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.alexgilleran.icesoap.exception.XMLParsingException;
-import com.alexgilleran.icesoap.observer.SOAPListObserver;
-import com.alexgilleran.icesoap.request.ListRequest;
+import com.alexgilleran.icesoap.observer.SOAP11ListObserver;
+import com.alexgilleran.icesoap.request.SOAP11ListRequest;
 import com.alexgilleran.icesoap.request.test.xmlclasses.Response;
 import com.xtremelabs.robolectric.RobolectricTestRunner;
 
@@ -28,12 +28,12 @@ public class ListRequestTest extends BaseRequestTest<List<Response>> {
 	@SuppressWarnings("unchecked")
 	public void testRequest() throws XMLParsingException, IOException {
 		// Set up a parser for the response
-		ListRequest<Response> request = getRequestFactory().buildListRequest(
+		SOAP11ListRequest<Response> request = getRequestFactory().buildListRequest(
 				DUMMY_URL, getDummyEnvelope(), SOAP_ACTION, Response.class);
 
 		// Create a mock observer and put in the expected call (we expect it to
 		// come back with the request)
-		SOAPListObserver<Response> mockObserver = createMock(SOAPListObserver.class);
+		SOAP11ListObserver<Response> mockObserver = createMock(SOAP11ListObserver.class);
 		mockObserver.onNewItem(request, expectedList.get(0));
 		mockObserver.onNewItem(request, expectedList.get(1));
 		mockObserver.onNewItem(request, expectedList.get(2));

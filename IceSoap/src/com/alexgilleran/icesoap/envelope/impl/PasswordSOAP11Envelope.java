@@ -11,7 +11,7 @@ import com.alexgilleran.icesoap.xml.impl.XMLParentNodeImpl;
  * @author Alex Gilleran
  * 
  */
-public class PasswordSOAPEnvelope extends BaseSOAPEnvelope {
+public class PasswordSOAP11Envelope extends BaseSOAP11Envelope {
 	/** Prefix for WSSE namespace */
 	private static final String NS_PREFIX_WSSE = "wsse";
 	/** URI for WSSE namespace */
@@ -27,7 +27,7 @@ public class PasswordSOAPEnvelope extends BaseSOAPEnvelope {
 	 * @param password
 	 *            The password to put in the security header
 	 */
-	public PasswordSOAPEnvelope(String username, String password) {
+	public PasswordSOAP11Envelope(String username, String password) {
 		super();
 
 		setupWSSENode(username, password);
@@ -36,7 +36,7 @@ public class PasswordSOAPEnvelope extends BaseSOAPEnvelope {
 	private void setupWSSENode(String username, String password) {
 		securityNode = getHeader().addNode(NS_URI_WSSE, "Security");
 		securityNode.declarePrefix(NS_PREFIX_WSSE, NS_URI_WSSE);
-		securityNode.addAttribute(BaseSOAPEnvelope.NS_URI_SOAPENV,
+		securityNode.addAttribute(BaseSOAP11Envelope.NS_URI_SOAPENV,
 				"mustUnderstand", "1");
 
 		securityNode.addElement(getUserNameToken(username, password));
@@ -52,7 +52,8 @@ public class PasswordSOAPEnvelope extends BaseSOAPEnvelope {
 	 * @return the UsernameToken element.
 	 */
 	protected XMLParentNode getUserNameToken(String username, String password) {
-		XMLParentNode usernameToken = new XMLParentNodeImpl(NS_URI_WSSE, "UsernameToken");
+		XMLParentNode usernameToken = new XMLParentNodeImpl(NS_URI_WSSE,
+				"UsernameToken");
 		usernameToken.addTextNode(NS_URI_WSSE, "Username", username);
 
 		XMLTextNode passwordLeaf = usernameToken.addTextNode(NS_URI_WSSE,
@@ -82,7 +83,7 @@ public class PasswordSOAPEnvelope extends BaseSOAPEnvelope {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		PasswordSOAPEnvelope other = (PasswordSOAPEnvelope) obj;
+		PasswordSOAP11Envelope other = (PasswordSOAP11Envelope) obj;
 		if (securityNode == null) {
 			if (other.securityNode != null)
 				return false;

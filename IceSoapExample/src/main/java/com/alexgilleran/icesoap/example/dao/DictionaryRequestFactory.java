@@ -4,8 +4,8 @@ import java.util.List;
 
 import com.alexgilleran.icesoap.example.domain.Definition;
 import com.alexgilleran.icesoap.example.domain.Dictionary;
-import com.alexgilleran.icesoap.request.ListRequest;
-import com.alexgilleran.icesoap.request.Request;
+import com.alexgilleran.icesoap.request.SOAP11ListRequest;
+import com.alexgilleran.icesoap.request.SOAP11Request;
 
 /**
  * Very simple factory to generate requests for the application.
@@ -22,10 +22,10 @@ public interface DictionaryRequestFactory {
 	/**
 	 * Gets a list of all dictionaries available.
 	 * 
-	 * @return A {@link Request} that will return all dictionaries available, as
+	 * @return A {@link SOAP11Request} that will return all dictionaries available, as
 	 *         a {@link List}, on execution.
 	 */
-	ListRequest<Dictionary> getAllDictionaries();
+	SOAP11ListRequest<Dictionary> getAllDictionaries();
 
 	/**
 	 * Gets the definition of a word from the specified dictionary.
@@ -37,5 +37,5 @@ public interface DictionaryRequestFactory {
 	 *            The word to define, as a string.
 	 * @return A request that will return the definition when executed.
 	 */
-	Request<Definition> getDefinition(String dictionaryId, String word);
+	SOAP11Request<Definition> getDefinition(String dictionaryId, String word);
 }

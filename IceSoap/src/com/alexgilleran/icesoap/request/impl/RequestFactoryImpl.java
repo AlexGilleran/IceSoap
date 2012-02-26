@@ -4,10 +4,10 @@
 package com.alexgilleran.icesoap.request.impl;
 
 import com.alexgilleran.icesoap.envelope.SOAPEnvelope;
-import com.alexgilleran.icesoap.request.BaseListRequest;
-import com.alexgilleran.icesoap.request.BaseRequest;
 import com.alexgilleran.icesoap.request.ListRequest;
 import com.alexgilleran.icesoap.request.Request;
+import com.alexgilleran.icesoap.request.SOAP11ListRequest;
+import com.alexgilleran.icesoap.request.SOAP11Request;
 import com.alexgilleran.icesoap.request.RequestFactory;
 import com.alexgilleran.icesoap.request.SOAPRequester;
 
@@ -45,10 +45,10 @@ public class RequestFactoryImpl implements RequestFactory {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public <ReturnType, SOAPFaultType> BaseRequest<ReturnType, SOAPFaultType> buildRequest(
+	public <ReturnType, SOAPFaultType> Request<ReturnType, SOAPFaultType> buildRequest(
 			String url, SOAPEnvelope soapEnvelope, String soapAction,
 			Class<ReturnType> resultClass, Class<SOAPFaultType> soapFaultType) {
-		return new BaseRequestImpl<ReturnType, SOAPFaultType>(url,
+		return new RequestImpl<ReturnType, SOAPFaultType>(url,
 				soapEnvelope, soapAction, resultClass, soapFaultType,
 				soapRequester);
 	}
@@ -57,27 +57,27 @@ public class RequestFactoryImpl implements RequestFactory {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public <ReturnType, SOAPFaultType> BaseListRequest<ReturnType, SOAPFaultType> buildListRequest(
+	public <ReturnType, SOAPFaultType> ListRequest<ReturnType, SOAPFaultType> buildListRequest(
 			String url, SOAPEnvelope soapEnvelope, String soapAction,
 			Class<ReturnType> resultClass, Class<SOAPFaultType> soapFaultType) {
-		return new BaseListRequestImpl<ReturnType, SOAPFaultType>(url,
+		return new ListRequestImpl<ReturnType, SOAPFaultType>(url,
 				soapEnvelope, soapAction, resultClass, soapFaultType,
 				soapRequester);
 	}
 
 	@Override
-	public <ReturnType> Request<ReturnType> buildRequest(String url,
+	public <ReturnType> SOAP11Request<ReturnType> buildRequest(String url,
 			SOAPEnvelope soapEnvelope, String soapAction,
 			Class<ReturnType> resultClass) {
-		return new RequestImpl<ReturnType>(url, soapEnvelope, soapAction,
+		return new SOAP11RequestImpl<ReturnType>(url, soapEnvelope, soapAction,
 				resultClass, soapRequester);
 	}
 
 	@Override
-	public <ReturnType> ListRequest<ReturnType> buildListRequest(String url,
+	public <ReturnType> SOAP11ListRequest<ReturnType> buildListRequest(String url,
 			SOAPEnvelope soapEnvelope, String soapAction,
 			Class<ReturnType> resultClass) {
-		return new ListRequestImpl<ReturnType>(url, soapEnvelope, soapAction,
+		return new SOAP11ListRequestImpl<ReturnType>(url, soapEnvelope, soapAction,
 				resultClass, soapRequester);
 	}
 

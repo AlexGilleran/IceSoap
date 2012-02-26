@@ -13,12 +13,12 @@ import com.alexgilleran.icesoap.envelope.SOAPEnvelope;
  * 
  */
 public interface RequestFactory {
-	public <ReturnType> Request<ReturnType> buildRequest(String url,
+	public <ReturnType> SOAP11Request<ReturnType> buildRequest(String url,
 			SOAPEnvelope soapEnvelope, String soapAction,
 			Class<ReturnType> resultClass);
 
 	/**
-	 * Builds a new {@link BaseRequest} for a non-list return type. Use this
+	 * Builds a new {@link Request} for a non-list return type. Use this
 	 * kind of request when you want only one returned object.
 	 * 
 	 * @param <ReturnType>
@@ -36,16 +36,16 @@ public interface RequestFactory {
 	 * @return A request with the passed parameters, ready to have observers
 	 *         registered and be executed.
 	 */
-	public <ReturnType, SOAPFaultType> BaseRequest<ReturnType, SOAPFaultType> buildRequest(
+	public <ReturnType, SOAPFaultType> Request<ReturnType, SOAPFaultType> buildRequest(
 			String url, SOAPEnvelope soapEnvelope, String soapAction,
 			Class<ReturnType> resultClass, Class<SOAPFaultType> soapFaultClass);
 
-	public <ReturnType> ListRequest<ReturnType> buildListRequest(String url,
+	public <ReturnType> SOAP11ListRequest<ReturnType> buildListRequest(String url,
 			SOAPEnvelope soapEnvelope, String soapAction,
 			Class<ReturnType> resultClass);
 
 	/**
-	 * Builds a {@link BaseListRequest} with the passed parameters. Use this
+	 * Builds a {@link ListRequest} with the passed parameters. Use this
 	 * sort of request when you want to get a list of the same object back from
 	 * the service.
 	 * 
@@ -65,7 +65,7 @@ public interface RequestFactory {
 	 * @return A request with the passed parameters, ready to have observers
 	 *         registered and be executed.
 	 */
-	public <ReturnType, SOAPFaultType> BaseListRequest<ReturnType, SOAPFaultType> buildListRequest(
+	public <ReturnType, SOAPFaultType> ListRequest<ReturnType, SOAPFaultType> buildListRequest(
 			String url, SOAPEnvelope soapEnvelope, String soapAction,
 			Class<ReturnType> resultClass, Class<SOAPFaultType> soapFaultClass);
 

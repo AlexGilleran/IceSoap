@@ -1,8 +1,7 @@
 package com.alexgilleran.icesoap.observer;
 
 import com.alexgilleran.icesoap.exception.SOAPException;
-import com.alexgilleran.icesoap.request.BaseRequest;
-import com.alexgilleran.icesoap.soapfault.SOAP11Fault;
+import com.alexgilleran.icesoap.request.Request;
 
 /**
  * Used to receive events from a running SOAP Request on the Android UI thread.
@@ -11,17 +10,34 @@ import com.alexgilleran.icesoap.soapfault.SOAP11Fault;
  * 
  * @param <ReturnType>
  *            The type of the object that will be retrieved from this request.
+ * @param <SOAPFaultType>
+ *            The type of the class to use for SOAPFaults
  */
-public interface SOAPObserver<ReturnType> extends
-		BaseSOAPObserver<ReturnType, SOAP11Fault> {
+public interface SOAPObserver<ReturnType, SOAPFaultType> {
 
 	/**
-	 * {@inheritDoc}
+	 * Called when the running SOAP {@link Request} completes
 	 * 
-	 * Note that this uses SOAP11Faults by default - if you need to consume SOAP
-	 * 1.2 Faults, or need to parse extra details of the SOAP Fault, please use
-	 * {@link BaseSOAPObserver} directly.
+	 * @param request
+	 *            The {@link Request} instance that has completed - retrieve the
+	 *            result object from it using {@link Request#getResult()}
 	 */
-	public abstract void onException(BaseRequest<ReturnType, SOAP11Fault> request,
-			SOAPException e);
+	public abstract void onCompletion(Request<ReturnType, SOAPFaultType> request);
+
+	/**
+	 * Called if the running SOAP request hits an exception during execution.
+	 * 
+	 * @param request
+	 *            The {@link Request} instance that has encountered an
+	 *            exception.
+	 * @param e
+	 *            The exception that's been encountered.
+	 * @param soapFault
+	 *            The relevant SOAPFault, if one has been encountered. If no
+	 *            SOAP fault was encountered (e.g. if the service couldn't be
+	 *            reached at all), this will be null.
+	 */
+	public abstract void onException(
+			Request<ReturnType, SOAPFaultType> request, SOAPException e);
+
 }

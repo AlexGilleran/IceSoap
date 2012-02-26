@@ -9,39 +9,43 @@ import com.alexgilleran.icesoap.xml.XMLNode;
 import com.alexgilleran.icesoap.xml.XMLParentNode;
 import com.alexgilleran.icesoap.xml.impl.XMLParentNodeImpl;
 
-/**
- * Concrete implementation of {@link SOAPEnvelope}. Automatically sets up the
- * basic namespaces, <envelope> tags etc, as well as creating a head and body
- * tag to be manipulated by decorators.
- * 
- * Note that this is <i>not</i> an abstract class - when you're creating a new
- * envelope, you can either extend this class to keep your envelope's logic
- * contained within its own class, or instantiate a new instance of this class
- * and build it up using public methods.
- * 
- * @author Alex Gilleran
- * 
- */
 public class BaseSOAPEnvelope extends XMLParentNodeImpl implements SOAPEnvelope {
+	public final static String NS_PREFIX_SOAPENV = "soapenv";
+	public final static String NS_PREFIX_SOAPENC = "soapenc";
+
+	public final static String DEFAULT_ENCODING = "UTF-8";
+	public final static String NODE_NAME = "Envelope";
+
 	/** The SOAP header element */
 	private XMLParentNode header;
 	/** The SOAP body element */
 	private XMLParentNode body;
+	/** The encoding type */
+	private String encoding = DEFAULT_ENCODING;
 
-	/**
-	 * Initialises the class - sets up the basic "soapenv", "soapenc", "xsd" and
-	 * "xsi" namespaces present in all SOAP messages
-	 */
-	public BaseSOAPEnvelope() {
-		super(NODE_NAMESPACE, NODE_NAME);
+	public BaseSOAPEnvelope(String envelopeNs, String encodingNs) {
+		super(envelopeNs, NODE_NAME);
 
-		this.declarePrefix(NS_PREFIX_SOAPENV, NS_URI_SOAPENV);
-		this.declarePrefix(NS_PREFIX_SOAPENC, NS_URI_SOAPENC);
+		this.declarePrefix(NS_PREFIX_SOAPENV, envelopeNs);
+		this.declarePrefix(NS_PREFIX_SOAPENC, encodingNs);
 		this.declarePrefix(XMLNode.NS_PREFIX_XSD, XMLNode.NS_URI_XSD);
 		this.declarePrefix(XMLNode.NS_PREFIX_XSI, XMLNode.NS_URI_XSI);
 
-		header = this.addNode(NS_URI_SOAPENV, "Header");
-		body = this.addNode(NS_URI_SOAPENV, "Body");
+		header = this.addNode(envelopeNs, "Header");
+		body = this.addNode(envelopeNs, "Body");
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void serialize(XmlSerializer cereal)
+			throws IllegalArgumentException, IllegalStateException, IOException {
+		cereal.startDocument(DEFAULT_ENCODING, true);
+
+		super.serialize(cereal);
+
+		cereal.endDocument();
 	}
 
 	/**
@@ -64,13 +68,16 @@ public class BaseSOAPEnvelope extends XMLParentNodeImpl implements SOAPEnvelope 
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void serialize(XmlSerializer cereal)
-			throws IllegalArgumentException, IllegalStateException, IOException {
-		cereal.startDocument(ENCODING_UTF8, true);
+	public void setEncoding(String encoding) {
+		this.encoding = encoding;
+	}
 
-		super.serialize(cereal);
-
-		cereal.endDocument();
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getEncoding() {
+		return encoding;
 	}
 
 	@Override
