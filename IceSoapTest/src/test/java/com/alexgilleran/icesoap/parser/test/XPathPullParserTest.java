@@ -119,7 +119,9 @@ public class XPathPullParserTest {
 		XPathElement textXPath = new SingleSlashXPathElement(name,
 				rootXPathElement);
 		assertEquals(textXPath, parser.getCurrentElement());
+		assertEquals(XPathPullParser.TEXT, parser.next());
 		assertEquals(parser.getCurrentValue(), value);
+		assertEquals(XPathPullParser.END_TAG, parser.next());
 	}
 
 	/**

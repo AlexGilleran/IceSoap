@@ -147,8 +147,8 @@ public abstract class BaseIceSoapParserImpl<ReturnType> implements
 						break;
 					}
 
-					if ((parser.getEventType() == XPathPullParser.START_TAG || parser
-							.getEventType() == XPathPullParser.ATTRIBUTE)
+					if (parser.getEventType() != XPathPullParser.END_TAG
+							&& parser.getEventType() != XPathPullParser.END_DOCUMENT
 							&& isInRootElement) {
 						// If we're starting a tag and in the root element,
 						// parse this element.
@@ -193,14 +193,24 @@ public abstract class BaseIceSoapParserImpl<ReturnType> implements
 	 * @return A parsed instance of ReturnType.
 	 * @throws XMLParsingException
 	 *             If there's a problem with parsing e.g. invalid xml.
+	 * @throws XmlPullParserException
 	 */
 	private ReturnType parseElement(XPathPullParser pullParser,
-			ReturnType objectToModify) throws XMLParsingException {
+			ReturnType objectToModify) throws XMLParsingException,
+			XmlPullParserException {
 		if (objectToModify == null) {
 			objectToModify = initializeParsedObject();
 		}
 
-		objectToModify = onNewParsingEvent(pullParser, objectToModify);
+		switch (pullParser.getEventType()) {
+		case XPathPullParser.START_TAG:
+			objectToModify = onNewTag(pullParser, objectToModify);
+			break;
+		case XPathPullParser.TEXT:
+		case XPathPullParser.ATTRIBUTE:
+			objectToModify = onText(pullParser, objectToModify);
+			break;
+		}
 
 		return objectToModify;
 	}
@@ -221,7 +231,10 @@ public abstract class BaseIceSoapParserImpl<ReturnType> implements
 	 * @return Should be the passed in objectToModify object, with changes.
 	 * @throws XMLParsingException
 	 */
-	protected abstract ReturnType onNewParsingEvent(XPathPullParser pullParser,
+	protected abstract ReturnType onNewTag(XPathPullParser pullParser,
+			ReturnType objectToModify) throws XMLParsingException;
+
+	protected abstract ReturnType onText(XPathPullParser pullParser,
 			ReturnType objectToModify) throws XMLParsingException;
 
 	/**

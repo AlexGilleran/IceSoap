@@ -281,6 +281,27 @@ public class SampleXml {
 			+ "</Order>"
 			+ "</Orders>" + "</Root>";
 
+	public static final String SF_ATTR_1 = "ATTRIBUTE_1";
+	public static final String SF_ATTR_2 = "ATTRIBUTE_2";
+	public static final String SF_ATTR_3 = "ATTRIBUTE_3";
+	public static final String SF_VALUE_1 = "VALUE_1";
+	public static final String SF_VALUE_2 = "VALUE_2";
+	public static final String SF_VALUE_3 = "VALUE_3";
+
+	public static final String SINGLE_FIELD_WITH_ATTRIBUTE_XML = "<node>"//
+			+ "<field attribute=\"" + SF_ATTR_1 + "\">"
+			+ SF_VALUE_1
+			+ "</field>" + "<field attribute=\"" + SF_ATTR_2
+			+ "\">"
+			+ SF_VALUE_2 + "</field>" + "<field attribute=\""
+			+ SF_ATTR_3
+			+ "\">" + SF_VALUE_3 + "</field>" + "</node>";
+
+	public static InputStream getSingleFieldsWithAttributes() {
+		return new ByteArrayInputStream(
+				SINGLE_FIELD_WITH_ATTRIBUTE_XML.getBytes());
+	}
+
 	public static InputStream getPurchaseOrder() {
 		return new ByteArrayInputStream(PURCHASE_ORDER.getBytes());
 	}

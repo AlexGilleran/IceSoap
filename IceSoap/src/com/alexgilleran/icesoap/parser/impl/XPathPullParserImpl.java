@@ -53,18 +53,17 @@ public class XPathPullParserImpl implements XPathPullParser {
 	 */
 	@Override
 	public String getCurrentValue() throws XMLParsingException {
-		try {
-			if (currentElement.isAttribute()) {
-				return getCurrentAttributeValue();
-			} else {
-				flagLastElementForRemoval();
-				return parser.nextText();
-			}
-		} catch (XmlPullParserException e) {
-			throw new XMLParsingException(e);
-		} catch (IOException e) {
-			throw new XMLParsingException(e);
+		// try {
+		if (currentElement.isAttribute()) {
+			return getCurrentAttributeValue();
+		} else {
+			return parser.getText();
 		}
+		// } catch (XmlPullParserException e) {
+		// throw new XMLParsingException(e);
+		// } catch (IOException e) {
+		// throw new XMLParsingException(e);
+		// }
 	}
 
 	/**

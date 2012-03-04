@@ -32,10 +32,9 @@ import com.alexgilleran.icesoap.xpath.elements.XPathElement;
  * the xpaths of each field within the object.
  * 
  * Once it has these, every time it gets a call from
- * {@link BaseIceSoapParserImpl#onNewParsingEvent(XPathPullParser, Object)}, it
- * looks up the current xpath in its repository of {@link XPathElement}s to see
- * if it has a field that matches it - if it does, it looks at the type of the
- * field.
+ * {@link BaseIceSoapParserImpl#onNewTag(XPathPullParser, Object)}, it looks up
+ * the current xpath in its repository of {@link XPathElement}s to see if it has
+ * a field that matches it - if it does, it looks at the type of the field.
  * 
  * <li>For basic types (primitives, {@link String}, {@link BigDecimal}, as
  * defined by {@link #TEXT_NODE_CLASSES}), it gets the value from the parser and
@@ -219,21 +218,33 @@ public class IceSoapParserImpl<ReturnType> extends
 	 * @throws
 	 */
 	@Override
-	protected ReturnType onNewParsingEvent(XPathPullParser xmlPullParser,
+	protected ReturnType onNewTag(XPathPullParser xmlPullParser,
 			ReturnType objectToModify) throws XMLParsingException {
 		Field fieldToSet = fieldXPaths.get(xmlPullParser.getCurrentElement());
 
 		if (fieldToSet != null) {
-			if (TEXT_NODE_CLASSES.contains(fieldToSet.getType())) {
-				Object valueToSet = convertToFieldType(fieldToSet,
-						xmlPullParser.getCurrentValue());
-				setField(objectToModify, fieldToSet, valueToSet);
-
-			} else {
+			if (!TEXT_NODE_CLASSES.contains(fieldToSet.getType())) {
 				Type fieldType = fieldToSet.getGenericType();
 				Object valueToSet = getParserForClass(fieldType,
 						fieldToSet.getType(), xmlPullParser).parse(
 						xmlPullParser);
+				setField(objectToModify, fieldToSet, valueToSet);
+
+			}
+		}
+
+		return objectToModify;
+	}
+
+	@Override
+	protected ReturnType onText(XPathPullParser pullParser,
+			ReturnType objectToModify) throws XMLParsingException {
+		Field fieldToSet = fieldXPaths.get(pullParser.getCurrentElement());
+
+		if (fieldToSet != null) {
+			if (TEXT_NODE_CLASSES.contains(fieldToSet.getType())) {
+				Object valueToSet = convertToFieldType(fieldToSet,
+						pullParser.getCurrentValue());
 				setField(objectToModify, fieldToSet, valueToSet);
 
 			}
@@ -260,7 +271,7 @@ public class IceSoapParserImpl<ReturnType> extends
 	 *            The pull parser used to do the parsing.
 	 * @return A new instance of {@link IceSoapParser}
 	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SuppressWarnings("unchecked")
 	private <E> BaseIceSoapParserImpl<?> getParserForClass(Type typeToParse,
 			Class<E> classToParse, XPathPullParser pullParser) {
 		if (List.class.isAssignableFrom(classToParse)) {

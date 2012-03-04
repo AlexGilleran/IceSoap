@@ -18,6 +18,7 @@ import com.alexgilleran.icesoap.parser.impl.IceSoapParserImpl;
 import com.alexgilleran.icesoap.parser.test.xmlclasses.Customer;
 import com.alexgilleran.icesoap.parser.test.xmlclasses.CustsAndOrders;
 import com.alexgilleran.icesoap.parser.test.xmlclasses.Order;
+import com.alexgilleran.icesoap.parser.test.xmlclasses.SingleField;
 
 public class IceSoapListParserTest {
 	private final static SimpleDateFormat FORMAT = new SimpleDateFormat(
@@ -72,6 +73,31 @@ public class IceSoapListParserTest {
 
 		checkCustomerList(custsAndOrders.getCustomers());
 		checkOrderList(custsAndOrders.getOrders());
+	}
+
+	/**
+	 * This tests parsing of lists of XML tags that have string values and
+	 * attributes
+	 * 
+	 * @throws XMLParsingException
+	 */
+	@Test
+	public void testSingleFieldObjects() throws XMLParsingException {
+		IceSoapListParser<SingleField> parser = new IceSoapListParserImpl<SingleField>(
+				SingleField.class);
+
+		// Get customers and orders
+		List<SingleField> fields = parser.parse(SampleXml
+				.getSingleFieldsWithAttributes());
+
+		assertEquals(SampleXml.SF_VALUE_1, fields.get(0).getValue());
+		assertEquals(SampleXml.SF_ATTR_1, fields.get(0).getAttribute());
+
+		assertEquals(SampleXml.SF_VALUE_2, fields.get(1).getValue());
+		assertEquals(SampleXml.SF_ATTR_2, fields.get(1).getAttribute());
+
+		assertEquals(SampleXml.SF_VALUE_3, fields.get(2).getValue());
+		assertEquals(SampleXml.SF_ATTR_3, fields.get(2).getAttribute());
 	}
 
 	private void checkOrderList(List<Order> purchaseOrders)

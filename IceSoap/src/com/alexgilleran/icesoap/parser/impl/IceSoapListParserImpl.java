@@ -128,9 +128,8 @@ public class IceSoapListParserImpl<ListItemType> extends
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected List<ListItemType> onNewParsingEvent(
-			XPathPullParser xmlPullParser, List<ListItemType> listSoFar)
-			throws XMLParsingException {
+	protected List<ListItemType> onNewTag(XPathPullParser xmlPullParser,
+			List<ListItemType> listSoFar) throws XMLParsingException {
 		if (objectXPath == null
 				|| objectXPath.matches(xmlPullParser.getCurrentElement())) {
 			ListItemType object = parser.parse(xmlPullParser);
@@ -142,5 +141,12 @@ public class IceSoapListParserImpl<ListItemType> extends
 		}
 
 		return listSoFar;
+	}
+
+	@Override
+	protected List<ListItemType> onText(XPathPullParser pullParser,
+			List<ListItemType> objectToModify) throws XMLParsingException {
+		// Do nothing
+		return objectToModify;
 	}
 }
