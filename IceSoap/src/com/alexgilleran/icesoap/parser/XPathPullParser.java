@@ -47,10 +47,8 @@ public interface XPathPullParser {
 	 * {@link #getCurrentElement()}.
 	 * 
 	 * @return The string value of the current node.
-	 * @throws IOException
-	 * @throws XmlPullParserException
 	 */
-	String getCurrentValue() throws XMLParsingException;
+	String getCurrentValue();
 
 	/**
 	 * Delegates to {@link XmlPullParser#next()} - gets the next event from the

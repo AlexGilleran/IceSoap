@@ -1,6 +1,7 @@
 package com.alexgilleran.icesoap.example.activities;
 
 import roboguice.activity.RoboActivity;
+import roboguice.inject.InjectResource;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -29,6 +30,21 @@ import com.google.inject.Inject;
  * 
  */
 public class DefineActivity extends RoboActivity {
+	/**
+	 * A word to send to the service when trying to cause a soap fault (not
+	 * really important)
+	 */
+	private static final String SOAPFAULT_WORD = "dodgyword";
+	/** A dictionary id to send to the service when trying to cause a soap fault */
+	private static final String SOAPFAULT_DICT_ID = "dodgydict";
+
+	// Tried not to use Roboguice too much for clarity, but Android makes it too
+	// hard to programmatically get strings.xml values otherwise.
+	@InjectResource(R.string.dialog_connection_error)
+	private String CONNECTION_ERROR_MESSAGE;
+	@InjectResource(R.string.dialog_soapfault)
+	private String SOAP_FAULT_MESSAGE;
+
 	/** Key of the dictionary id extra that must be passed in an intent */
 	public static final String DICT_ID_KEY = "dictidkey";
 	/** Key of the dictionary name extra that must be passed in an intent */
@@ -52,6 +68,9 @@ public class DefineActivity extends RoboActivity {
 	/** ID of the dictionary to look up */
 	private String dictionaryId;
 
+	/** Stores a SOAPFault if one is encountered */
+	private SOAP11Fault soapFault;
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -67,6 +86,9 @@ public class DefineActivity extends RoboActivity {
 
 		retrieveButton = (Button) findViewById(R.id.define_retrieve_button);
 		retrieveButton.setOnClickListener(goButtonListener);
+
+		Button soapFaultButton = (Button) findViewById(R.id.define_soapfault_button);
+		soapFaultButton.setOnClickListener(soapFaultButtonListener);
 
 		dictionaryId = getIntent().getStringExtra(DICT_ID_KEY);
 		dictionaryNamePrefix = getString(R.string.define_dictionary_name_prefix);
@@ -95,6 +117,19 @@ public class DefineActivity extends RoboActivity {
 	};
 
 	/**
+	 * Invokes the web service to post a bad request, leading to a soap fault
+	 * (for science).
+	 */
+	private OnClickListener soapFaultButtonListener = new OnClickListener() {
+		@Override
+		public void onClick(View v) {
+			setProgressBarIndeterminateVisibility(true);
+			requestFactory.getDefinition(SOAPFAULT_DICT_ID, SOAPFAULT_WORD)
+					.execute(definitionObserver);
+		}
+	};
+
+	/**
 	 * Activates the progress spinner in the corner of the window and invokes
 	 * the SOAP request for the definition.
 	 * 
@@ -115,8 +150,17 @@ public class DefineActivity extends RoboActivity {
 	 */
 	@Override
 	protected Dialog onCreateDialog(int id) {
+		String message = null;
+
+		if (soapFault == null) {
+			message = CONNECTION_ERROR_MESSAGE;
+		} else {
+			message = SOAP_FAULT_MESSAGE + soapFault.toString();
+			soapFault = null;
+		}
+
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setMessage(R.string.dialog_connection_error).setPositiveButton(
+		builder.setMessage(message).setPositiveButton(
 				R.string.dialog_button_ok,
 				new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int id) {
@@ -153,6 +197,9 @@ public class DefineActivity extends RoboActivity {
 				SOAPException e) {
 			// Log the exception and show an error dialog.
 			Log.e(DefineActivity.class.getSimpleName(), e.getMessage(), e);
+
+			soapFault = request.getSOAPFault();
+
 			showDialog(0);
 		}
 	};

@@ -4,24 +4,31 @@
     android:layout_height="fill_parent"
     android:orientation="vertical" >
 
+    <EditText
+        android:id="@+id/define_word_edittext"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/define_prompt" >
+    </EditText>
+
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal" >
 
-        <EditText
-            android:id="@+id/define_word_edittext"
+        <Button
+            android:id="@+id/define_soapfault_button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.75"
-            android:hint="@string/define_prompt" >
-        </EditText>
+            android:layout_weight="0.5"
+            android:text="@string/define_soapfault_button_caption" >
+        </Button>
 
         <Button
             android:id="@+id/define_retrieve_button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.25"
+            android:layout_weight="0.5"
             android:text="@string/define_button_caption" >
         </Button>
     </LinearLayout>
@@ -34,10 +41,11 @@
     <ScrollView
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" >
+
         <TextView
             android:id="@+id/define_definition_textview"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent" />
+            android:layout_height="wrap_content" />
     </ScrollView>
 
 </LinearLayout>

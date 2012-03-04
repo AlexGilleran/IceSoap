@@ -10,4 +10,6 @@
     <string name="url_dictionary_services">http://services.aonaware.com/DictService/DictService.asmx</string>
     <string name="dialog_connection_error">Connection error.</string>
     <string name="dialog_button_ok">OK</string>
+    <string name="dialog_soapfault">An HTTP 500 error was encountered. The fault was: </string>
+    <string name="define_soapfault_button_caption">Cause Soapfault!</string>
 </resources>

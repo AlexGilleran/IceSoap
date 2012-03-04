@@ -52,18 +52,12 @@ public class XPathPullParserImpl implements XPathPullParser {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String getCurrentValue() throws XMLParsingException {
-		// try {
+	public String getCurrentValue() {
 		if (currentElement.isAttribute()) {
 			return getCurrentAttributeValue();
 		} else {
 			return parser.getText();
 		}
-		// } catch (XmlPullParserException e) {
-		// throw new XMLParsingException(e);
-		// } catch (IOException e) {
-		// throw new XMLParsingException(e);
-		// }
 	}
 
 	/**

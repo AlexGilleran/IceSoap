@@ -146,7 +146,8 @@ public class IceSoapListParserImpl<ListItemType> extends
 	@Override
 	protected List<ListItemType> onText(XPathPullParser pullParser,
 			List<ListItemType> objectToModify) throws XMLParsingException {
-		// Do nothing
+		// Do nothing - list parsers aren't in the business of parsing text (at
+		// least for now).
 		return objectToModify;
 	}
 }

@@ -271,7 +271,7 @@ public class IceSoapParserImpl<ReturnType> extends
 	 *            The pull parser used to do the parsing.
 	 * @return A new instance of {@link IceSoapParser}
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private <E> BaseIceSoapParserImpl<?> getParserForClass(Type typeToParse,
 			Class<E> classToParse, XPathPullParser pullParser) {
 		if (List.class.isAssignableFrom(classToParse)) {

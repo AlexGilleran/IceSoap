@@ -9,8 +9,8 @@ import org.xmlpull.v1.XmlPullParserException;
 import com.alexgilleran.icesoap.annotation.XMLField;
 import com.alexgilleran.icesoap.annotation.XMLObject;
 import com.alexgilleran.icesoap.exception.ClassDefException;
-import com.alexgilleran.icesoap.exception.XPathParsingException;
 import com.alexgilleran.icesoap.exception.XMLParsingException;
+import com.alexgilleran.icesoap.exception.XPathParsingException;
 import com.alexgilleran.icesoap.parser.IceSoapParser;
 import com.alexgilleran.icesoap.parser.XPathPullParser;
 import com.alexgilleran.icesoap.request.Request;
@@ -118,6 +118,9 @@ public abstract class BaseIceSoapParserImpl<ReturnType> implements
 	 * @throws XMLParsingException
 	 * 
 	 */
+	// NOTE: This is the most important bit of code in all of IceSoap, and also
+	// the nastiest - unfortunately this is the best way I've come up with to do
+	// it.
 	protected final ReturnType parse(XPathPullParser parser,
 			ReturnType objectToModify) throws XMLParsingException {
 		boolean isInRootElement = false;
@@ -216,8 +219,7 @@ public abstract class BaseIceSoapParserImpl<ReturnType> implements
 	}
 
 	/**
-	 * Called every time a new parsing event occurs - on a new tag or a new
-	 * attribute value.
+	 * Called every time a new XML tag is encountered.
 	 * 
 	 * In this method, it is an implementing class' responsibility to get the
 	 * details it needs from the passed {@link XPathPullParser} and either
@@ -234,6 +236,21 @@ public abstract class BaseIceSoapParserImpl<ReturnType> implements
 	protected abstract ReturnType onNewTag(XPathPullParser pullParser,
 			ReturnType objectToModify) throws XMLParsingException;
 
+	/**
+	 * Called every time a text or attribute field is discovered - use
+	 * {@link XPathPullParser#getCurrentValue()} to get the text value itself.
+	 * 
+	 * When this method is called, the implementing class should get the
+	 * necessary information from the passed {@link XPathPullParser}, and use it
+	 * to modify the passed objectToModify value before returning it.
+	 * 
+	 * @param pullParser
+	 *            The pull parser that's encountered the text event
+	 * @param objectToModify
+	 *            The object to modify with details from the parser.
+	 * @return objectToModify
+	 * @throws XMLParsingException
+	 */
 	protected abstract ReturnType onText(XPathPullParser pullParser,
 			ReturnType objectToModify) throws XMLParsingException;
 
@@ -260,6 +277,16 @@ public abstract class BaseIceSoapParserImpl<ReturnType> implements
 		}
 	}
 
+	/**
+	 * Gets the @{@link XMLObject} annotation from a class hierarchy. I.e. it
+	 * will check the passed class, if the annotation isn't present it will
+	 * check the superclass and so on until it either finds the annotation and
+	 * returns it, or gets to the top of the hierarchy and returns null.
+	 * 
+	 * @param targetClass
+	 *            The class to look at.
+	 * @return The XMLObject annotation if found, otherwise null.
+	 */
 	private static XMLObject getXMLObjectAnnot(Class<?> targetClass) {
 		while (!targetClass.equals(Object.class)) {
 			XMLObject annotation = targetClass.getAnnotation(XMLObject.class);
