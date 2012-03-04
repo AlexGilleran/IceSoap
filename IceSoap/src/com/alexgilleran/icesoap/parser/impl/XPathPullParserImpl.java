@@ -8,6 +8,7 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import com.alexgilleran.icesoap.exception.XMLParsingException;
 import com.alexgilleran.icesoap.parser.XPathPullParser;
+import com.alexgilleran.icesoap.xml.XMLNode;
 import com.alexgilleran.icesoap.xpath.elements.XPathElement;
 import com.alexgilleran.icesoap.xpath.elements.impl.AttributeXPathElement;
 import com.alexgilleran.icesoap.xpath.elements.impl.SingleSlashXPathElement;
@@ -22,6 +23,11 @@ import com.alexgilleran.icesoap.xpath.elements.impl.SingleSlashXPathElement;
  * 
  */
 public class XPathPullParserImpl implements XPathPullParser {
+	/** The name of the xsi:nil element */
+	private static final String XSI_NIL_NAME = "nil";
+	/** The value of the xsi:nil element if true */
+	private static final String XSI_NIL_TRUE = "true";
+
 	/** The wrapped {@link XmlPullParser} */
 	private XmlPullParser parser = PullParserFactory.getInstance()
 			.buildParser();
@@ -167,6 +173,12 @@ public class XPathPullParserImpl implements XPathPullParser {
 						parser.getAttributeValue(i));
 			}
 		}
+	}
+
+	@Override
+	public boolean isXsiNil() {
+		return (XSI_NIL_TRUE.equals(parser.getAttributeValue(
+				XMLNode.NS_URI_XSI, XSI_NIL_NAME)));
 	}
 
 	/**

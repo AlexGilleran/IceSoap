@@ -8,8 +8,7 @@ com.alexgilleran.icesoap.parser
 com.alexgilleran.icesoap.parser.impl
 com.alexgilleran.icesoap.request
 com.alexgilleran.icesoap.request.impl
-com.alexgilleran.icesoap.requester
-com.alexgilleran.icesoap.requester.impl
+com.alexgilleran.icesoap.soapfault
 com.alexgilleran.icesoap.xml
 com.alexgilleran.icesoap.xml.impl
 com.alexgilleran.icesoap.xpath

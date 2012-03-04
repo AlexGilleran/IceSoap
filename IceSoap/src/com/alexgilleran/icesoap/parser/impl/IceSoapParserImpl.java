@@ -53,6 +53,9 @@ import com.alexgilleran.icesoap.xpath.elements.XPathElement;
  */
 public class IceSoapParserImpl<ReturnType> extends
 		BaseIceSoapParserImpl<ReturnType> {
+	/** Nil value */
+	private static final String XSI_NIL = "nil";
+
 	/**
 	 * An {@link XPathRepository} that maps xpaths to the fields represented by
 	 * them.
@@ -223,13 +226,17 @@ public class IceSoapParserImpl<ReturnType> extends
 		Field fieldToSet = fieldXPaths.get(xmlPullParser.getCurrentElement());
 
 		if (fieldToSet != null) {
-			if (!TEXT_NODE_CLASSES.contains(fieldToSet.getType())) {
-				Type fieldType = fieldToSet.getGenericType();
-				Object valueToSet = getParserForClass(fieldType,
-						fieldToSet.getType(), xmlPullParser).parse(
-						xmlPullParser);
-				setField(objectToModify, fieldToSet, valueToSet);
+			Type fieldType = fieldToSet.getGenericType();
+			Object valueToSet = null;
 
+			if (!TEXT_NODE_CLASSES.contains(fieldToSet.getType())) {
+				if (!xmlPullParser.isXsiNil()) {
+					valueToSet = getParserForClass(fieldType,
+							fieldToSet.getType(), xmlPullParser).parse(
+							xmlPullParser);
+				}
+
+				setField(objectToModify, fieldToSet, valueToSet);
 			}
 		}
 

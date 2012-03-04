@@ -11,6 +11,26 @@ import java.io.InputStream;
  * 
  */
 public class SampleXml {
+	private final static String PO_WITH_NIL_VALUES = "<?xml version=\"1.0\"?>"
+			+ "<aw:PurchaseOrder  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
+			+ " aw:PurchaseOrderNumber=\"99503\""
+			+ " aw:OrderDate=\"1999-10-20\""
+			+ " xmlns:aw=\"http:www.adventure-works.com\">"
+			+ "<aw:Country>USA</aw:Country>"
+			+ "<aw:Address aw:Type=\"Billing\">"
+			+ "<aw:Name xsi:nil=\"true\" />" // THIS IS A NIL TEXT VALUE
+			+ "<aw:Street>8 Oak Avenue</aw:Street>"
+			+ "<aw:City>Old Town</aw:City>"
+			+ "<aw:State>PA</aw:State>"
+			+ "<aw:Zip xsi:nil=\"true\" />" // NIL INT
+			+ "<aw:Country>USA</aw:Country>"
+			+ "</aw:Address>"
+			+ "<aw:DeliveryNotes>Please leave packages in shed by driveway.</aw:DeliveryNotes>"
+			+ "<aw:Items>"
+			+ "<aw:Item aw:PartNumber=\"872-AA\" xsi:nil=\"true\" />"
+			+ "<aw:Item aw:PartNumber=\"926-AA\" />" + "</aw:Items>"
+			+ "</aw:PurchaseOrder>";
+
 	private final static String PURCHASE_ORDER = "<?xml version=\"1.0\"?>"
 			+ "<aw:PurchaseOrder"
 			+ " aw:PurchaseOrderNumber=\"99503\""
@@ -300,6 +320,10 @@ public class SampleXml {
 	public static InputStream getSingleFieldsWithAttributes() {
 		return new ByteArrayInputStream(
 				SINGLE_FIELD_WITH_ATTRIBUTE_XML.getBytes());
+	}
+
+	public static InputStream getPOWithNilValues() {
+		return new ByteArrayInputStream(PO_WITH_NIL_VALUES.getBytes());
 	}
 
 	public static InputStream getPurchaseOrder() {

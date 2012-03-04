@@ -10,6 +10,7 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import com.alexgilleran.icesoap.exception.XMLParsingException;
+import com.alexgilleran.icesoap.xml.XMLNode;
 import com.alexgilleran.icesoap.xpath.elements.XPathElement;
 
 /**
@@ -97,5 +98,12 @@ public interface XPathPullParser {
 	 */
 	void setInput(InputStream inputStream, String inputEncoding)
 			throws XmlPullParserException;
+
+	/**
+	 * Checks if the current element has the xsi:nil attribute
+	 * 
+	 * @return Whether it does.
+	 */
+	public boolean isXsiNil();
 
 }

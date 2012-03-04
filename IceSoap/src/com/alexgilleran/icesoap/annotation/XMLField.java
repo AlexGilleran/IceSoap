@@ -13,6 +13,9 @@ import java.text.SimpleDateFormat;
  * relative XPath - relative XPaths are relative to the XPath defined in the
  * {@link XMLObject} annotation of the class the annotated field belongs to.
  * 
+ * Use with no arguments to make the annotated object take the value of the tag
+ * specified in the {@link XMLObject} annotation of the enclosing class.
+ * 
  * @author Alex Gilleran
  * 
  */

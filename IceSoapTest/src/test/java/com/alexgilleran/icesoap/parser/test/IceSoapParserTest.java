@@ -4,6 +4,8 @@
 package com.alexgilleran.icesoap.parser.test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
@@ -25,6 +27,29 @@ import com.alexgilleran.icesoap.parser.test.xmlclasses.PurchaseOrder;
 public class IceSoapParserTest {
 	private final static SimpleDateFormat FORMAT = new SimpleDateFormat(
 			"yyyy-MM-dd");
+
+	@Test
+	public void testXsiNil() throws XMLParsingException, ParseException {
+		IceSoapParser<PurchaseOrder> parser = new IceSoapParserImpl<PurchaseOrder>(
+				PurchaseOrder.class);
+
+		PurchaseOrder po = parser.parse(SampleXml.getPOWithNilValues());
+
+		assertEquals(99503l, po.getPurchaseOrderNumber());
+		assertEquals(FORMAT.parse("1999-10-20"), po.getOrderDate());
+
+		// Billing Address
+		assertEquals("Billing", po.getBillingAddress().getType());
+		assertEquals(null, po.getBillingAddress().getName());
+		assertEquals("8 Oak Avenue", po.getBillingAddress().getStreet());
+		assertEquals("Old Town", po.getBillingAddress().getCity());
+		assertEquals("PA", po.getBillingAddress().getState());
+		assertEquals(0, po.getBillingAddress().getZip());
+		assertEquals("USA", po.getBillingAddress().getCountry());
+
+		assertNull(po.getItem872aa());
+		assertNotNull(po.getItem926aa());
+	}
 
 	/**
 	 * Holistic test on realistic data.
