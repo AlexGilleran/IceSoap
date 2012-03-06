@@ -20,14 +20,22 @@ public class SOAP11Fault {
 	@XMLField("faultactor")
 	private String faultActor;
 
+	/**
+	 * Mandatory zero-arg constructor for automatic parsing
+	 */
 	public SOAP11Fault() {
 
 	}
 
 	/**
+	 * Constructor used for testing.
+	 * 
 	 * @param faultCode
+	 *            the fault code.
 	 * @param faultString
+	 *            The fault string.
 	 * @param faultActor
+	 *            The fault actor.
 	 */
 	public SOAP11Fault(String faultCode, String faultString, String faultActor) {
 		this.faultCode = faultCode;

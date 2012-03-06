@@ -5,6 +5,12 @@ import java.util.List;
 import com.alexgilleran.icesoap.annotation.XMLField;
 import com.alexgilleran.icesoap.annotation.XMLObject;
 
+/**
+ * Represents a SOAP 1.2 Fault.
+ * 
+ * @author Alex Gilleran
+ * 
+ */
 @XMLObject("//Fault")
 public class SOAP12Fault {
 	@XMLField("Code/Value")
@@ -18,22 +24,38 @@ public class SOAP12Fault {
 	@XMLField("Role")
 	private String role;
 
+	/**
+	 * @return the fault code.
+	 */
 	public String getCode() {
 		return code;
 	}
 
+	/**
+	 * @return The fault subcode
+	 */
 	public String getSubCode() {
 		return subCode;
 	}
 
+	/**
+	 * @return A list of reasons for the fault - each reason for a different
+	 *         language.
+	 */
 	public List<FaultReason> getReasons() {
 		return reasons;
 	}
 
+	/**
+	 * @return The node value of the fault.
+	 */
 	public String getNode() {
 		return node;
 	}
 
+	/**
+	 * @return The role value of the fault.
+	 */
 	public String getRole() {
 		return role;
 	}

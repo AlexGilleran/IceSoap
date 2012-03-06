@@ -9,6 +9,9 @@ import com.alexgilleran.icesoap.request.SOAPRequester;
 import com.alexgilleran.icesoap.soapfault.SOAP11Fault;
 
 /**
+ * Extension of {@link ListRequestImpl} that defaults the SOAPFaultType to
+ * {@link SOAP11Fault}
+ * 
  * @author Alex Gilleran
  * 
  */
@@ -17,12 +20,19 @@ public class SOAP11ListRequestImpl<ResultType> extends
 		SOAP11ListRequest<ResultType> {
 
 	/**
+	 * Creates a new list request.
+	 * 
 	 * @param url
+	 *            The URL to post the request to
 	 * @param soapEnv
+	 *            The SOAP envelope to send, as a {@link SOAPEnvelope}
 	 * @param soapAction
+	 *            The SOAP Action to pass in the HTTP header - can be null
 	 * @param resultClass
-	 * @param soapFaultClass
+	 *            The class of the contents of the list.
 	 * @param requester
+	 *            The implementation of {@link SOAPRequester} to use for
+	 *            requests.
 	 */
 	protected SOAP11ListRequestImpl(String url, SOAPEnvelope soapEnv,
 			String soapAction, Class<ResultType> resultClass,

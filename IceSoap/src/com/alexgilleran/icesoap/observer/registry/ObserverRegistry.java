@@ -9,13 +9,16 @@ import com.alexgilleran.icesoap.observer.SOAP11Observer;
 import com.alexgilleran.icesoap.request.Request;
 
 /**
- * Helper class that holds a collection of {@link SOAP11Observer}s and allows them
- * all to be notified of events with one call.
+ * Helper class that holds a collection of {@link SOAP11Observer}s and allows
+ * them all to be notified of events with one call.
  * 
  * @author Alex Gilleran
  * 
  * @param <TypeToReturn>
  *            The type of the object that will be returned from the SOAP call.
+ * @param <SOAPFaultType>
+ *            The type of the SOAPFault that will be returned in the event of
+ *            the service encountering an error.
  */
 public class ObserverRegistry<TypeToReturn, SOAPFaultType> {
 	/** The observers that will be notified of new events */

@@ -13,7 +13,7 @@ import com.alexgilleran.icesoap.xpath.elements.XPathElement;
  * 
  */
 public class AttributeXPathElement implements XPathElement {
-
+	/** The wrapped XPath element. */
 	private XPathElement wrappedElement;
 
 	/**
@@ -81,31 +81,58 @@ public class AttributeXPathElement implements XPathElement {
 		return true;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public String getName() {
 		return wrappedElement.getName();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public XPathElement getPreviousElement() {
 		return wrappedElement.getPreviousElement();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public boolean isFirstElement() {
 		return wrappedElement.isFirstElement();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public StringBuilder toStringBuilder() {
 		return wrappedElement.getPreviousElement().toStringBuilder()
 				.append(this.getPrefix()).append(this.getName());
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public String toString() {
 		return toStringBuilder().toString();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public boolean isRelative() {
 		return wrappedElement.isRelative();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void setPreviousElement(XPathElement previousElement) {
 		wrappedElement.setPreviousElement(previousElement);

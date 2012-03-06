@@ -4,6 +4,12 @@ import java.io.IOException;
 
 import org.xmlpull.v1.XmlSerializer;
 
+/**
+ * Represents an XML element (aka a tag).
+ * 
+ * @author Alex Gilleran
+ * 
+ */
 public interface XMLElement {
 
 	/**

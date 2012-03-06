@@ -3,9 +3,9 @@ package com.alexgilleran.icesoap.envelope.impl;
 import com.alexgilleran.icesoap.envelope.SOAPEnvelope;
 
 /**
- * Concrete implementation of {@link SOAPEnvelope}. Automatically sets up the
- * basic namespaces, <envelope> tags etc, as well as creating a head and body
- * tag to be manipulated by decorators.
+ * Concrete implementation of a SOAP 1.1 {@link SOAPEnvelope}. Automatically
+ * sets up the basic namespaces, <envelope> tags etc, as well as creating a head
+ * and body tag to be manipulated by decorators.
  * 
  * Note that this is <i>not</i> an abstract class - when you're creating a new
  * envelope, you can either extend this class to keep your envelope's logic

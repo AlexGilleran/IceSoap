@@ -33,10 +33,13 @@ public class RequestImpl<ResultType, SOAPFaultType> implements
 	private static final int HTTP_OK_STATUS = 200;
 	/** Status returned if there's an error that returns a soap fault */
 	private static final int HTTP_ERROR_STATUS = 500;
+	/** Message for 500 error exception */
 	private static final String MESSAGE_ERROR_500 = "Request returned with error code "
 			+ HTTP_ERROR_STATUS;
+	/** Message for 500 error exception, including SOAPFault */
 	private static final String MESSAGE_ERROR_500_SOAPFAULT = MESSAGE_ERROR_500
 			+ ". SOAPFault: ";
+	/** Message for 500 error exception, if no SOAPFault was parsed */
 	public static final String MESSAGE_ERROR_500_FAILED_SOAPFAULT = MESSAGE_ERROR_500
 			+ ". No returned soapfault could be parsed.";
 
@@ -310,14 +313,18 @@ public class RequestImpl<ResultType, SOAPFaultType> implements
 					try {
 						soapFault = parseSoapFault(response.getData());
 
-						String soapFaultString = "";
-
+						// If we've successfully parsed a soap fault, toString()
+						// it as part of the message, otherwise just return an
+						// exception and say we couldn't parse one.
+						String soapFaultMessage = null;
 						if (soapFault != null) {
-							soapFaultString = soapFault.toString();
+							soapFaultMessage = MESSAGE_ERROR_500_SOAPFAULT
+									+ soapFault.toString();
+						} else {
+							soapFaultMessage = MESSAGE_ERROR_500_FAILED_SOAPFAULT;
 						}
 
-						throwException(new SOAPException(
-								MESSAGE_ERROR_500_SOAPFAULT + soapFaultString));
+						throwException(new SOAPException(soapFaultMessage));
 					} catch (XMLParsingException e) {
 						throwException(new SOAPException(
 								MESSAGE_ERROR_500_FAILED_SOAPFAULT, e));
@@ -330,6 +337,15 @@ public class RequestImpl<ResultType, SOAPFaultType> implements
 			return null;
 		}
 
+		/**
+		 * Parses a SOAPFault from incoming data.
+		 * 
+		 * @param soapFaultData
+		 *            An input stream containing SOAPFault information to parse.
+		 * @return The parsed soapfault object
+		 * @throws XMLParsingException
+		 *             If an error occurs while parsing.
+		 */
 		private SOAPFaultType parseSoapFault(InputStream soapFaultData)
 				throws XMLParsingException {
 			IceSoapParser<SOAPFaultType> parser = new IceSoapParserImpl<SOAPFaultType>(

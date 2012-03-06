@@ -53,8 +53,6 @@ import com.alexgilleran.icesoap.xpath.elements.XPathElement;
  */
 public class IceSoapParserImpl<ReturnType> extends
 		BaseIceSoapParserImpl<ReturnType> {
-	/** Nil value */
-	private static final String XSI_NIL = "nil";
 
 	/**
 	 * An {@link XPathRepository} that maps xpaths to the fields represented by
@@ -218,7 +216,7 @@ public class IceSoapParserImpl<ReturnType> extends
 	 * field, it calls {@link #getParserForClass(Type, Class, XPathPullParser)}
 	 * to parse it.
 	 * 
-	 * @throws
+	 * @throws XMLParsingException
 	 */
 	@Override
 	protected ReturnType onNewTag(XPathPullParser xmlPullParser,
@@ -230,7 +228,7 @@ public class IceSoapParserImpl<ReturnType> extends
 			Object valueToSet = null;
 
 			if (!TEXT_NODE_CLASSES.contains(fieldToSet.getType())) {
-				if (!xmlPullParser.isXsiNil()) {
+				if (!xmlPullParser.isCurrentValueXsiNil()) {
 					valueToSet = getParserForClass(fieldType,
 							fieldToSet.getType(), xmlPullParser).parse(
 							xmlPullParser);
@@ -243,6 +241,9 @@ public class IceSoapParserImpl<ReturnType> extends
 		return objectToModify;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	protected ReturnType onText(XPathPullParser pullParser,
 			ReturnType objectToModify) throws XMLParsingException {
@@ -267,7 +268,7 @@ public class IceSoapParserImpl<ReturnType> extends
 	 * parse that class, then creates a {@link IceSoapListParser}to wrap it and
 	 * returns the {@link IceSoapListParser}
 	 * 
-	 * @param <E>
+	 * @param <ObjectType>
 	 *            The type of the object to create a parser for
 	 * @param typeToParse
 	 *            The type to parse (as a {@link Type}
@@ -279,8 +280,9 @@ public class IceSoapParserImpl<ReturnType> extends
 	 * @return A new instance of {@link IceSoapParser}
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private <E> BaseIceSoapParserImpl<?> getParserForClass(Type typeToParse,
-			Class<E> classToParse, XPathPullParser pullParser) {
+	private <ObjectType> BaseIceSoapParserImpl<?> getParserForClass(
+			Type typeToParse, Class<ObjectType> classToParse,
+			XPathPullParser pullParser) {
 		if (List.class.isAssignableFrom(classToParse)) {
 			// Class to parse is a list - find out the parameterized type of the
 			// list and create a parser for that, then wrap a ListParser around
@@ -298,7 +300,7 @@ public class IceSoapParserImpl<ReturnType> extends
 					pullParser.getCurrentElement(), itemParser);
 		} else {
 			// The type is not a list - create a parser
-			return new IceSoapParserImpl<E>(classToParse,
+			return new IceSoapParserImpl<ObjectType>(classToParse,
 					pullParser.getCurrentElement());
 		}
 	}

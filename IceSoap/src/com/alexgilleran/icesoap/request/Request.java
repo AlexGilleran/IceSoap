@@ -11,10 +11,10 @@ import com.alexgilleran.icesoap.observer.SOAP11Observer;
  * Encapsulates all the code for making a SOAP Request - to use, create an
  * object that implements the {@link SOAP11Observer} class (generally this is
  * easiest using anonymous objects from the activity or fragment) and attach it
- * using the {@link Request#registerObserver(SOAP11Observer)} method. Then invoke
- * {@link Request#execute()} - the request will be performed on a background
- * thread, and methods of the {@link SOAP11Observer} will be called on the UI
- * thread.
+ * using the {@link Request#registerObserver(SOAP11Observer)} method. Then
+ * invoke {@link Request#execute()} - the request will be performed on a
+ * background thread, and methods of the {@link SOAP11Observer} will be called
+ * on the UI thread.
  * 
  * @author Alex Gilleran
  * 
@@ -22,6 +22,9 @@ import com.alexgilleran.icesoap.observer.SOAP11Observer;
  *            The type of the object to retrieve from this request. If the type
  *            is a {@link List}, you may want to consider using
  *            {@link ListRequest} instead.
+ * @param <SOAPFaultType>
+ *            The type of the fault object that will be parsed from the
+ *            response, should an HTTP Error 500 be encountered.
  */
 public interface Request<ResultType, SOAPFaultType> {
 	/**

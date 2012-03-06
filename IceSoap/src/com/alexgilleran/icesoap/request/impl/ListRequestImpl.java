@@ -30,7 +30,7 @@ public class ListRequestImpl<ResultType, SOAPFaultType> extends
 	private ListObserverRegistry<ResultType, SOAPFaultType> itemRegistry = new ListObserverRegistry<ResultType, SOAPFaultType>();
 
 	/**
-	 * Creates a new list request without having to specify a parser.
+	 * Creates a new request, automatically creating the parser.
 	 * 
 	 * @param url
 	 *            The URL to post the request to
@@ -39,7 +39,10 @@ public class ListRequestImpl<ResultType, SOAPFaultType> extends
 	 * @param soapAction
 	 *            The SOAP Action to pass in the HTTP header - can be null
 	 * @param resultClass
-	 *            The class of the contents of the list.
+	 *            The class of the type to return from the request.
+	 * @param soapFaultClass
+	 *            The class of the SOAPFault that will be returned if one is
+	 *            encountered
 	 * @param requester
 	 *            The implementation of {@link SOAPRequester} to use for
 	 *            requests.

@@ -48,6 +48,9 @@ public class SingleSlashXPathElement extends BaseXPathElement {
 		return true;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String getPrefix() {
 		return PREFIX;

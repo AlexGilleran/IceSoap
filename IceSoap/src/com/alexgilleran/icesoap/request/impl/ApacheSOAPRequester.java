@@ -12,6 +12,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.conn.scheme.PlainSocketFactory;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
+import org.apache.http.conn.scheme.SocketFactory;
 import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.entity.BufferedHttpEntity;
 import org.apache.http.entity.StringEntity;
@@ -116,6 +117,17 @@ public class ApacheSOAPRequester implements SOAPRequester {
 		return new DefaultHttpClient(cm, httpParameters);
 	}
 
+	/**
+	 * Builds a {@link SchemeRegistry}, which determines the
+	 * {@link SocketFactory} that will be used for different ports.
+	 * 
+	 * This is very important because it will need to be overridden by an
+	 * extension class if custom ports or factories (which are used for
+	 * self-signed certificates) are to be used.
+	 * 
+	 * @return A {@link SchemeRegistry} with the necessary port and factories
+	 *         registered.
+	 */
 	protected SchemeRegistry getSchemeRegistry() {
 		SchemeRegistry schemeRegistry = new SchemeRegistry();
 

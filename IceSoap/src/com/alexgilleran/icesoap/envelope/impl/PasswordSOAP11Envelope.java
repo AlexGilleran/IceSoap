@@ -5,8 +5,8 @@ import com.alexgilleran.icesoap.xml.XMLTextNode;
 import com.alexgilleran.icesoap.xml.impl.XMLParentNodeImpl;
 
 /**
- * Example envelope - adds a WSSE Security tag that specifies a username and
- * password for the web service
+ * Example SOAP 1.1 envelope - adds a WSSE Security tag that specifies a
+ * username and password for the web service
  * 
  * @author Alex Gilleran
  * 

@@ -176,7 +176,7 @@ public class XPathPullParserImpl implements XPathPullParser {
 	}
 
 	@Override
-	public boolean isXsiNil() {
+	public boolean isCurrentValueXsiNil() {
 		return (XSI_NIL_TRUE.equals(parser.getAttributeValue(
 				XMLNode.NS_URI_XSI, XSI_NIL_NAME)));
 	}

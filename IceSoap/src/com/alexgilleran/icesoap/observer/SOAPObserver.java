@@ -32,10 +32,6 @@ public interface SOAPObserver<ReturnType, SOAPFaultType> {
 	 *            exception.
 	 * @param e
 	 *            The exception that's been encountered.
-	 * @param soapFault
-	 *            The relevant SOAPFault, if one has been encountered. If no
-	 *            SOAP fault was encountered (e.g. if the service couldn't be
-	 *            reached at all), this will be null.
 	 */
 	public abstract void onException(
 			Request<ReturnType, SOAPFaultType> request, SOAPException e);

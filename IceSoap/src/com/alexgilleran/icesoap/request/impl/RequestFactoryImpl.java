@@ -48,9 +48,8 @@ public class RequestFactoryImpl implements RequestFactory {
 	public <ReturnType, SOAPFaultType> Request<ReturnType, SOAPFaultType> buildRequest(
 			String url, SOAPEnvelope soapEnvelope, String soapAction,
 			Class<ReturnType> resultClass, Class<SOAPFaultType> soapFaultType) {
-		return new RequestImpl<ReturnType, SOAPFaultType>(url,
-				soapEnvelope, soapAction, resultClass, soapFaultType,
-				soapRequester);
+		return new RequestImpl<ReturnType, SOAPFaultType>(url, soapEnvelope,
+				soapAction, resultClass, soapFaultType, soapRequester);
 	}
 
 	/**
@@ -65,6 +64,9 @@ public class RequestFactoryImpl implements RequestFactory {
 				soapRequester);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public <ReturnType> SOAP11Request<ReturnType> buildRequest(String url,
 			SOAPEnvelope soapEnvelope, String soapAction,
@@ -73,18 +75,29 @@ public class RequestFactoryImpl implements RequestFactory {
 				resultClass, soapRequester);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public <ReturnType> SOAP11ListRequest<ReturnType> buildListRequest(String url,
-			SOAPEnvelope soapEnvelope, String soapAction,
+	public <ReturnType> SOAP11ListRequest<ReturnType> buildListRequest(
+			String url, SOAPEnvelope soapEnvelope, String soapAction,
 			Class<ReturnType> resultClass) {
-		return new SOAP11ListRequestImpl<ReturnType>(url, soapEnvelope, soapAction,
-				resultClass, soapRequester);
+		return new SOAP11ListRequestImpl<ReturnType>(url, soapEnvelope,
+				soapAction, resultClass, soapRequester);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public SOAPRequester getSOAPRequester() {
 		return soapRequester;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public void setSOAPRequester(SOAPRequester soapRequester) {
 		this.soapRequester = soapRequester;
 	}
