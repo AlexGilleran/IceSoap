@@ -6,11 +6,12 @@ import com.alexgilleran.icesoap.envelope.SOAPEnvelope;
 import com.alexgilleran.icesoap.example.R;
 import com.alexgilleran.icesoap.example.domain.Definition;
 import com.alexgilleran.icesoap.example.domain.Dictionary;
+import com.alexgilleran.icesoap.example.domain.DictionaryFault;
 import com.alexgilleran.icesoap.example.envelopes.DefineWordEnvelope;
 import com.alexgilleran.icesoap.example.envelopes.GetDictionariesEnvelope;
-import com.alexgilleran.icesoap.request.SOAP11ListRequest;
-import com.alexgilleran.icesoap.request.SOAP11Request;
+import com.alexgilleran.icesoap.request.Request;
 import com.alexgilleran.icesoap.request.RequestFactory;
+import com.alexgilleran.icesoap.request.SOAP11ListRequest;
 import com.alexgilleran.icesoap.request.SOAPRequester;
 import com.alexgilleran.icesoap.request.impl.RequestFactoryImpl;
 import com.google.inject.Singleton;
@@ -49,8 +50,10 @@ public class DictionaryRequestFactoryImpl implements DictionaryRequestFactory {
 	}
 
 	@Override
-	public SOAP11Request<Definition> getDefinition(String dictionaryId, String word) {
+	public Request<Definition, DictionaryFault> getDefinition(
+			String dictionaryId, String word) {
 		return requestFactory.buildRequest(url, new DefineWordEnvelope(
-				dictionaryId, word), defineSoapAction, Definition.class);
+				dictionaryId, word), defineSoapAction, Definition.class,
+				DictionaryFault.class);
 	}
 }

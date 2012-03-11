@@ -4,6 +4,8 @@ import java.util.List;
 
 import com.alexgilleran.icesoap.example.domain.Definition;
 import com.alexgilleran.icesoap.example.domain.Dictionary;
+import com.alexgilleran.icesoap.example.domain.DictionaryFault;
+import com.alexgilleran.icesoap.request.Request;
 import com.alexgilleran.icesoap.request.SOAP11ListRequest;
 import com.alexgilleran.icesoap.request.SOAP11Request;
 
@@ -22,8 +24,8 @@ public interface DictionaryRequestFactory {
 	/**
 	 * Gets a list of all dictionaries available.
 	 * 
-	 * @return A {@link SOAP11Request} that will return all dictionaries available, as
-	 *         a {@link List}, on execution.
+	 * @return A {@link SOAP11Request} that will return all dictionaries
+	 *         available, as a {@link List}, on execution.
 	 */
 	SOAP11ListRequest<Dictionary> getAllDictionaries();
 
@@ -37,5 +39,6 @@ public interface DictionaryRequestFactory {
 	 *            The word to define, as a string.
 	 * @return A request that will return the definition when executed.
 	 */
-	SOAP11Request<Definition> getDefinition(String dictionaryId, String word);
+	Request<Definition, DictionaryFault> getDefinition(String dictionaryId,
+			String word);
 }

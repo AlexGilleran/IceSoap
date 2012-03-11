@@ -17,10 +17,10 @@ import android.widget.TextView;
 import com.alexgilleran.icesoap.example.R;
 import com.alexgilleran.icesoap.example.dao.DictionaryRequestFactory;
 import com.alexgilleran.icesoap.example.domain.Definition;
+import com.alexgilleran.icesoap.example.domain.DictionaryFault;
 import com.alexgilleran.icesoap.exception.SOAPException;
-import com.alexgilleran.icesoap.observer.SOAP11Observer;
+import com.alexgilleran.icesoap.observer.SOAPObserver;
 import com.alexgilleran.icesoap.request.Request;
-import com.alexgilleran.icesoap.soapfault.SOAP11Fault;
 import com.google.inject.Inject;
 
 /**
@@ -69,7 +69,7 @@ public class DefineActivity extends RoboActivity {
 	private String dictionaryId;
 
 	/** Stores a SOAPFault if one is encountered */
-	private SOAP11Fault soapFault;
+	private DictionaryFault soapFault;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -155,7 +155,7 @@ public class DefineActivity extends RoboActivity {
 		if (soapFault == null) {
 			message = CONNECTION_ERROR_MESSAGE;
 		} else {
-			message = SOAP_FAULT_MESSAGE + soapFault.toString();
+			message = SOAP_FAULT_MESSAGE + soapFault.getErrorMessage();
 			soapFault = null;
 		}
 
@@ -174,10 +174,10 @@ public class DefineActivity extends RoboActivity {
 	 * Listens for responses from the dictionary service - when they come
 	 * through, it displays the definition.
 	 */
-	private SOAP11Observer<Definition> definitionObserver = new SOAP11Observer<Definition>() {
+	private SOAPObserver<Definition, DictionaryFault> definitionObserver = new SOAPObserver<Definition, DictionaryFault>() {
 
 		@Override
-		public void onCompletion(Request<Definition, SOAP11Fault> request) {
+		public void onCompletion(Request<Definition, DictionaryFault> request) {
 			String definition;
 
 			// If the request comes back with nothing, display an error message,
@@ -193,7 +193,7 @@ public class DefineActivity extends RoboActivity {
 		}
 
 		@Override
-		public void onException(Request<Definition, SOAP11Fault> request,
+		public void onException(Request<Definition, DictionaryFault> request,
 				SOAPException e) {
 			// Log the exception and show an error dialog.
 			Log.e(DefineActivity.class.getSimpleName(), e.getMessage(), e);
