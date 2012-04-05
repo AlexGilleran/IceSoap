@@ -14,13 +14,13 @@ import org.junit.runner.RunWith;
 
 import com.alexgilleran.icesoap.exception.SOAPException;
 import com.alexgilleran.icesoap.exception.XMLParsingException;
-import com.alexgilleran.icesoap.observer.SOAPObserver;
 import com.alexgilleran.icesoap.observer.SOAP11Observer;
+import com.alexgilleran.icesoap.observer.SOAPObserver;
 import com.alexgilleran.icesoap.request.Request;
 import com.alexgilleran.icesoap.request.SOAP11Request;
+import com.alexgilleran.icesoap.request.test.xmlclasses.CustomSOAP12Fault;
 import com.alexgilleran.icesoap.request.test.xmlclasses.Response;
 import com.alexgilleran.icesoap.soapfault.SOAP11Fault;
-import com.alexgilleran.icesoap.soapfault.SOAP12Fault;
 import com.xtremelabs.robolectric.RobolectricTestRunner;
 
 @RunWith(RobolectricTestRunner.class)
@@ -89,13 +89,13 @@ public class RequestTest extends BaseRequestTest<Response> {
 	public void testFailedRequestSOAP12() throws IOException,
 			XMLParsingException {
 		// Set up a parser for the response
-		Request<Response, SOAP12Fault> request = getRequestFactory()
+		Request<Response, CustomSOAP12Fault> request = getRequestFactory()
 				.buildRequest(DUMMY_URL, getDummyEnvelope(), SOAP_ACTION,
-						Response.class, SOAP12Fault.class);
+						Response.class, CustomSOAP12Fault.class);
 
 		// Create a mock observer and put in the expected call (we expect it to
 		// come back with the request)
-		SOAPObserver<Response, SOAP12Fault> mockObserver = createMock(SOAPObserver.class);
+		SOAPObserver<Response, CustomSOAP12Fault> mockObserver = createMock(SOAPObserver.class);
 		mockObserver.onException(eq(request), isA(SOAPException.class));
 		replay(mockObserver);
 
@@ -109,7 +109,7 @@ public class RequestTest extends BaseRequestTest<Response> {
 		verify(mockObserver);
 
 		// Verify the parsed object was correct.
-		SOAP12Fault fault = request.getSOAPFault();
+		CustomSOAP12Fault fault = request.getSOAPFault();
 
 		assertEquals(fault.getCode(), SampleResponse.SOAP12_FAULT_CODE);
 		assertEquals(fault.getNode(), SampleResponse.SOAP12_FAULT_NODE);
@@ -119,5 +119,11 @@ public class RequestTest extends BaseRequestTest<Response> {
 				SampleResponse.SOAP12_FAULT_REASON);
 		assertEquals(fault.getReasons().get(0).getLang(),
 				SampleResponse.SOAP12_FAULT_REASON_LANG);
+		assertEquals(fault.getLineNumber(),
+				SampleResponse.SQL_MESSAGE_LINE_NUMBER);
+		assertEquals(fault.getMessage(), SampleResponse.SQL_MESSAGE_MESSAGE);
+		assertEquals(fault.getNumber(), SampleResponse.SQL_MESSAGE_NUMBER);
+		assertEquals(fault.getSource(), SampleResponse.SQL_MESSAGE_SOURCE);
+		assertEquals(fault.getState(), SampleResponse.SQL_MESSAGE_STATE);
 	}
 }
