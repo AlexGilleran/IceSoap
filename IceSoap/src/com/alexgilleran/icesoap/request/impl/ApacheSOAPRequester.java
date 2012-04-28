@@ -70,9 +70,9 @@ public class ApacheSOAPRequester implements SOAPRequester {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Response doSoapRequest(SOAPEnvelope envelope, String url,
+	public Response doSoapRequest(SOAPEnvelope envelope, String targetUrl,
 			String soapAction) throws IOException {
-		return doHttpPost(buildPostRequest(url, envelope.toString(), soapAction));
+		return doHttpPost(buildPostRequest(targetUrl, envelope.toString(), soapAction));
 	}
 
 	/**

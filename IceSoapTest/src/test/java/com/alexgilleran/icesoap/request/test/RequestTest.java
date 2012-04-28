@@ -18,6 +18,7 @@ import com.alexgilleran.icesoap.observer.SOAP11Observer;
 import com.alexgilleran.icesoap.observer.SOAPObserver;
 import com.alexgilleran.icesoap.request.Request;
 import com.alexgilleran.icesoap.request.SOAP11Request;
+import com.alexgilleran.icesoap.request.SOAPRequester;
 import com.alexgilleran.icesoap.request.test.xmlclasses.CustomSOAP12Fault;
 import com.alexgilleran.icesoap.request.test.xmlclasses.Response;
 import com.alexgilleran.icesoap.soapfault.SOAP11Fault;
@@ -82,6 +83,31 @@ public class RequestTest extends BaseRequestTest<Response> {
 
 		// Verify the parsed object was correct.
 		assertEquals(fault, request.getSOAPFault());
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testFailedRequestNon500Code() throws IOException,
+			XMLParsingException {
+
+		SOAP11Request<Response> request = getRequestFactory().buildRequest(
+				DUMMY_URL, getDummyEnvelope(), SOAP_ACTION, Response.class);
+
+		SOAP11Observer<Response> mockObserver = createMock(SOAP11Observer.class);
+		mockObserver.onException(eq(request), isA(SOAPException.class));
+		replay(mockObserver);
+
+		// Register the observer to the request
+		request.registerObserver(mockObserver);
+
+		// Do the request
+		doFailedRequest(request, SampleResponse.getSoap11Fault(), 307);
+
+		// Verify that it did what it was supposed to
+		verify(mockObserver);
+
+		// Verify the parsed object was correct.
+//		assertEquals(fault, null);
 	}
 
 	@SuppressWarnings("unchecked")

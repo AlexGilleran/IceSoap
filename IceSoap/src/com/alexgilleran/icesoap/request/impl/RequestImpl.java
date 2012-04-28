@@ -29,12 +29,14 @@ import com.alexgilleran.icesoap.request.SOAPRequester;
 public class RequestImpl<ResultType, SOAPFaultType> implements
 		Request<ResultType, SOAPFaultType> {
 
+	/** Unknown response from server */
+	private static final String MESSAGE_ERROR = "Request returned with error code ";
 	/** Status returned if SOAP Request has executed successfully */
 	private static final int HTTP_OK_STATUS = 200;
 	/** Status returned if there's an error that returns a soap fault */
 	private static final int HTTP_ERROR_STATUS = 500;
 	/** Message for 500 error exception */
-	private static final String MESSAGE_ERROR_500 = "Request returned with error code "
+	private static final String MESSAGE_ERROR_500 = MESSAGE_ERROR
 			+ HTTP_ERROR_STATUS;
 	/** Message for 500 error exception, including SOAPFault */
 	private static final String MESSAGE_ERROR_500_SOAPFAULT = MESSAGE_ERROR_500
@@ -331,7 +333,11 @@ public class RequestImpl<ResultType, SOAPFaultType> implements
 					}
 
 					break;
+				default:
+					throwException(new SOAPException(MESSAGE_ERROR + " "
+							+ response.getHttpStatus()));
 				}
+
 			}
 
 			return null;

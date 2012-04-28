@@ -20,6 +20,7 @@ import com.alexgilleran.icesoap.request.impl.RequestFactoryImpl;
 
 public class BaseRequestTest<E> {
 
+	private static final int HTTP_ERROR_500 = 500;
 	protected static final String DUMMY_URL = "http://www.example.com/services/exampleservice";
 	protected static final String SOAP_ACTION = "soapaction";
 
@@ -38,7 +39,8 @@ public class BaseRequestTest<E> {
 
 	protected SOAPEnvelope getDummyEnvelope() {
 		// Set up an envelope to send
-		SOAPEnvelope envelope = new PasswordSOAP11Envelope("username", "password");
+		SOAPEnvelope envelope = new PasswordSOAP11Envelope("username",
+				"password");
 		envelope.getBody().addNode("http://testns.com", "testname")
 				.addTextNode(null, "textelement", "value");
 		return envelope;
@@ -63,15 +65,20 @@ public class BaseRequestTest<E> {
 		assertNull(request.getException());
 	}
 
-	protected <FaultType> void doFailedRequest(
-			Request<E, FaultType> request, InputStream inputStream)
-			throws IOException, XMLParsingException {
+	protected <FaultType> void doFailedRequest(Request<E, FaultType> request,
+			InputStream inputStream) throws IOException, XMLParsingException {
+		doFailedRequest(request, inputStream, HTTP_ERROR_500);
+	}
+
+	protected <FaultType> void doFailedRequest(Request<E, FaultType> request,
+			InputStream inputStream, int errorCode) throws IOException,
+			XMLParsingException {
 		SOAPEnvelope envelope = getDummyEnvelope();
 
 		expect(mockRequester.doSoapRequest(envelope, DUMMY_URL, SOAP_ACTION))
 				.andReturn(
 						new com.alexgilleran.icesoap.request.impl.Response(
-								inputStream, 500));
+								inputStream, errorCode));
 		replay(mockRequester);
 
 		request.execute();
