@@ -1,6 +1,7 @@
 package com.alexgilleran.icesoap.parser.test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -9,6 +10,7 @@ import java.util.List;
 import org.junit.Test;
 import org.xmlpull.v1.XmlPullParserException;
 
+import com.alexgilleran.icesoap.exception.ClassDefException;
 import com.alexgilleran.icesoap.exception.XMLParsingException;
 import com.alexgilleran.icesoap.parser.IceSoapListParser;
 import com.alexgilleran.icesoap.parser.IceSoapParser;
@@ -17,6 +19,8 @@ import com.alexgilleran.icesoap.parser.impl.IceSoapListParserImpl;
 import com.alexgilleran.icesoap.parser.impl.IceSoapParserImpl;
 import com.alexgilleran.icesoap.parser.test.xmlclasses.Customer;
 import com.alexgilleran.icesoap.parser.test.xmlclasses.CustsAndOrders;
+import com.alexgilleran.icesoap.parser.test.xmlclasses.InvalidlyAnnotatedObject;
+import com.alexgilleran.icesoap.parser.test.xmlclasses.InvalidlyAnnotatedObjectList;
 import com.alexgilleran.icesoap.parser.test.xmlclasses.Order;
 import com.alexgilleran.icesoap.parser.test.xmlclasses.SingleField;
 
@@ -98,6 +102,33 @@ public class IceSoapListParserTest {
 
 		assertEquals(SampleXml.SF_VALUE_3, fields.get(2).getValue());
 		assertEquals(SampleXml.SF_ATTR_3, fields.get(2).getAttribute());
+	}
+
+	@Test
+	public void testInvalidlyAnnotatedObject() throws XMLParsingException {
+		try {
+			IceSoapParser<InvalidlyAnnotatedObjectList> parser = new IceSoapParserImpl<InvalidlyAnnotatedObjectList>(
+					InvalidlyAnnotatedObjectList.class);
+
+			parser.parse(SampleXml.getInvalidList());
+
+			fail();
+		} catch (ClassDefException e) {
+			// we want this to happen
+		}
+	}
+
+	@SuppressWarnings("unused")
+	@Test
+	public void testInvalidlyAnnotatedList() {
+		try {
+			IceSoapListParser<InvalidlyAnnotatedObject> parser = new IceSoapListParserImpl<InvalidlyAnnotatedObject>(
+					InvalidlyAnnotatedObject.class);
+
+			fail();
+		} catch (ClassDefException e) {
+			// we want this to happen
+		}
 	}
 
 	private void checkOrderList(List<Order> purchaseOrders)

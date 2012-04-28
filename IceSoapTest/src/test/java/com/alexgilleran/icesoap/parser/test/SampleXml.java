@@ -31,6 +31,10 @@ public class SampleXml {
 			+ "<aw:Item aw:PartNumber=\"926-AA\" />" + "</aw:Items>"
 			+ "</aw:PurchaseOrder>";
 
+	private final static String ADDRESS_LIST = "<?xml version=\"1.0\"?>"
+			+ "<InvalidObjectList>" + "<Object />" + "<Object />"
+			+ "<Object />" + "</InvalidObjectList>";
+
 	private final static String PURCHASE_ORDER = "<?xml version=\"1.0\"?>"
 			+ "<aw:PurchaseOrder"
 			+ " aw:PurchaseOrderNumber=\"99503\""
@@ -332,5 +336,9 @@ public class SampleXml {
 
 	public static InputStream getCustomersAndOrders() {
 		return new ByteArrayInputStream(CUSTS_AND_ORDERS.getBytes());
+	}
+
+	public static InputStream getInvalidList() {
+		return new ByteArrayInputStream(ADDRESS_LIST.getBytes());
 	}
 }
