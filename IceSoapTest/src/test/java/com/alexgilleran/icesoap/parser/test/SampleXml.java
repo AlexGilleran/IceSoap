@@ -35,6 +35,13 @@ public class SampleXml {
 			+ "<InvalidObjectList>" + "<Object />" + "<Object />"
 			+ "<Object />" + "</InvalidObjectList>";
 
+	private final static String BOOLEAN_VALUES = "<?xml version=\"1.0\"?>"
+			+ "<Booleans attribute=\"true\">"
+			+ "<FalseBoolean>false</FalseBoolean>"
+			+ "<TrueBoolean>true</TrueBoolean>"
+			+ "<UpperCaseBoolean>TRUE</UpperCaseBoolean>"
+			+ "<TitleCaseBoolean>False</TitleCaseBoolean>" + "</Booleans>";
+
 	private final static String PURCHASE_ORDER = "<?xml version=\"1.0\"?>"
 			+ "<aw:PurchaseOrder"
 			+ " aw:PurchaseOrderNumber=\"99503\""
@@ -340,5 +347,9 @@ public class SampleXml {
 
 	public static InputStream getInvalidList() {
 		return new ByteArrayInputStream(ADDRESS_LIST.getBytes());
+	}
+
+	public static InputStream getBooleans() {
+		return new ByteArrayInputStream(BOOLEAN_VALUES.getBytes());
 	}
 }

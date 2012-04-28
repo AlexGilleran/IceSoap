@@ -3,6 +3,7 @@
  */
 package com.alexgilleran.icesoap.parser.test;
 
+import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -18,6 +19,7 @@ import com.alexgilleran.icesoap.exception.XMLParsingException;
 import com.alexgilleran.icesoap.parser.IceSoapParser;
 import com.alexgilleran.icesoap.parser.impl.IceSoapParserImpl;
 import com.alexgilleran.icesoap.parser.test.xmlclasses.AddressChild;
+import com.alexgilleran.icesoap.parser.test.xmlclasses.Booleans;
 import com.alexgilleran.icesoap.parser.test.xmlclasses.PurchaseOrder;
 
 /**
@@ -134,4 +136,17 @@ public class IceSoapParserTest {
 
 	}
 
+	@Test
+	public void testBooleans() throws XMLParsingException {
+		IceSoapParser<Booleans> parser = new IceSoapParserImpl<Booleans>(
+				Booleans.class);
+
+		Booleans address = parser.parse(SampleXml.getBooleans());
+
+		assertTrue(address.isAttribute());
+		assertFalse(address.isFalseBoolean());
+		assertTrue(address.isTrueBoolean());
+		assertTrue(address.isUpperCaseBoolean());
+		assertFalse(address.isTitleCaseBoolean());
+	}
 }

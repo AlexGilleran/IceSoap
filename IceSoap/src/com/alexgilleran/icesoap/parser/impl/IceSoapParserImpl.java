@@ -72,7 +72,7 @@ public class IceSoapParserImpl<ReturnType> extends
 	@SuppressWarnings("unchecked")
 	private static final Set<Class<?>> TEXT_NODE_CLASSES = new HashSet<Class<?>>(
 			Arrays.asList(long.class, float.class, int.class, double.class,
-					BigDecimal.class, String.class, Date.class));
+					boolean.class, BigDecimal.class, String.class, Date.class));
 
 	/**
 	 * Instantiates a new parser.
