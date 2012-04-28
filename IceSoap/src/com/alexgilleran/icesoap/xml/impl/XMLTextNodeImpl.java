@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import org.xmlpull.v1.XmlSerializer;
 
+import com.alexgilleran.icesoap.xml.XMLAttribute;
 import com.alexgilleran.icesoap.xml.XMLTextNode;
 
 /**
@@ -52,7 +53,11 @@ public class XMLTextNodeImpl extends XMLNodeBase implements XMLTextNode {
 	@Override
 	protected void serializeContent(XmlSerializer cereal)
 			throws IllegalArgumentException, IllegalStateException, IOException {
-		cereal.text(value);
+		if (value == null) {
+			cereal.attribute(NS_URI_XSI, XSI_NIL_NAME, XSI_NIL_TRUE);
+		} else {
+			cereal.text(getValue());
+		}
 	}
 
 	@Override

@@ -23,11 +23,6 @@ import com.alexgilleran.icesoap.xpath.elements.impl.SingleSlashXPathElement;
  * 
  */
 public class XPathPullParserImpl implements XPathPullParser {
-	/** The name of the xsi:nil element */
-	private static final String XSI_NIL_NAME = "nil";
-	/** The value of the xsi:nil element if true */
-	private static final String XSI_NIL_TRUE = "true";
-
 	/** The wrapped {@link XmlPullParser} */
 	private XmlPullParser parser = PullParserFactory.getInstance()
 			.buildParser();
@@ -177,8 +172,8 @@ public class XPathPullParserImpl implements XPathPullParser {
 
 	@Override
 	public boolean isCurrentValueXsiNil() {
-		return (XSI_NIL_TRUE.equals(parser.getAttributeValue(
-				XMLNode.NS_URI_XSI, XSI_NIL_NAME)));
+		return (XMLNode.XSI_NIL_TRUE.equals(parser.getAttributeValue(
+				XMLNode.NS_URI_XSI, XMLNode.XSI_NIL_NAME)));
 	}
 
 	/**

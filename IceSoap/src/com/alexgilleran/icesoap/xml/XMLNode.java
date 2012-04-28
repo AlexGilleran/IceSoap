@@ -23,6 +23,10 @@ public interface XMLNode extends XMLElement {
 	public final static String NS_PREFIX_XSI = "xsi";
 	/** URL of the XmlSchema-instance namespace */
 	public final static String NS_URI_XSI = "http://www.w3.org/2001/XMLSchema-instance";
+	/** The name of the xsi:nil element */
+	public static final String XSI_NIL_NAME = "nil";
+	/** The value of the xsi:nil element if true */
+	public static final String XSI_NIL_TRUE = "true";
 
 	/**
 	 * Get all the attributes of this element.
