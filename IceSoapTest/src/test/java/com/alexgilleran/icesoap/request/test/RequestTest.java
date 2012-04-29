@@ -60,6 +60,30 @@ public class RequestTest extends BaseRequestTest<Response> {
 
 	@SuppressWarnings("unchecked")
 	@Test
+	public void testDebugMode() throws IOException, XMLParsingException {
+		SOAP11Request<Response> request = getRequestFactory().buildRequest(
+				DUMMY_URL, getDummyEnvelope(), SOAP_ACTION, Response.class);
+
+		// Set debug to true
+		request.setDebugMode(true);
+
+		// Do a normal response test to make sure that debug mode doesn't ruin
+		// it
+		SOAP11Observer<Response> mockObserver = createMock(SOAP11Observer.class);
+		mockObserver.onCompletion(request);
+		replay(mockObserver);
+		request.registerObserver(mockObserver);
+		doRequest(request, SampleResponse.getSingleResponse());
+		verify(mockObserver);
+		assertEquals(expectedResponse, request.getResult());
+
+		// Make sure the response/request were correctly collected
+		assertEquals(getDummyEnvelope().toString(), request.getRequestXML());
+		assertEquals(SampleResponse.SINGLE_RESPONSE, request.getResponseXML());
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
 	public void testFailedRequestSOAP11() throws IOException,
 			XMLParsingException {
 		// Set up a parser for the response
@@ -105,9 +129,6 @@ public class RequestTest extends BaseRequestTest<Response> {
 
 		// Verify that it did what it was supposed to
 		verify(mockObserver);
-
-		// Verify the parsed object was correct.
-//		assertEquals(fault, null);
 	}
 
 	@SuppressWarnings("unchecked")

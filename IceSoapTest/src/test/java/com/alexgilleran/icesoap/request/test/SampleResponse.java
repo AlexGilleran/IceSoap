@@ -72,7 +72,7 @@ public class SampleResponse {
 			+ "</soapenv:Body>"//
 			+ "</soapenv:Envelope>";//
 
-	private final static String SINGLE_RESPONSE = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:response=\"http://example.com/response\">"
+	public final static String SINGLE_RESPONSE = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:response=\"http://example.com/response\">"
 			+ "<soapenv:Header/>"//
 			+ "<soapenv:Body>"//
 			+ "<response:Response>"//

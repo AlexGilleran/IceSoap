@@ -8,6 +8,11 @@ import com.alexgilleran.icesoap.request.impl.Response;
 /**
  * Handles SOAP requests
  * 
+ * Ideally this should allow for transport-independent resolution of SOAP
+ * requests but unfortunately the handling of HTTP errors inside the
+ * {@link Request} object makes this a fairly leaky abstraction - stay tuned for
+ * a fix.
+ * 
  * @author Alex Gilleran
  * 
  */

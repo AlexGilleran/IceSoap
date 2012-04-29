@@ -1,7 +1,9 @@
 package com.alexgilleran.icesoap.request.impl;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Scanner;
 
 import android.os.AsyncTask;
 
@@ -72,12 +74,17 @@ public class RequestImpl<ResultType, SOAPFaultType> implements
 	private Class<SOAPFaultType> soapFaultClass;
 	/** A SOAPFault, if one has been encountered */
 	private SOAPFaultType soapFault;
-
 	/**
 	 * If an exception is caught, it is stored here until it can be thrown on
 	 * the UI thread
 	 */
 	private SOAPException caughtException = null;
+	/** Whether this request is in debug mode **/
+	private boolean debugMode = false;
+	/** Request XML to be stored in debug mode **/
+	private String requestXML;
+	/** Response XML to be stored in debug mode **/
+	private String responseXML;
 
 	/**
 	 * Creates a new request, automatically creating the parser.
@@ -168,6 +175,10 @@ public class RequestImpl<ResultType, SOAPFaultType> implements
 	 * @throws SOAPException
 	 */
 	protected Response getResponse() throws IOException {
+		if (debugMode) {
+			requestXML = soapEnv.toString();
+		}
+
 		return soapRequester.doSoapRequest(soapEnv, url, soapAction);
 	}
 
@@ -247,6 +258,24 @@ public class RequestImpl<ResultType, SOAPFaultType> implements
 		return soapFault;
 	}
 
+	/** {@inheritDoc} */
+	@Override
+	public void setDebugMode(boolean activated) {
+		this.debugMode = activated;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public String getRequestXML() {
+		return requestXML;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public String getResponseXML() {
+		return responseXML;
+	}
+
 	/**
 	 * Subclass of {@link AsyncTask} used for performing the request in a
 	 * background thread.
@@ -293,6 +322,7 @@ public class RequestImpl<ResultType, SOAPFaultType> implements
 		protected ResultType doInBackground(Void... arg0) {
 			executing = true;
 			Response response = null;
+			InputStream responseData = null;
 
 			try {
 				if (!isCancelled()) {
@@ -302,18 +332,26 @@ public class RequestImpl<ResultType, SOAPFaultType> implements
 				throwException(new SOAPException(ioException));
 			}
 
+			if (debugMode) {
+				responseXML = new Scanner(response.getData()).useDelimiter(
+						"\\A").next();
+				responseData = new ByteArrayInputStream(responseXML.getBytes());
+			} else {
+				responseData = response.getData();
+			}
+
 			if (response != null) {
 				switch (response.getHttpStatus()) {
 				case HTTP_OK_STATUS:
 					try {
-						return getParser().parse(response.getData());
+						return getParser().parse(responseData);
 					} catch (XMLParsingException e) {
 						throwException(new SOAPException(e));
 					}
 					break;
 				case HTTP_ERROR_STATUS:
 					try {
-						soapFault = parseSoapFault(response.getData());
+						soapFault = parseSoapFault(responseData);
 
 						// If we've successfully parsed a soap fault, toString()
 						// it as part of the message, otherwise just return an

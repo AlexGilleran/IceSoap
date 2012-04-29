@@ -101,4 +101,29 @@ public interface Request<ResultType, SOAPFaultType> {
 	 * @return the SOAP Fault.
 	 */
 	SOAPFaultType getSOAPFault();
+
+	/**
+	 * Activates debug mode for this request - debug mode results in the request
+	 * storing the request and response as a String
+	 * 
+	 * @param activated
+	 *            Whether debug mode is activated.
+	 */
+	void setDebugMode(boolean activated);
+
+	/**
+	 * Gets the request XML as a string, if debug mode has been activated with
+	 * {@link #setDebugMode(boolean)}
+	 * 
+	 * @return The request XML as a string.
+	 */
+	String getRequestXML();
+
+	/**
+	 * Gets the response XML as a string, if debug mode has been activated with
+	 * {@link #setDebugMode(boolean)}
+	 * 
+	 * @return The response XML as a string.
+	 */
+	String getResponseXML();
 }
