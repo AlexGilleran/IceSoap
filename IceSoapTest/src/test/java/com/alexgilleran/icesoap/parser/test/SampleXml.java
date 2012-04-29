@@ -31,6 +31,17 @@ public class SampleXml {
 			+ "<aw:Item aw:PartNumber=\"926-AA\" />" + "</aw:Items>"
 			+ "</aw:PurchaseOrder>";
 
+	public final static int TYPE_CONVERSION_VALUE = 3;
+	public final static String CSV_CONVERSION_VALUE_1 = "alpha";
+	public final static String CSV_CONVERSION_VALUE_2 = "beta";
+	public final static String CSV_CONVERSION_VALUE_3 = "omega";
+	
+	private final static String PROCESSOR_TEST = "<?xml version=\"1.0\"?>"
+			+ "<ProcessorTest>"
+			+ "<TypeConversionTest>" + TYPE_CONVERSION_VALUE + "</TypeConversionTest>" 
+			+ "<CSVConversionTest>" + CSV_CONVERSION_VALUE_1 + "," + CSV_CONVERSION_VALUE_2 + "," + CSV_CONVERSION_VALUE_3 + "</CSVConversionTest>"
+			+ "</ProcessorTest>";
+	
 	private final static String ADDRESS_LIST = "<?xml version=\"1.0\"?>"
 			+ "<InvalidObjectList>" + "<Object />" + "<Object />"
 			+ "<Object />" + "</InvalidObjectList>";
@@ -351,5 +362,9 @@ public class SampleXml {
 
 	public static InputStream getBooleans() {
 		return new ByteArrayInputStream(BOOLEAN_VALUES.getBytes());
+	}
+
+	public static InputStream getProcessorTest() {
+		return new ByteArrayInputStream(PROCESSOR_TEST.getBytes());
 	}
 }

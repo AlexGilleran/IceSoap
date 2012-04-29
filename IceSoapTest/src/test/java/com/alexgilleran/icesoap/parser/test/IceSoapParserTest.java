@@ -3,10 +3,11 @@
  */
 package com.alexgilleran.icesoap.parser.test;
 
-import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
@@ -20,6 +21,7 @@ import com.alexgilleran.icesoap.parser.IceSoapParser;
 import com.alexgilleran.icesoap.parser.impl.IceSoapParserImpl;
 import com.alexgilleran.icesoap.parser.test.xmlclasses.AddressChild;
 import com.alexgilleran.icesoap.parser.test.xmlclasses.Booleans;
+import com.alexgilleran.icesoap.parser.test.xmlclasses.ProcessorTest;
 import com.alexgilleran.icesoap.parser.test.xmlclasses.PurchaseOrder;
 
 /**
@@ -148,5 +150,22 @@ public class IceSoapParserTest {
 		assertTrue(address.isTrueBoolean());
 		assertTrue(address.isUpperCaseBoolean());
 		assertFalse(address.isTitleCaseBoolean());
+	}
+
+	@Test
+	public void testProcessors() throws XMLParsingException {
+		IceSoapParser<ProcessorTest> parser = new IceSoapParserImpl<ProcessorTest>(
+				ProcessorTest.class);
+
+		ProcessorTest testResult = parser.parse(SampleXml.getProcessorTest());
+
+		assertEquals(SampleXml.TYPE_CONVERSION_VALUE,
+				testResult.getConversionTest());
+		assertEquals(SampleXml.CSV_CONVERSION_VALUE_1,
+				testResult.getCsvTest()[0]);
+		assertEquals(SampleXml.CSV_CONVERSION_VALUE_2,
+				testResult.getCsvTest()[1]);
+		assertEquals(SampleXml.CSV_CONVERSION_VALUE_3,
+				testResult.getCsvTest()[2]);
 	}
 }

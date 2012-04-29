@@ -21,6 +21,7 @@ import com.alexgilleran.icesoap.exception.XMLParsingException;
 import com.alexgilleran.icesoap.parser.IceSoapListParser;
 import com.alexgilleran.icesoap.parser.IceSoapParser;
 import com.alexgilleran.icesoap.parser.XPathPullParser;
+import com.alexgilleran.icesoap.parser.processor.Processor;
 import com.alexgilleran.icesoap.xpath.XPathRepository;
 import com.alexgilleran.icesoap.xpath.elements.XPathElement;
 
@@ -53,6 +54,8 @@ import com.alexgilleran.icesoap.xpath.elements.XPathElement;
  */
 public class IceSoapParserImpl<ReturnType> extends
 		BaseIceSoapParserImpl<ReturnType> {
+
+	private static final String PROCESSOR_REFLECTION_ERROR_MESSAGE = "Could not instantiate the custom processor ";
 
 	/**
 	 * An {@link XPathRepository} that maps xpaths to the fields represented by
@@ -254,7 +257,6 @@ public class IceSoapParserImpl<ReturnType> extends
 				Object valueToSet = convertToFieldType(fieldToSet,
 						pullParser.getCurrentValue());
 				setField(objectToModify, fieldToSet, valueToSet);
-
 			}
 		}
 
@@ -346,6 +348,8 @@ public class IceSoapParserImpl<ReturnType> extends
 	 */
 	private Object convertToFieldType(Field field, String valueString)
 			throws XMLParsingException {
+		XMLField annotation = field.getAnnotation(XMLField.class);
+
 		if (int.class.isAssignableFrom(field.getType())) {
 			return Integer.parseInt(valueString);
 		} else if (long.class.isAssignableFrom(field.getType())) {
@@ -360,8 +364,8 @@ public class IceSoapParserImpl<ReturnType> extends
 			return new BigDecimal(valueString);
 		} else if (Date.class.isAssignableFrom(field.getType())) {
 			try {
-				return new SimpleDateFormat(field.getAnnotation(XMLField.class)
-						.dateFormat()).parse(valueString);
+				return new SimpleDateFormat(annotation.dateFormat())
+						.parse(valueString);
 			} catch (ParseException e) {
 				throw new XMLParsingException(
 						"Encountered date parsing exception when parsing "

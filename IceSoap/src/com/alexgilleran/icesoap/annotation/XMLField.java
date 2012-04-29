@@ -6,6 +6,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.text.SimpleDateFormat;
 
+import com.alexgilleran.icesoap.parser.processor.Processor;
+
 /**
  * Indicates a field within an IceSoap POJO that is to be automatically set from
  * an XML object - accepts an absolute or relative XPath to map the field to an
@@ -33,4 +35,12 @@ public @interface XMLField {
 	 * (yyyy-MM-dd).
 	 */
 	String dateFormat() default ("yyyy-MM-dd");
+
+	/**
+	 * The processor to use for this field - entirely optional. If a processor
+	 * is specified, ensure that it returns the same Type as that of the field
+	 * that recieves the processed value.
+	 */
+	@SuppressWarnings("rawtypes")
+	Class<? extends Processor> processor() default (Processor.class);
 }
