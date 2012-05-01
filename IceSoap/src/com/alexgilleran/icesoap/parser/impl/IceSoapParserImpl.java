@@ -230,7 +230,8 @@ public class IceSoapParserImpl<ReturnType> extends
 			Type fieldType = fieldToSet.getGenericType();
 			Object valueToSet = null;
 
-			if (!TEXT_NODE_CLASSES.contains(fieldToSet.getType())) {
+			if (!TEXT_NODE_CLASSES.contains(fieldToSet.getType())
+					&& !hasProcessor(fieldToSet)) {
 				if (!xmlPullParser.isCurrentValueXsiNil()) {
 					valueToSet = getParserForClass(fieldType,
 							fieldToSet.getType(), xmlPullParser).parse(
@@ -253,14 +254,39 @@ public class IceSoapParserImpl<ReturnType> extends
 		Field fieldToSet = fieldXPaths.get(pullParser.getCurrentElement());
 
 		if (fieldToSet != null) {
-			if (TEXT_NODE_CLASSES.contains(fieldToSet.getType())) {
-				Object valueToSet = convertToFieldType(fieldToSet,
-						pullParser.getCurrentValue());
-				setField(objectToModify, fieldToSet, valueToSet);
+			try {
+				String currentValue = pullParser.getCurrentValue();
+				XMLField annotation = fieldToSet.getAnnotation(XMLField.class);
+				boolean hasProcessor = hasProcessor(fieldToSet);
+
+				if (TEXT_NODE_CLASSES.contains(fieldToSet.getType())
+						|| hasProcessor) {
+					Object valueToSet;
+
+					if (hasProcessor) {
+						Processor processor = annotation.processor()
+								.newInstance();
+						valueToSet = processor.process(currentValue);
+					} else {
+						valueToSet = convertToFieldType(fieldToSet,
+								currentValue);
+					}
+
+					setField(objectToModify, fieldToSet, valueToSet);
+				}
+			} catch (InstantiationException e) {
+				throw new XMLParsingException(e);
+			} catch (IllegalAccessException e) {
+				throw new XMLParsingException(e);
 			}
 		}
 
 		return objectToModify;
+	}
+
+	protected boolean hasProcessor(Field field) {
+		return !field.getAnnotation(XMLField.class).processor()
+				.equals(Processor.class);
 	}
 
 	/**
