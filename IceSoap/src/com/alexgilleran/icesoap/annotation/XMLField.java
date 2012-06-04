@@ -42,5 +42,5 @@ public @interface XMLField {
 	 * that recieves the processed value.
 	 */
 	@SuppressWarnings("rawtypes")
-	Class<? extends Processor> processor() default (Processor.class);
+	Class<? extends Processor> processor() default Processor.class;
 }
