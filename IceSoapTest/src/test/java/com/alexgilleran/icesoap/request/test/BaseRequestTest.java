@@ -48,7 +48,11 @@ public class BaseRequestTest<E> {
 
 	protected void doRequest(Request<E, ?> request, InputStream inputStream)
 			throws IOException, XMLParsingException {
-		SOAPEnvelope envelope = getDummyEnvelope();
+		doRequest(request, inputStream, getDummyEnvelope());
+	}
+
+	protected void doRequest(Request<E, ?> request, InputStream inputStream,
+			SOAPEnvelope envelope) throws IOException, XMLParsingException {
 
 		expect(mockRequester.doSoapRequest(envelope, DUMMY_URL, SOAP_ACTION))
 				.andReturn(

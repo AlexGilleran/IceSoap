@@ -72,7 +72,7 @@ public class ApacheSOAPRequester implements SOAPRequester {
 	 */
 	public Response doSoapRequest(SOAPEnvelope envelope, String targetUrl,
 			String soapAction) throws IOException {
-		return doHttpPost(buildPostRequest(targetUrl, envelope.toString(), soapAction));
+		return doHttpPost(buildPostRequest(targetUrl, envelope, soapAction));
 	}
 
 	/**
@@ -102,7 +102,7 @@ public class ApacheSOAPRequester implements SOAPRequester {
 	 * 
 	 * @return An implementation of {@link HttpClient}
 	 */
-	private HttpClient buildHttpClient() {
+	protected HttpClient buildHttpClient() {
 		HttpParams httpParameters = new BasicHttpParams();
 		HttpConnectionParams.setConnectionTimeout(httpParameters,
 				DEFAULT_CONN_TIMEOUT);
@@ -144,14 +144,14 @@ public class ApacheSOAPRequester implements SOAPRequester {
 	 * 
 	 * @param url
 	 *            the URL to POST to
-	 * @param envelopeString
-	 *            The envelope to post, as a serialized string.
+	 * @param envelope
+	 *            The envelope to post
 	 * @param soapAction
 	 *            SOAPAction for the header.
 	 * @return An {@link HttpPost} object representing the supplied information.
 	 * @throws UnsupportedEncodingException
 	 */
-	private HttpPost buildPostRequest(String url, String envelopeString,
+	private HttpPost buildPostRequest(String url, SOAPEnvelope envelope,
 			String soapAction) throws UnsupportedEncodingException {
 		// Create a new HttpClient and Post Header
 		HttpPost httppost = new HttpPost(url);
@@ -159,7 +159,8 @@ public class ApacheSOAPRequester implements SOAPRequester {
 		httppost.setHeader(CONTENT_TYPE_LABEL, XML_CONTENT_TYPE);
 		httppost.setHeader(HEADER_KEY_SOAP_ACTION, soapAction);
 
-		HttpEntity entity = new StringEntity(envelopeString);
+		HttpEntity entity = new StringEntity(envelope.toString(),
+				envelope.getEncoding());
 
 		httppost.setEntity(entity);
 		return httppost;

@@ -18,7 +18,6 @@ import com.alexgilleran.icesoap.observer.SOAP11Observer;
 import com.alexgilleran.icesoap.observer.SOAPObserver;
 import com.alexgilleran.icesoap.request.Request;
 import com.alexgilleran.icesoap.request.SOAP11Request;
-import com.alexgilleran.icesoap.request.SOAPRequester;
 import com.alexgilleran.icesoap.request.test.xmlclasses.CustomSOAP12Fault;
 import com.alexgilleran.icesoap.request.test.xmlclasses.Response;
 import com.alexgilleran.icesoap.soapfault.SOAP11Fault;
