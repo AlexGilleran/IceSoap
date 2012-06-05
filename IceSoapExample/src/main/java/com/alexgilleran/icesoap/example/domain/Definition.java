@@ -2,6 +2,7 @@ package com.alexgilleran.icesoap.example.domain;
 
 import com.alexgilleran.icesoap.annotation.XMLField;
 import com.alexgilleran.icesoap.annotation.XMLObject;
+import com.alexgilleran.icesoap.example.processors.DefinitionProcessor;
 
 // The envelope being imitated:
 //<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
@@ -48,7 +49,7 @@ public class Definition {
 	private Dictionary dictionary;
 
 	/** The definition of the word */
-	@XMLField("WordDefinition")
+	@XMLField(value = "WordDefinition", processor = DefinitionProcessor.class)
 	private String wordDefinition;
 
 	/**
