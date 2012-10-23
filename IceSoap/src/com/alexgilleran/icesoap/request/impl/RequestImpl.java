@@ -332,15 +332,16 @@ public class RequestImpl<ResultType, SOAPFaultType> implements
 				throwException(new SOAPException(ioException));
 			}
 
-			if (debugMode) {
-				responseXML = new Scanner(response.getData()).useDelimiter(
-						"\\A").next();
-				responseData = new ByteArrayInputStream(responseXML.getBytes());
-			} else {
-				responseData = response.getData();
-			}
-
 			if (response != null) {
+				if (debugMode) {
+					responseXML = new Scanner(response.getData()).useDelimiter(
+							"\\A").next();
+					responseData = new ByteArrayInputStream(
+							responseXML.getBytes());
+				} else {
+					responseData = response.getData();
+				}
+
 				switch (response.getHttpStatus()) {
 				case HTTP_OK_STATUS:
 					try {

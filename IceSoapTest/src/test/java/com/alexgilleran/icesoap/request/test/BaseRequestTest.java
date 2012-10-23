@@ -8,6 +8,8 @@ import static org.junit.Assert.assertNull;
 import java.io.IOException;
 import java.io.InputStream;
 
+import junit.framework.Assert;
+
 import org.junit.Before;
 
 import com.alexgilleran.icesoap.envelope.SOAPEnvelope;
@@ -90,6 +92,26 @@ public class BaseRequestTest<E> {
 		while (!request.isComplete()) {
 
 		}
+	}
+
+	protected void doExceptionRequest(Request<E, ?> request,
+			InputStream inputStream) throws IOException, XMLParsingException {
+		IOException ioException = new IOException("Test");
+
+		SOAPEnvelope envelope = getDummyEnvelope();
+
+		expect(mockRequester.doSoapRequest(envelope, DUMMY_URL, SOAP_ACTION))
+				.andThrow(ioException);
+
+		replay(mockRequester);
+
+		request.execute();
+
+		while (!request.isComplete()) {
+
+		}
+
+		Assert.assertNotNull(request.getException());
 	}
 
 	public SOAPRequester getMockRequester() {

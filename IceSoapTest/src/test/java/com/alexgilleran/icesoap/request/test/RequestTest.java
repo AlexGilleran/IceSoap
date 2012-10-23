@@ -57,6 +57,34 @@ public class RequestTest extends BaseRequestTest<Response> {
 		assertEquals(expectedResponse, request.getResult());
 	}
 
+	/**
+	 * Ensures a SOAPException is thrown if an IOException occurs when making a
+	 * request - including timeouts etc.
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testRequestWithException() throws IOException,
+			XMLParsingException {
+		// Set up a parser for the response
+		SOAP11Request<Response> request = getRequestFactory().buildRequest(
+				DUMMY_URL, getDummyEnvelope(), SOAP_ACTION, Response.class);
+
+		// Create a mock observer and put in the expected call (we expect it to
+		// come back with the request)
+		SOAP11Observer<Response> mockObserver = createMock(SOAP11Observer.class);
+		mockObserver.onException(eq(request), isA(SOAPException.class));
+		replay(mockObserver);
+
+		// Register the observer to the request
+		request.registerObserver(mockObserver);
+
+		// Do the request
+		doExceptionRequest(request, SampleResponse.getSingleResponse());
+
+		// Verify that it did what it was supposed to
+		verify(mockObserver);
+	}
+
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testDebugMode() throws IOException, XMLParsingException {
@@ -172,4 +200,5 @@ public class RequestTest extends BaseRequestTest<Response> {
 		assertEquals(fault.getSource(), SampleResponse.SQL_MESSAGE_SOURCE);
 		assertEquals(fault.getState(), SampleResponse.SQL_MESSAGE_STATE);
 	}
+
 }

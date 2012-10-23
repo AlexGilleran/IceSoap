@@ -85,9 +85,7 @@ public class ApacheSOAPRequester implements SOAPRequester {
 	 * @throws IOException
 	 * @throws SOAPException
 	 */
-	private Response doHttpPost(HttpPost httpPost)
-			throws ClientProtocolException, IOException {
-
+	private Response doHttpPost(HttpPost httpPost) throws IOException {
 		// Execute HTTP Post Request
 		HttpResponse response = httpClient.execute(httpPost);
 
