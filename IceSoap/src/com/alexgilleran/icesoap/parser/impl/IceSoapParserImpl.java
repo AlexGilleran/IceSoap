@@ -54,9 +54,6 @@ import com.alexgilleran.icesoap.xpath.elements.XPathElement;
  */
 public class IceSoapParserImpl<ReturnType> extends
 		BaseIceSoapParserImpl<ReturnType> {
-
-	private static final String PROCESSOR_REFLECTION_ERROR_MESSAGE = "Could not instantiate the custom processor ";
-
 	/**
 	 * An {@link XPathRepository} that maps xpaths to the fields represented by
 	 * them.
