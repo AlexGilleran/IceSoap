@@ -5,7 +5,7 @@ import com.alexgilleran.icesoap.annotation.XMLObject;
 
 @XMLObject("//Details")
 public class Response {
-	@XMLField("id")
+	@XMLField("@id")
 	private int responseId;
 	@XMLField("TextField")
 	private String textField;

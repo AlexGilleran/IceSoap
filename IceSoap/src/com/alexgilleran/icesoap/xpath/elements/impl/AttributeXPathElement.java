@@ -33,12 +33,15 @@ public class AttributeXPathElement implements XPathElement {
 	 */
 	@Override
 	public boolean matches(XPathElement otherElement) {
-		if (!wrappedElement.matches(otherElement)) {
+		// Make sure the other element is also an attribute.
+		if (!otherElement.isAttribute()) {
 			return false;
 		}
 
-		// Make sure the other element is also an attrbute.
-		if (!otherElement.isAttribute()) {
+		// If other element is an attribute it must be castable to
+		// AttributeXPathElement
+		AttributeXPathElement castOtherElement = (AttributeXPathElement) otherElement;
+		if (!wrappedElement.matches(castOtherElement.wrappedElement)) {
 			return false;
 		}
 

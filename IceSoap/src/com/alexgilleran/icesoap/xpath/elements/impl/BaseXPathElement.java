@@ -98,6 +98,11 @@ public abstract class BaseXPathElement implements XPathElement {
 			return false;
 		}
 
+		// This is not an attribute, otherwise it would be a different class
+		if (otherElement.isAttribute()) {
+			return false;
+		}
+
 		// Explanation: Basically this goes through and finds any reason that
 		// two xpaths *won't* match, in order of most likely reason to least
 		// likely - if none of these reasons are present, returns true

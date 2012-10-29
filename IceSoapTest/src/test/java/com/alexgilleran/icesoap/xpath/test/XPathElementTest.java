@@ -26,4 +26,10 @@ public class XPathElementTest extends XPathTest {
 			}
 		}
 	}
+
+	@Test
+	public void testNonAttributeDoesntMatchAttribute()
+			throws XPathParsingException {
+		assertFalse(matchStrings("/xpath", "/@xpath"));
+	}
 }
