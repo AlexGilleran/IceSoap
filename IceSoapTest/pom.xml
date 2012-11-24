@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.alexgilleran</groupId>
 	<artifactId>icesoap.test</artifactId>
-	<version>1.0.4-SNAPSHOT</version>
+	<version>1.0.5-SNAPSHOT</version>
 	<packaging>apk</packaging>
 	<name>IcesoapTest</name>
 
