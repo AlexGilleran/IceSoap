@@ -20,6 +20,7 @@ import com.alexgilleran.icesoap.exception.XMLParsingException;
 import com.alexgilleran.icesoap.parser.IceSoapParser;
 import com.alexgilleran.icesoap.parser.impl.IceSoapParserImpl;
 import com.alexgilleran.icesoap.parser.test.xmlclasses.AddressChild;
+import com.alexgilleran.icesoap.parser.test.xmlclasses.Alert;
 import com.alexgilleran.icesoap.parser.test.xmlclasses.Booleans;
 import com.alexgilleran.icesoap.parser.test.xmlclasses.ProcessorTest;
 import com.alexgilleran.icesoap.parser.test.xmlclasses.PurchaseOrder;
@@ -167,5 +168,17 @@ public class IceSoapParserTest {
 				testResult.getCsvTest()[1]);
 		assertEquals(SampleXml.CSV_CONVERSION_VALUE_3,
 				testResult.getCsvTest()[2]);
+	}
+
+	@Test
+	public void testListOfStrings() throws XMLParsingException {
+		IceSoapParser<Alert> parser = new IceSoapParserImpl<Alert>(Alert.class);
+
+		Alert testResult = parser.parse(SampleXml.getListOfStringsXML());
+
+		assertEquals(SampleXml.SMS_ALERT_GROUP_1, testResult
+				.getmActiveGroupsPerSMS().get(0));
+		assertEquals(SampleXml.SMS_ALERT_GROUP_2, testResult
+				.getmActiveGroupsPerSMS().get(1));
 	}
 }

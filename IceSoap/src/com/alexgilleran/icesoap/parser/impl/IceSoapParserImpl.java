@@ -319,7 +319,7 @@ public class IceSoapParserImpl<ReturnType> extends
 			Class<?> listItemClass = (Class<?>) listItemType;
 
 			BaseIceSoapParserImpl<?> itemParser = new IceSoapParserImpl(
-					listItemClass);
+					listItemClass, pullParser.getCurrentElement());
 
 			return new IceSoapListParserImpl(listItemClass,
 					pullParser.getCurrentElement(), itemParser);
