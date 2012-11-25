@@ -1,11 +1,11 @@
 package com.alexgilleran.icesoap.parser.impl;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
@@ -227,8 +227,7 @@ public class IceSoapParserImpl<ReturnType> extends
 			Type fieldType = fieldToSet.getGenericType();
 			Object valueToSet = null;
 
-			if (!TEXT_NODE_CLASSES.contains(fieldToSet.getType())
-					&& !hasProcessor(fieldToSet)) {
+			if (needsNewParser(fieldToSet)) {
 				if (!xmlPullParser.isCurrentValueXsiNil()) {
 					valueToSet = getParserForClass(fieldType,
 							fieldToSet.getType(), xmlPullParser).parse(
@@ -240,6 +239,37 @@ public class IceSoapParserImpl<ReturnType> extends
 		}
 
 		return objectToModify;
+	}
+
+	/**
+	 * Determines whether a new parser needs to be created - this is true if the
+	 * field's type is not derived from a text node or a list of types derived
+	 * from text nodes and will not be processed with a processor.
+	 * 
+	 * @param fieldToSet
+	 * @return
+	 */
+	private boolean needsNewParser(Field fieldToSet) {
+		// Is it a text node?
+		if (TEXT_NODE_CLASSES.contains(fieldToSet.getType())) {
+			return false;
+		}
+
+		// Does it have a processor to deal with it rather than a generic
+		// parser?
+		if (hasProcessor(fieldToSet)) {
+			return false;
+		}
+
+		// Is it a list of text nodes?
+		if (List.class.isAssignableFrom(fieldToSet.getType())
+				&& TEXT_NODE_CLASSES.contains(getListItemClass(fieldToSet
+						.getGenericType()))) {
+			return false;
+		}
+
+		// No to all of the above, .'. it needs a parser
+		return true;
 	}
 
 	/**
@@ -256,8 +286,7 @@ public class IceSoapParserImpl<ReturnType> extends
 				XMLField annotation = fieldToSet.getAnnotation(XMLField.class);
 				boolean hasProcessor = hasProcessor(fieldToSet);
 
-				if (TEXT_NODE_CLASSES.contains(fieldToSet.getType())
-						|| hasProcessor) {
+				if (!needsNewParser(fieldToSet)) {
 					Object valueToSet;
 
 					if (hasProcessor) {
@@ -313,13 +342,10 @@ public class IceSoapParserImpl<ReturnType> extends
 			// list and create a parser for that, then wrap a ListParser around
 			// it.
 
-			ParameterizedType paramType = (ParameterizedType) typeToParse;
-			Type listItemType = paramType.getActualTypeArguments()[0];
-
-			Class<?> listItemClass = (Class<?>) listItemType;
+			Class<?> listItemClass = getListItemClass(typeToParse);
 
 			BaseIceSoapParserImpl<?> itemParser = new IceSoapParserImpl(
-					listItemClass, pullParser.getCurrentElement());
+					listItemClass);
 
 			return new IceSoapListParserImpl(listItemClass,
 					pullParser.getCurrentElement(), itemParser);
@@ -346,7 +372,21 @@ public class IceSoapParserImpl<ReturnType> extends
 		try {
 			boolean isAccessibleBefore = fieldToSet.isAccessible();
 			fieldToSet.setAccessible(true);
-			fieldToSet.set(objectToModify, valueToSet);
+
+			if (List.class.isAssignableFrom(fieldToSet.getType())) {
+				Object valueOfField = fieldToSet.get(objectToModify);
+
+				if (valueOfField == null) {
+					List<Object> newList = new ArrayList<Object>();
+					newList.add(valueToSet);
+					fieldToSet.set(objectToModify, newList);
+				} else {
+					((List<Object>) valueOfField).add(valueToSet);
+				}
+			} else {
+				fieldToSet.set(objectToModify, valueToSet);
+			}
+
 			fieldToSet.setAccessible(isAccessibleBefore);
 		} catch (IllegalArgumentException e) {
 			throw new RuntimeException(e);
