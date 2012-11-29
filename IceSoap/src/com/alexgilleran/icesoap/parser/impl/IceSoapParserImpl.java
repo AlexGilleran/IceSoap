@@ -53,6 +53,11 @@ import com.alexgilleran.icesoap.xpath.elements.XPathElement;
  *            The type of the object being parsed.
  */
 public class IceSoapParserImpl<ReturnType> extends BaseIceSoapParserImpl<ReturnType> {
+	/** Null character **/
+	private static final char PRIMITIVE_NULL_CHAR = '\0';
+	/** Equivalent to null for primitive number types (0) **/
+	private static final int PRIMITIVE_NULL_NUMBER = 0;
+
 	/**
 	 * An {@link XPathRepository} that maps xpaths to the fields represented by
 	 * them.
@@ -221,14 +226,14 @@ public class IceSoapParserImpl<ReturnType> extends BaseIceSoapParserImpl<ReturnT
 			Type fieldType = fieldToSet.getGenericType();
 			Object valueToSet = null;
 
-			if (needsNewParser(fieldToSet)) {
+			if (xmlPullParser.isCurrentValueXsiNil()) {
+				setFieldToNull(objectToModify, fieldToSet);
+			} else if (needsNewParser(fieldToSet)) {
 				// If a new parser is needed and the value is not nil (null),
 				// create the parser and set the value to the parsed value, else
 				// set it to the null above.
-				if (!xmlPullParser.isCurrentValueXsiNil()) {
-					valueToSet = getParserForClass(fieldType, fieldToSet.getType(), xmlPullParser).parse(xmlPullParser);
-				}
 
+				valueToSet = getParserForClass(fieldType, fieldToSet.getType(), xmlPullParser).parse(xmlPullParser);
 				setField(objectToModify, fieldToSet, valueToSet);
 			}
 		}
@@ -347,6 +352,21 @@ public class IceSoapParserImpl<ReturnType> extends BaseIceSoapParserImpl<ReturnT
 			// The type is not a list - create a parser
 			return new IceSoapParserImpl<ObjectType>(classToParse, pullParser.getCurrentElement());
 		}
+	}
+
+	private void setFieldToNull(ReturnType objectToModify, Field fieldToSet) {
+		Class<?> type = fieldToSet.getType();
+		Object value = null;
+
+		if (type == int.class || type == long.class || type == double.class || type == float.class) {
+			value = PRIMITIVE_NULL_NUMBER;
+		} else if (type == boolean.class) {
+			value = false;
+		} else if (type == char.class) {
+			value = PRIMITIVE_NULL_CHAR;
+		}
+
+		setField(objectToModify, fieldToSet, value);
 	}
 
 	/**

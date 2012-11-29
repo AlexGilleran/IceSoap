@@ -22,6 +22,7 @@ import com.alexgilleran.icesoap.parser.impl.IceSoapParserImpl;
 import com.alexgilleran.icesoap.parser.test.xmlclasses.AddressChild;
 import com.alexgilleran.icesoap.parser.test.xmlclasses.Alert;
 import com.alexgilleran.icesoap.parser.test.xmlclasses.Booleans;
+import com.alexgilleran.icesoap.parser.test.xmlclasses.NilValues;
 import com.alexgilleran.icesoap.parser.test.xmlclasses.ProcessorTest;
 import com.alexgilleran.icesoap.parser.test.xmlclasses.PurchaseOrder;
 
@@ -34,24 +35,16 @@ public class IceSoapParserTest {
 
 	@Test
 	public void testXsiNil() throws XMLParsingException, ParseException {
-		IceSoapParser<PurchaseOrder> parser = new IceSoapParserImpl<PurchaseOrder>(PurchaseOrder.class);
+		IceSoapParser<NilValues> parser = new IceSoapParserImpl<NilValues>(NilValues.class);
 
-		PurchaseOrder po = parser.parse(SampleXml.getPOWithNilValues());
+		NilValues values = parser.parse(SampleXml.getNilValues());
 
-		assertEquals(99503l, po.getPurchaseOrderNumber());
-		assertEquals(FORMAT.parse("1999-10-20"), po.getOrderDate());
-
-		// Billing Address
-		assertEquals("Billing", po.getBillingAddress().getType());
-		assertEquals(null, po.getBillingAddress().getName());
-		assertEquals("8 Oak Avenue", po.getBillingAddress().getStreet());
-		assertEquals("Old Town", po.getBillingAddress().getCity());
-		assertEquals("PA", po.getBillingAddress().getState());
-		assertEquals(0, po.getBillingAddress().getZip());
-		assertEquals("USA", po.getBillingAddress().getCountry());
-
-		assertNull(po.getItem872aa());
-		assertNotNull(po.getItem926aa());
+		assertEquals(values.getCharValue(), '\0');
+		assertEquals(values.getDoubleValue(), 0, 0);
+		assertEquals(values.getFloatValue(), 0, 0);
+		assertEquals(values.getIntValue(), 0);
+		assertEquals(values.getLongValue(), 0);
+		assertEquals(values.getStringValue(), null);
 	}
 
 	/**
@@ -171,7 +164,7 @@ public class IceSoapParserTest {
 		assertEquals("Fire", testResult.getActiveGroupsPerEmail().get(0));
 		assertEquals(null, testResult.getActiveGroupsPerEmail().get(1));
 		assertEquals("OpenClose", testResult.getActiveGroupsPerEmail().get(2));
-		
+
 		assertEquals(SampleXml.SMS_ALERT_GROUP_1, testResult.getActiveGroupsPerSMS().get(0));
 		assertEquals(SampleXml.SMS_ALERT_GROUP_2, testResult.getActiveGroupsPerSMS().get(1));
 	}
