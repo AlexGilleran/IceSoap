@@ -354,6 +354,15 @@ public class IceSoapParserImpl<ReturnType> extends BaseIceSoapParserImpl<ReturnT
 		}
 	}
 
+	/**
+	 * Sets the supplied field of the supplied object to null, substituting
+	 * equivalent values if the field's type is a primitive and cannot be null.
+	 * 
+	 * @param objectToModify
+	 *            Object to set the field on.
+	 * @param fieldToSet
+	 *            Field in the object to set the value of.
+	 */
 	private void setFieldToNull(ReturnType objectToModify, Field fieldToSet) {
 		Class<?> type = fieldToSet.getType();
 		Object value = null;
