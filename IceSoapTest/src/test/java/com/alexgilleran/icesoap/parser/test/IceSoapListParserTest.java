@@ -7,6 +7,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -25,8 +26,7 @@ import com.alexgilleran.icesoap.parser.test.xmlclasses.Order;
 import com.alexgilleran.icesoap.parser.test.xmlclasses.SingleField;
 
 public class IceSoapListParserTest {
-	private final static SimpleDateFormat FORMAT = new SimpleDateFormat(
-			"yyyy-MM-dd");
+	private final static SimpleDateFormat FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 
 	/**
 	 * Holistic test on realistic data.
@@ -36,16 +36,13 @@ public class IceSoapListParserTest {
 	 * @throws ParseException
 	 */
 	@Test
-	public void testCustomerList() throws XmlPullParserException,
-			XMLParsingException, ParseException {
+	public void testCustomerList() throws XmlPullParserException, XMLParsingException, ParseException {
 		CustomerObserver customerObserver = new CustomerObserver();
-		IceSoapListParser<Customer> parser = new IceSoapListParserImpl<Customer>(
-				Customer.class);
+		IceSoapListParser<Customer> parser = new IceSoapListParserImpl<Customer>(Customer.class);
 		parser.registerItemObserver(customerObserver);
 
 		// Get customers
-		List<Customer> custList = parser.parse(SampleXml
-				.getCustomersAndOrders());
+		List<Customer> custList = parser.parse(SampleXml.getCustomersAndOrders());
 
 		assertEquals(4, customerObserver.counter);
 		checkCustomerList(custList);
@@ -54,26 +51,22 @@ public class IceSoapListParserTest {
 	@Test
 	public void testOrderList() throws XMLParsingException, ParseException {
 		OrderObserver orderObserver = new OrderObserver();
-		IceSoapListParser<Order> parser = new IceSoapListParserImpl<Order>(
-				Order.class);
+		IceSoapListParser<Order> parser = new IceSoapListParserImpl<Order>(Order.class);
 		parser.registerItemObserver(orderObserver);
 
 		// Get orders
-		List<Order> purchaseOrderList = parser.parse(SampleXml
-				.getCustomersAndOrders());
+		List<Order> purchaseOrderList = parser.parse(SampleXml.getCustomersAndOrders());
 
-		assertEquals(11, orderObserver.counter);
+		assertEquals(12, orderObserver.counter);
 		checkOrderList(purchaseOrderList);
 	}
 
 	@Test
 	public void testListsInTypes() throws XMLParsingException, ParseException {
-		IceSoapParser<CustsAndOrders> parser = new IceSoapParserImpl<CustsAndOrders>(
-				CustsAndOrders.class);
+		IceSoapParser<CustsAndOrders> parser = new IceSoapParserImpl<CustsAndOrders>(CustsAndOrders.class);
 
 		// Get customers and orders
-		CustsAndOrders custsAndOrders = parser.parse(SampleXml
-				.getCustomersAndOrders());
+		CustsAndOrders custsAndOrders = parser.parse(SampleXml.getCustomersAndOrders());
 
 		checkCustomerList(custsAndOrders.getCustomers());
 		checkOrderList(custsAndOrders.getOrders());
@@ -87,12 +80,10 @@ public class IceSoapListParserTest {
 	 */
 	@Test
 	public void testSingleFieldObjects() throws XMLParsingException {
-		IceSoapListParser<SingleField> parser = new IceSoapListParserImpl<SingleField>(
-				SingleField.class);
+		IceSoapListParser<SingleField> parser = new IceSoapListParserImpl<SingleField>(SingleField.class);
 
 		// Get customers and orders
-		List<SingleField> fields = parser.parse(SampleXml
-				.getSingleFieldsWithAttributes());
+		List<SingleField> fields = parser.parse(SampleXml.getSingleFieldsWithAttributes());
 
 		assertEquals(SampleXml.SF_VALUE_1, fields.get(0).getValue());
 		assertEquals(SampleXml.SF_ATTR_1, fields.get(0).getAttribute());
@@ -131,14 +122,14 @@ public class IceSoapListParserTest {
 		}
 	}
 
-	private void checkOrderList(List<Order> purchaseOrders)
-			throws ParseException {
+	private void checkOrderList(List<Order> purchaseOrders) throws ParseException {
 		// Check the numbers
-		assertEquals(11, purchaseOrders.size());
+		assertEquals(12, purchaseOrders.size());
 
 		// Check the first and last are correct
 		checkOrder(purchaseOrders.get(0), 0);
 		checkOrder(purchaseOrders.get(10), 10);
+		checkOrder(purchaseOrders.get(11), 11);
 	}
 
 	private void checkOrder(Order order, int index) throws ParseException {
@@ -165,20 +156,20 @@ public class IceSoapListParserTest {
 			assertEquals(6, order.getEmployeeId());
 			assertEquals(FORMAT.parse("1997-05-06"), order.getOrderDate());
 			assertEquals(FORMAT.parse("1997-05-20"), order.getRequiredDate());
-			assertEquals(FORMAT.parse("1997-05-09"), order.getShipInfo()
-					.getShippedDate());
+			assertEquals(FORMAT.parse("1997-05-09"), order.getShipInfo().getShippedDate());
 			assertEquals(2, order.getShipInfo().getShipVia());
 			assertEquals(3.35d, order.getShipInfo().getFreight(), 0);
-			assertEquals("Great Lakes Food Market", order.getShipInfo()
-					.getShipName());
-			assertEquals("2732 Baker Blvd.", order.getShipInfo()
-					.getShipAddress());
+			assertEquals("Great Lakes Food Market", order.getShipInfo().getShipName());
+			assertEquals("2732 Baker Blvd.", order.getShipInfo().getShipAddress());
 			assertEquals("Eugene", order.getShipInfo().getShipCity());
 			assertEquals("OR", order.getShipInfo().getShipRegion());
 			assertEquals("97403", order.getShipInfo().getShipPostalCode());
 			assertEquals("USA", order.getShipInfo().getShipCountry());
 			break;
 		case 10:
+			Assert.assertNull(order);
+			break;
+		case 11:
 			// + "<Order>"
 			// + "<CustomerID>GREAL</CustomerID>"
 			// + "<EmployeeID>4</EmployeeID>"
@@ -202,10 +193,8 @@ public class IceSoapListParserTest {
 			assertEquals(FORMAT.parse("1998-06-11"), order.getRequiredDate());
 			assertEquals(3, order.getShipInfo().getShipVia());
 			assertEquals(14.01, order.getShipInfo().getFreight(), 0);
-			assertEquals("Great Lakes Food Market", order.getShipInfo()
-					.getShipName());
-			assertEquals("2732 Baker Blvd.", order.getShipInfo()
-					.getShipAddress());
+			assertEquals("Great Lakes Food Market", order.getShipInfo().getShipName());
+			assertEquals("2732 Baker Blvd.", order.getShipInfo().getShipAddress());
 			assertEquals("Eugene", order.getShipInfo().getShipCity());
 			assertEquals("OR", order.getShipInfo().getShipRegion());
 			assertEquals("97403", order.getShipInfo().getShipPostalCode());
@@ -246,8 +235,7 @@ public class IceSoapListParserTest {
 			assertEquals("Marketing Manager", customer.getContactTitle());
 			assertEquals("(503) 555-7555", customer.getPhone());
 			assertEquals("USA", customer.getFullAddress().getCountry());
-			assertEquals("2732 Baker Blvd.", customer.getFullAddress()
-					.getAddress());
+			assertEquals("2732 Baker Blvd.", customer.getFullAddress().getAddress());
 			assertEquals("Eugene", customer.getFullAddress().getCity());
 			assertEquals("97403", customer.getFullAddress().getPostalCode());
 			assertEquals("OR", customer.getFullAddress().getRegion());
@@ -274,8 +262,7 @@ public class IceSoapListParserTest {
 			assertEquals("John Steel", customer.getContactName());
 			assertEquals("Marketing Manager", customer.getContactTitle());
 			assertEquals("(509) 555-7969", customer.getPhone());
-			assertEquals("12 Orchestra Terrace", customer.getFullAddress()
-					.getAddress());
+			assertEquals("12 Orchestra Terrace", customer.getFullAddress().getAddress());
 			assertEquals("Walla Walla", customer.getFullAddress().getCity());
 			assertEquals("99362", customer.getFullAddress().getPostalCode());
 			assertEquals("WA", customer.getFullAddress().getRegion());

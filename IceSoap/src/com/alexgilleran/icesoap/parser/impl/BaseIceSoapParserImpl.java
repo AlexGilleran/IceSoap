@@ -27,8 +27,7 @@ import com.alexgilleran.icesoap.xpath.elements.XPathElement;
  * @param <ReturnType>
  *            The type to build with this parser.
  */
-public abstract class BaseIceSoapParserImpl<ReturnType> implements
-		IceSoapParser<ReturnType> {
+public abstract class BaseIceSoapParserImpl<ReturnType> implements IceSoapParser<ReturnType> {
 	/**
 	 * The xpath of the XML node that this parser will parse within - it will
 	 * start parsing at the start of this node, and stop parsing at the end.
@@ -47,18 +46,12 @@ public abstract class BaseIceSoapParserImpl<ReturnType> implements
 		this.rootXPath = rootXPath;
 
 		if (rootXPath.isRelative()) {
-			throw new ClassDefException(
-					"Attempted to use "
-							+ this.getClass().getSimpleName()
-							+ " to parse relative XPath "
-							+ rootXPath.toString()
-							+ ". Please either annotate this class with "
-							+ XMLObject.class.getSimpleName()
-							+ " and an absolute XPath, or make sure to only use it as a field in other "
-							+ XMLObject.class.getSimpleName()
-							+ "-annotated classes rather than passing it directly to a "
-							+ Request.class.getSimpleName() + " or "
-							+ IceSoapParser.class.getSimpleName() + " object");
+			throw new ClassDefException("Attempted to use " + this.getClass().getSimpleName()
+					+ " to parse relative XPath " + rootXPath.toString() + ". Please either annotate this class with "
+					+ XMLObject.class.getSimpleName()
+					+ " and an absolute XPath, or make sure to only use it as a field in other "
+					+ XMLObject.class.getSimpleName() + "-annotated classes rather than passing it directly to a "
+					+ Request.class.getSimpleName() + " or " + IceSoapParser.class.getSimpleName() + " object");
 		}
 	}
 
@@ -100,8 +93,7 @@ public abstract class BaseIceSoapParserImpl<ReturnType> implements
 	 * @return A parsed instance of ReturnType
 	 * @throws XMLParsingException
 	 */
-	protected final ReturnType parse(XPathPullParser parser)
-			throws XMLParsingException {
+	protected final ReturnType parse(XPathPullParser parser) throws XMLParsingException {
 		return parse(parser, null);
 	}
 
@@ -123,8 +115,7 @@ public abstract class BaseIceSoapParserImpl<ReturnType> implements
 	// NOTE: This is the most important bit of code in all of IceSoap, and also
 	// the nastiest - unfortunately this is the best way I've come up with to do
 	// it.
-	protected final ReturnType parse(XPathPullParser parser,
-			ReturnType objectToModify) throws XMLParsingException {
+	protected final ReturnType parse(XPathPullParser parser, ReturnType objectToModify) throws XMLParsingException {
 		boolean isInRootElement = false;
 
 		try {
@@ -138,12 +129,10 @@ public abstract class BaseIceSoapParserImpl<ReturnType> implements
 					// entering or exiting it. If it's entering (START_TAG), set
 					// the isInRootElement flag to true, if exiting set to
 					// false.
-					if (isInRootElement == false
-							&& parser.getEventType() == XPathPullParser.START_TAG
+					if (isInRootElement == false && parser.getEventType() == XPathPullParser.START_TAG
 							&& rootXPath.matches(parser.getCurrentElement())) {
 						isInRootElement = true;
-					} else if (isInRootElement == true
-							&& parser.getEventType() == XPathPullParser.END_TAG
+					} else if (isInRootElement == true && parser.getEventType() == XPathPullParser.END_TAG
 							&& rootXPath.matches(parser.getCurrentElement())) {
 						isInRootElement = false;
 
@@ -153,8 +142,7 @@ public abstract class BaseIceSoapParserImpl<ReturnType> implements
 					}
 
 					if (parser.getEventType() != XPathPullParser.END_TAG
-							&& parser.getEventType() != XPathPullParser.END_DOCUMENT
-							&& isInRootElement) {
+							&& parser.getEventType() != XPathPullParser.END_DOCUMENT && isInRootElement) {
 						// If we're starting a tag and in the root element,
 						// parse this element.
 						objectToModify = parseElement(parser, objectToModify);
@@ -200,8 +188,7 @@ public abstract class BaseIceSoapParserImpl<ReturnType> implements
 	 *             If there's a problem with parsing e.g. invalid xml.
 	 * @throws XmlPullParserException
 	 */
-	private ReturnType parseElement(XPathPullParser pullParser,
-			ReturnType objectToModify) throws XMLParsingException,
+	private ReturnType parseElement(XPathPullParser pullParser, ReturnType objectToModify) throws XMLParsingException,
 			XmlPullParserException {
 		if (objectToModify == null) {
 			objectToModify = initializeParsedObject();
@@ -235,8 +222,8 @@ public abstract class BaseIceSoapParserImpl<ReturnType> implements
 	 * @return Should be the passed in objectToModify object, with changes.
 	 * @throws XMLParsingException
 	 */
-	protected abstract ReturnType onNewTag(XPathPullParser pullParser,
-			ReturnType objectToModify) throws XMLParsingException;
+	protected abstract ReturnType onNewTag(XPathPullParser pullParser, ReturnType objectToModify)
+			throws XMLParsingException;
 
 	/**
 	 * Called every time a text or attribute field is discovered - use
@@ -253,15 +240,17 @@ public abstract class BaseIceSoapParserImpl<ReturnType> implements
 	 * @return objectToModify
 	 * @throws XMLParsingException
 	 */
-	protected abstract ReturnType onText(XPathPullParser pullParser,
-			ReturnType objectToModify) throws XMLParsingException;
+	protected abstract ReturnType onText(XPathPullParser pullParser, ReturnType objectToModify)
+			throws XMLParsingException;
 
 	/**
 	 * Gets the generic type of the contents of a list type... e.g. when passed
 	 * the type of a list that is List<String>, this will return String.
 	 * 
 	 * @param typeToParse
-	 *            The type of the list.
+	 *            The GENERIC type of the list - if calling this with an
+	 *            argument from a {@link Field}, ensure you use
+	 *            {@link Field#getGenericType()}
 	 * @return The class of the list items.
 	 */
 	protected Class<?> getListItemClass(Type typeToParse) {
@@ -286,12 +275,9 @@ public abstract class BaseIceSoapParserImpl<ReturnType> implements
 		if (xPathAnnot != null) {
 			return compileXPath(xPathAnnot, targetClass);
 		} else {
-			throw new ClassDefException("Class " + targetClass.getName()
-					+ " to be created with "
-					+ BaseIceSoapParserImpl.class.getSimpleName()
-					+ " was not annotated with the "
-					+ XMLObject.class.getSimpleName()
-					+ " annotation - please add this annotation");
+			throw new ClassDefException("Class " + targetClass.getName() + " to be created with "
+					+ BaseIceSoapParserImpl.class.getSimpleName() + " was not annotated with the "
+					+ XMLObject.class.getSimpleName() + " annotation - please add this annotation");
 		}
 	}
 
@@ -330,8 +316,7 @@ public abstract class BaseIceSoapParserImpl<ReturnType> implements
 	 *            exception messages).
 	 * @return The last element of the compiled xpath.
 	 */
-	protected final static XPathElement compileXPath(XMLField soapFieldAnnot,
-			Field sourceField) {
+	protected final static XPathElement compileXPath(XMLField soapFieldAnnot, Field sourceField) {
 		return compileXPath(soapFieldAnnot.value(), sourceField.toString());
 	}
 
@@ -346,11 +331,9 @@ public abstract class BaseIceSoapParserImpl<ReturnType> implements
 	 * @return The last element of the compiled xpath.
 	 * @see #compileXPath(String, String)
 	 */
-	protected final static XPathElement compileXPath(XMLObject soapObjectAnnot,
-			Class<?> sourceClass) {
+	protected final static XPathElement compileXPath(XMLObject soapObjectAnnot, Class<?> sourceClass) {
 		if (soapObjectAnnot.value() != "") {
-			return compileXPath(soapObjectAnnot.value(),
-					sourceClass.getSimpleName());
+			return compileXPath(soapObjectAnnot.value(), sourceClass.getSimpleName());
 		}
 
 		// Root xpath is not mandatory
@@ -374,8 +357,7 @@ public abstract class BaseIceSoapParserImpl<ReturnType> implements
 		try {
 			return XPathFactory.getInstance().compile(xpathString);
 		} catch (XPathParsingException e) {
-			throw new ClassDefException("The xpath expression " + xpathString
-					+ " specified for " + source
+			throw new ClassDefException("The xpath expression " + xpathString + " specified for " + source
 					+ " was an invalid XPath expression", e);
 		}
 	}

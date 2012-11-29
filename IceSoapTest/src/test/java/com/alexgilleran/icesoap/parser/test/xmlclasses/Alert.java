@@ -8,21 +8,44 @@ import com.alexgilleran.icesoap.annotation.XMLObject;
 @XMLObject("//Alert")
 public class Alert {
 	@XMLField("Id")
-	private int mId;
+	private int id;
 
 	@XMLField("Contact")
-	private String mContact;
+	private String contact;
 
 	@XMLField("Email")
-	private String mEmail;
+	private String email;
 
 	@XMLField("Phone")
-	private String mPhone;
+	private String phone;
+
+	@XMLField("ActiveGroupsPerEmail/AlertGroup")
+	private List<String> activeGroupsPerEmail;
 
 	@XMLField("ActiveGroupsPerSMS/AlertGroup")
-	private List<String> mActiveGroupsPerSMS;
+	private List<String> activeGroupsPerSMS;
 
-	public List<String> getmActiveGroupsPerSMS() {
-		return mActiveGroupsPerSMS;
+	public List<String> getActiveGroupsPerSMS() {
+		return activeGroupsPerSMS;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public String getContact() {
+		return contact;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public List<String> getActiveGroupsPerEmail() {
+		return activeGroupsPerEmail;
 	}
 }

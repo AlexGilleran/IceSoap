@@ -14,6 +14,8 @@ public interface ItemObserver<E> {
 	/**
 	 * Is called every time a new item is completely parsed.
 	 * 
+	 * Note that this <em>will not</em> be called for null (xsi:nil) items.
+	 * 
 	 * @param item
 	 *            The new item.
 	 */

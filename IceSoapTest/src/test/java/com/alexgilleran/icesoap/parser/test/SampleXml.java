@@ -87,7 +87,7 @@ public class SampleXml {
 			+ "</aw:Items>" + "</aw:PurchaseOrder>";
 
 	private static final String CUSTS_AND_ORDERS = "<?xml version=\"1.0\" encoding=\"utf-8\"?>"
-			+ "<Root xmlns=\"http://www.adventure-works.com\">"
+			+ "<Root xmlns=\"http://www.adventure-works.com\"  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">" 
 			+ "<Customers>"
 			+ "<Customer CustomerID=\"GREAL\">"
 			+ "<CompanyName>Great Lakes Food Market</CompanyName>"
@@ -305,6 +305,7 @@ public class SampleXml {
 			+ "<ShipCountry>USA</ShipCountry>"
 			+ "</ShipInfo>"
 			+ "</Order>"
+			+ "<Order xsi:nil=\"true\" />"  // NIL!
 			+ "<Order>"
 			+ "<CustomerID>GREAL</CustomerID>"
 			+ "<EmployeeID>4</EmployeeID>"
@@ -343,7 +344,7 @@ public class SampleXml {
 	public static final String SMS_ALERT_GROUP_2 = "Peripherals";
 	
 	public static final String LIST_OF_STRINGS_XML =
-		"<alerts>" +
+		"<alerts xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">" +
 		"<Alert>" + 
 			"<Id>1</Id>" +
 			"<Contact>Jonas</Contact>" +
@@ -351,7 +352,7 @@ public class SampleXml {
 			"<Phone>555-555555</Phone>" +
 			"<ActiveGroupsPerEmail>" +
 				"<AlertGroup>Fire</AlertGroup>" +
-				"<AlertGroup>Burglary</AlertGroup>" +
+				"<AlertGroup xsi:nil=\"true\" />" + // NIL!
 				"<AlertGroup>OpenClose</AlertGroup>" +
 			"</ActiveGroupsPerEmail>" +
 			"<ActiveGroupsPerSMS>" +
