@@ -339,6 +339,30 @@ public class SampleXml {
 			+ SF_ATTR_3
 			+ "\">" + SF_VALUE_3 + "</field>" + "</node>";
 
+	public static final String SMS_ALERT_GROUP_1 = "Medical_Emergency";
+	public static final String SMS_ALERT_GROUP_2 = "Peripherals";
+	
+	public static final String LIST_OF_STRINGS_XML =
+		"<alerts>" +
+		"<Alert>" + 
+			"<Id>1</Id>" +
+			"<Contact>Jonas</Contact>" +
+			"<Email>some_email</Email>" +
+			"<Phone>555-555555</Phone>" +
+			"<ActiveGroupsPerEmail>" +
+				"<AlertGroup>Fire</AlertGroup>" +
+				"<AlertGroup>Burglary</AlertGroup>" +
+				"<AlertGroup>OpenClose</AlertGroup>" +
+			"</ActiveGroupsPerEmail>" +
+			"<ActiveGroupsPerSMS>" +
+		        "<AlertGroup>" + SMS_ALERT_GROUP_1 + "</AlertGroup>" +
+		        "<AlertGroup>" + SMS_ALERT_GROUP_2 + "</AlertGroup>" +
+			"</ActiveGroupsPerSMS>" +
+			"<LangId>en</LangId>" +
+		"</Alert>" +
+	"</alerts>";
+
+	
 	public static InputStream getSingleFieldsWithAttributes() {
 		return new ByteArrayInputStream(
 				SINGLE_FIELD_WITH_ATTRIBUTE_XML.getBytes());
@@ -366,5 +390,9 @@ public class SampleXml {
 
 	public static InputStream getProcessorTest() {
 		return new ByteArrayInputStream(PROCESSOR_TEST.getBytes());
+	}
+
+	public static InputStream getListOfStringsXML() {
+		return new ByteArrayInputStream(LIST_OF_STRINGS_XML.getBytes());
 	}
 }

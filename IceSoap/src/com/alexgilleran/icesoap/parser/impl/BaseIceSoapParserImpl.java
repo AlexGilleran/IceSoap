@@ -2,6 +2,8 @@ package com.alexgilleran.icesoap.parser.impl;
 
 import java.io.InputStream;
 import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -253,6 +255,22 @@ public abstract class BaseIceSoapParserImpl<ReturnType> implements
 	 */
 	protected abstract ReturnType onText(XPathPullParser pullParser,
 			ReturnType objectToModify) throws XMLParsingException;
+
+	/**
+	 * Gets the generic type of the contents of a list type... e.g. when passed
+	 * the type of a list that is List<String>, this will return String.
+	 * 
+	 * @param typeToParse
+	 *            The type of the list.
+	 * @return The class of the list items.
+	 */
+	protected Class<?> getListItemClass(Type typeToParse) {
+		ParameterizedType paramType = (ParameterizedType) typeToParse;
+		Type listItemType = paramType.getActualTypeArguments()[0];
+
+		Class<?> listItemClass = (Class<?>) listItemType;
+		return listItemClass;
+	}
 
 	/**
 	 * Retrieves the root xpath from the annotation on the class. Note that this
