@@ -135,7 +135,6 @@ public abstract class BaseIceSoapParserImpl<ReturnType> implements IceSoapParser
 					} else if (isInRootElement == true && parser.getEventType() == XPathPullParser.END_TAG
 							&& rootXPath.matches(parser.getCurrentElement())) {
 						isInRootElement = false;
-
 						// No need to keep parsing with this parser - break out
 						// of the loop.
 						break;

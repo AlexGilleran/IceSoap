@@ -20,7 +20,8 @@ import com.alexgilleran.icesoap.xpath.elements.XPathElement;
  * @param <ListItemType>
  *            The type of each item in the list that will be parsed.
  */
-public class IceSoapListParserImpl<ListItemType> extends BaseIceSoapParserImpl<List<ListItemType>> implements
+public class IceSoapListParserImpl<ListItemType> extends
+		BaseIceSoapParserImpl<List<ListItemType>> implements
 		IceSoapListParser<ListItemType> {
 	/**
 	 * The parser to use for parsing individual items in the list. This is
@@ -54,8 +55,10 @@ public class IceSoapListParserImpl<ListItemType> extends BaseIceSoapParserImpl<L
 	 * @param containingXPath
 	 *            The XPath of the XML element that contains the list.
 	 */
-	public IceSoapListParserImpl(Class<ListItemType> clazz, XPathElement containingXPath) {
-		this(clazz, containingXPath, new IceSoapParserImpl<ListItemType>(clazz, containingXPath));
+	public IceSoapListParserImpl(Class<ListItemType> clazz,
+			XPathElement containingXPath) {
+		this(clazz, containingXPath, new IceSoapParserImpl<ListItemType>(clazz,
+				containingXPath));
 	}
 
 	/**
@@ -69,7 +72,8 @@ public class IceSoapListParserImpl<ListItemType> extends BaseIceSoapParserImpl<L
 	 *            The XPath of the XML element that contains the list.
 	 * @param parser
 	 */
-	protected IceSoapListParserImpl(Class<ListItemType> clazz, XPathElement containingXPath,
+	protected IceSoapListParserImpl(Class<ListItemType> clazz,
+			XPathElement containingXPath,
 			BaseIceSoapParserImpl<ListItemType> parser) {
 		super(containingXPath);
 
@@ -124,17 +128,25 @@ public class IceSoapListParserImpl<ListItemType> extends BaseIceSoapParserImpl<L
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected List<ListItemType> onNewTag(XPathPullParser xmlPullParser, List<ListItemType> listSoFar)
-			throws XMLParsingException {
-		if ((objectXPath == null || objectXPath.matches(xmlPullParser.getCurrentElement()))) {
-			ListItemType object = null;
+	protected List<ListItemType> onNewTag(XPathPullParser xmlPullParser,
+			List<ListItemType> listSoFar) throws XMLParsingException {
+		if ((objectXPath == null || objectXPath.matches(xmlPullParser
+				.getCurrentElement()))) {
+			// Figure out if the element is XSI nil before the parser skips past
+			// the relevant markup in the XML
 			boolean isXsiNil = xmlPullParser.isCurrentValueXsiNil();
 
-			if (!isXsiNil) {
-				object = parser.parse(xmlPullParser);
+			// Even if the value is XSI nil, we still need to use the parser to
+			// skip over the XML element - however because the element is empty
+			// this won't hurt performance much.
+			ListItemType object = parser.parse(xmlPullParser);
+
+			if (isXsiNil) {
+				object = null;
 			}
 
-			if (isXsiNil || object != null) {
+			if (object != null || isXsiNil)
+			{
 				listSoFar.add(object);
 				notifyObservers(object);
 			}
@@ -144,8 +156,8 @@ public class IceSoapListParserImpl<ListItemType> extends BaseIceSoapParserImpl<L
 	}
 
 	@Override
-	protected List<ListItemType> onText(XPathPullParser pullParser, List<ListItemType> objectToModify)
-			throws XMLParsingException {
+	protected List<ListItemType> onText(XPathPullParser pullParser,
+			List<ListItemType> objectToModify) throws XMLParsingException {
 		// Do nothing - list parsers aren't in the business of parsing text (at
 		// least for now).
 		return objectToModify;
