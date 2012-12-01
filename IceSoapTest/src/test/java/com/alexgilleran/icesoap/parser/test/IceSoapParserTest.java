@@ -194,10 +194,10 @@ public class IceSoapParserTest {
 				new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss.sss")
 						.parse("2012-11-29T15:22:17.927"),
 				reply.reqTime);
-		assertEquals(reply.users.get(0).name, "USER_1");
-		assertEquals(reply.users.get(1).name, "USER_2");
-		assertEquals(reply.zones.get(0).id, 1);
-		assertEquals(reply.zones.get(0).id, 2);
+		assertEquals("USER_1", reply.users.get(0).name);
+		assertEquals("USER_2", reply.users.get(1).name);
+		assertEquals(1, reply.zones.get(0).id);
+		assertEquals(2, reply.zones.get(1).id);
 	}
 
 }

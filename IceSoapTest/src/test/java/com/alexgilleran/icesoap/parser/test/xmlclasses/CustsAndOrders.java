@@ -7,9 +7,9 @@ import com.alexgilleran.icesoap.annotation.XMLObject;
 
 @XMLObject("/Root")
 public class CustsAndOrders {
-	@XMLField("/Root/Customers")
+	@XMLField("/Root/Customers/Customer")
 	private List<Customer> customers;
-	@XMLField("Orders")
+	@XMLField("Orders/Order")
 	private List<Order> orders;
 
 	public List<Customer> getCustomers() {
