@@ -5,8 +5,6 @@ package com.alexgilleran.icesoap.parser.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.math.BigDecimal;
@@ -25,17 +23,20 @@ import com.alexgilleran.icesoap.parser.test.xmlclasses.Booleans;
 import com.alexgilleran.icesoap.parser.test.xmlclasses.NilValues;
 import com.alexgilleran.icesoap.parser.test.xmlclasses.ProcessorTest;
 import com.alexgilleran.icesoap.parser.test.xmlclasses.PurchaseOrder;
+import com.alexgilleran.icesoap.parser.test.xmlclasses.Reply;
 
 /**
  * @author Alex Gilleran
  * 
  */
 public class IceSoapParserTest {
-	private final static SimpleDateFormat FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+	private final static SimpleDateFormat FORMAT = new SimpleDateFormat(
+			"yyyy-MM-dd");
 
 	@Test
 	public void testXsiNil() throws XMLParsingException, ParseException {
-		IceSoapParser<NilValues> parser = new IceSoapParserImpl<NilValues>(NilValues.class);
+		IceSoapParser<NilValues> parser = new IceSoapParserImpl<NilValues>(
+				NilValues.class);
 
 		NilValues values = parser.parse(SampleXml.getNilValues());
 
@@ -55,8 +56,10 @@ public class IceSoapParserTest {
 	 * @throws ParseException
 	 */
 	@Test
-	public void testPurchaseOrder() throws XmlPullParserException, XMLParsingException, ParseException {
-		IceSoapParser<PurchaseOrder> parser = new IceSoapParserImpl<PurchaseOrder>(PurchaseOrder.class);
+	public void testPurchaseOrder() throws XmlPullParserException,
+			XMLParsingException, ParseException {
+		IceSoapParser<PurchaseOrder> parser = new IceSoapParserImpl<PurchaseOrder>(
+				PurchaseOrder.class);
 
 		PurchaseOrder po = parser.parse(SampleXml.getPurchaseOrder());
 
@@ -81,7 +84,8 @@ public class IceSoapParserTest {
 		assertEquals(95819, po.getBillingAddress().getZip());
 		assertEquals("USA", po.getBillingAddress().getCountry());
 
-		assertEquals("Please leave packages in shed by driveway.", po.getDeliveryNotes());
+		assertEquals("Please leave packages in shed by driveway.",
+				po.getDeliveryNotes());
 
 		// Item 1
 		assertEquals("872-AA", po.getItem872aa().getPartNumber());
@@ -96,7 +100,8 @@ public class IceSoapParserTest {
 		assertEquals("Baby Monitor", po.getItem926aa().getProductName());
 		assertEquals(2d, po.getItem926aa().getQuantity(), 0d);
 		assertEquals(new BigDecimal("39.98"), po.getItem926aa().getUsPrice());
-		assertEquals(FORMAT.parse("1999-05-21"), po.getItem926aa().getShipDate());
+		assertEquals(FORMAT.parse("1999-05-21"), po.getItem926aa()
+				.getShipDate());
 		assertEquals(null, po.getItem926aa().getComment());
 	}
 
@@ -108,7 +113,8 @@ public class IceSoapParserTest {
 	 */
 	@Test
 	public void testInheritedFields() throws XMLParsingException {
-		IceSoapParser<AddressChild> parser = new IceSoapParserImpl<AddressChild>(AddressChild.class);
+		IceSoapParser<AddressChild> parser = new IceSoapParserImpl<AddressChild>(
+				AddressChild.class);
 
 		AddressChild address = parser.parse(SampleXml.getPurchaseOrder());
 
@@ -127,7 +133,8 @@ public class IceSoapParserTest {
 
 	@Test
 	public void testBooleans() throws XMLParsingException {
-		IceSoapParser<Booleans> parser = new IceSoapParserImpl<Booleans>(Booleans.class);
+		IceSoapParser<Booleans> parser = new IceSoapParserImpl<Booleans>(
+				Booleans.class);
 
 		Booleans address = parser.parse(SampleXml.getBooleans());
 
@@ -140,14 +147,19 @@ public class IceSoapParserTest {
 
 	@Test
 	public void testProcessors() throws XMLParsingException {
-		IceSoapParser<ProcessorTest> parser = new IceSoapParserImpl<ProcessorTest>(ProcessorTest.class);
+		IceSoapParser<ProcessorTest> parser = new IceSoapParserImpl<ProcessorTest>(
+				ProcessorTest.class);
 
 		ProcessorTest testResult = parser.parse(SampleXml.getProcessorTest());
 
-		assertEquals(SampleXml.TYPE_CONVERSION_VALUE, testResult.getConversionTest());
-		assertEquals(SampleXml.CSV_CONVERSION_VALUE_1, testResult.getCsvTest()[0]);
-		assertEquals(SampleXml.CSV_CONVERSION_VALUE_2, testResult.getCsvTest()[1]);
-		assertEquals(SampleXml.CSV_CONVERSION_VALUE_3, testResult.getCsvTest()[2]);
+		assertEquals(SampleXml.TYPE_CONVERSION_VALUE,
+				testResult.getConversionTest());
+		assertEquals(SampleXml.CSV_CONVERSION_VALUE_1,
+				testResult.getCsvTest()[0]);
+		assertEquals(SampleXml.CSV_CONVERSION_VALUE_2,
+				testResult.getCsvTest()[1]);
+		assertEquals(SampleXml.CSV_CONVERSION_VALUE_3,
+				testResult.getCsvTest()[2]);
 	}
 
 	@Test
@@ -165,7 +177,27 @@ public class IceSoapParserTest {
 		assertEquals(null, testResult.getActiveGroupsPerEmail().get(1));
 		assertEquals("OpenClose", testResult.getActiveGroupsPerEmail().get(2));
 
-		assertEquals(SampleXml.SMS_ALERT_GROUP_1, testResult.getActiveGroupsPerSMS().get(0));
-		assertEquals(SampleXml.SMS_ALERT_GROUP_2, testResult.getActiveGroupsPerSMS().get(1));
+		assertEquals(SampleXml.SMS_ALERT_GROUP_1, testResult
+				.getActiveGroupsPerSMS().get(0));
+		assertEquals(SampleXml.SMS_ALERT_GROUP_2, testResult
+				.getActiveGroupsPerSMS().get(1));
 	}
+
+	@Test
+	public void testCrappyLists() throws XMLParsingException, ParseException {
+		IceSoapParser<Reply> parser = new IceSoapParserImpl<Reply>(Reply.class);
+
+		Reply reply = parser.parse(SampleXml.getCrappyList());
+
+		assertEquals(0, reply.exitTo);
+		assertEquals(
+				new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss.sss")
+						.parse("2012-11-29T15:22:17.927"),
+				reply.reqTime);
+		assertEquals(reply.users.get(0).name, "USER_1");
+		assertEquals(reply.users.get(1).name, "USER_2");
+		assertEquals(reply.zones.get(0).id, 1);
+		assertEquals(reply.zones.get(0).id, 2);
+	}
+
 }

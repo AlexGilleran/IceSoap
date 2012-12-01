@@ -11,6 +11,24 @@ import java.io.InputStream;
  * 
  */
 public class SampleXml {
+	private final static String CRAPPY_LIST = 
+	  "<Reply>"
+	+ "<ReqTime>2012-11-29T15:22:17.927</ReqTime>"
+	+ "<Zones>"
+	+ 	"<ID>0</ID>"
+	+ "</Zones>"
+	+ "<Zones>"
+	+ 	"<ID>1</ID>"
+	+ "</Zones>"
+	+ "<Users>"
+	+ 	"<Name>USER_1</Name>"
+	+ "</Users>"
+	+ "<Users>"
+	+ 	"<Name>USER_2</Name>"
+	+ "</Users>"
+	+ "<ExitTO>0</ExitTO>"
+	+ "</Reply>";
+	
 	private final static String NIL_VALUES = "<?xml version=\"1.0\"?>"
 			+ "<NilValues xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">"
 				+ "<char xsi:nil=\"true\" />"
@@ -386,5 +404,9 @@ public class SampleXml {
 
 	public static InputStream getListOfStringsXML() {
 		return new ByteArrayInputStream(LIST_OF_STRINGS_XML.getBytes());
+	}
+	
+	public static InputStream getCrappyList() {
+		return new ByteArrayInputStream(CRAPPY_LIST.getBytes());
 	}
 }
