@@ -11,6 +11,8 @@ public class CustsAndOrders {
 	private List<Customer> customers;
 	@XMLField("Orders/Order")
 	private List<Order> orders;
+	@XMLField("//DifficultField")
+	private String difficultField;
 
 	public List<Customer> getCustomers() {
 		return customers;
@@ -18,5 +20,9 @@ public class CustsAndOrders {
 
 	public List<Order> getOrders() {
 		return orders;
+	}
+
+	public String getDifficultField() {
+		return difficultField;
 	}
 }

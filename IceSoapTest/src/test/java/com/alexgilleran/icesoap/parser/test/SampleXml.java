@@ -139,6 +139,7 @@ public class SampleXml {
 			+ "<Country>USA</Country>"
 			+ "</FullAddress>"
 			+ "</Customer>"
+			+ "<DifficultField>Hello!</DifficultField>"
 			+ "<Customer CustomerID=\"LETSS\">"
 			+ "<CompanyName>Let's Stop N Shop</CompanyName>"
 			+ "<ContactName>Jaime Yorres</ContactName>"
