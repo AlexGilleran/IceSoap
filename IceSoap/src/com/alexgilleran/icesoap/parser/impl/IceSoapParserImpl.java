@@ -8,6 +8,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -79,6 +80,9 @@ public class IceSoapParserImpl<ReturnType> extends
 			Arrays.asList(long.class, float.class, int.class, double.class,
 					boolean.class, BigDecimal.class, String.class, Date.class));
 
+	/** Maintains a cache of instantiated parsers for reuse **/
+	private HashMap<Class<?>, IceSoapParser<?>> parserCache;
+
 	/**
 	 * Instantiates a new parser.
 	 * 
@@ -111,6 +115,32 @@ public class IceSoapParserImpl<ReturnType> extends
 		this.targetClass = targetClass;
 
 		fieldXPaths = getFieldXPaths(targetClass);
+	}
+
+	/**
+	 * Instantiates a new parser. * @param targetClass The class of the object
+	 * to parse.
+	 * 
+	 * @param targetClass
+	 *            The class of the object to parse - note that this must have a
+	 *            zero-arg constructor
+	 * @param rootXPath
+	 *            The root XPath to parse within - the parser will traverse the
+	 *            XML document until it finds the rootXPath and keep parsing
+	 *            until it finds the end, then finish. Note that the xml node
+	 *            described by this {@link XPathElement} can be outside the node
+	 *            specified by the {@link XMLObject} field of targetClass or the
+	 *            same, but cannot be within it.
+	 * @param parserCache
+	 *            A hashmap of parsers, with keys of the classes that they
+	 *            parse.
+	 */
+	public IceSoapParserImpl(Class<ReturnType> targetClass,
+			XPathElement rootXPath,
+			HashMap<Class<?>, IceSoapParser<?>> parserCache) {
+		this(targetClass, rootXPath);
+
+		this.parserCache = parserCache;
 	}
 
 	/**
@@ -347,26 +377,21 @@ public class IceSoapParserImpl<ReturnType> extends
 	 *            The pull parser used to do the parsing.
 	 * @return A new instance of {@link IceSoapParser}
 	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private <ObjectType> BaseIceSoapParserImpl<?> getParserForClass(
 			Type typeToParse, Class<ObjectType> classToParse,
 			XPathPullParser pullParser) {
+		Class<?> classForParser = classToParse;
+
 		if (List.class.isAssignableFrom(classToParse)) {
 			// Class to parse is a list - find out the parameterized type of the
 			// list and create a parser for that, then wrap a ListParser around
 			// it.
-
-			Class<?> listItemClass = getListItemClass(typeToParse);
-
-			return new IceSoapParserImpl(listItemClass);
-
-			// return new IceSoapListParserImpl(listItemClass,
-			// pullParser.getCurrentElement(), itemParser);
-		} else {
-			// The type is not a list - create a parser
-			return new IceSoapParserImpl<ObjectType>(classToParse,
-					pullParser.getCurrentElement());
+			classForParser = getListItemClass(typeToParse);
 		}
+
+		// The type is not a list - create a parser
+		return new IceSoapParserImpl(classForParser,
+				pullParser.getCurrentElement());
 	}
 
 	/**

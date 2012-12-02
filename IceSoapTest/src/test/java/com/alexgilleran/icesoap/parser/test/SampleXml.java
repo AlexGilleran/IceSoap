@@ -51,9 +51,12 @@ public class SampleXml {
 			+ "<CSVConversionTest>" + CSV_CONVERSION_VALUE_1 + "," + CSV_CONVERSION_VALUE_2 + "," + CSV_CONVERSION_VALUE_3 + "</CSVConversionTest>"
 			+ "</ProcessorTest>";
 	
-	private final static String ADDRESS_LIST = "<?xml version=\"1.0\"?>"
-			+ "<InvalidObjectList>" + "<Object />" + "<Object />"
-			+ "<Object />" + "</InvalidObjectList>";
+	private final static String INVALID_OBJECT_LIST = "<?xml version=\"1.0\"?>"
+			+ "<NonAnnotatedObject>"
+			+ "<Object Name=\"Object1\"><id>1</id></Object>"
+			+ "<Object Name=\"Object2\"><id>2</id></Object>"
+			+ "<Object Name=\"Object3\"><id>3</id></Object>"
+			+ "</NonAnnotatedObject>";
 
 	private final static String BOOLEAN_VALUES = "<?xml version=\"1.0\"?>"
 			+ "<Booleans attribute=\"true\">"
@@ -392,7 +395,7 @@ public class SampleXml {
 	}
 
 	public static InputStream getInvalidList() {
-		return new ByteArrayInputStream(ADDRESS_LIST.getBytes());
+		return new ByteArrayInputStream(INVALID_OBJECT_LIST.getBytes());
 	}
 
 	public static InputStream getBooleans() {

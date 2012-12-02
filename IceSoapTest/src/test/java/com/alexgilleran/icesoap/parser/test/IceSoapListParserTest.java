@@ -20,8 +20,8 @@ import com.alexgilleran.icesoap.parser.impl.IceSoapListParserImpl;
 import com.alexgilleran.icesoap.parser.impl.IceSoapParserImpl;
 import com.alexgilleran.icesoap.parser.test.xmlclasses.Customer;
 import com.alexgilleran.icesoap.parser.test.xmlclasses.CustsAndOrders;
-import com.alexgilleran.icesoap.parser.test.xmlclasses.InvalidlyAnnotatedObject;
-import com.alexgilleran.icesoap.parser.test.xmlclasses.InvalidlyAnnotatedObjectList;
+import com.alexgilleran.icesoap.parser.test.xmlclasses.NonAnnotatedObject;
+import com.alexgilleran.icesoap.parser.test.xmlclasses.NonAnnotatedObjectList;
 import com.alexgilleran.icesoap.parser.test.xmlclasses.Order;
 import com.alexgilleran.icesoap.parser.test.xmlclasses.SingleField;
 
@@ -107,25 +107,28 @@ public class IceSoapListParserTest {
 	}
 
 	@Test
-	public void testInvalidlyAnnotatedObject() throws XMLParsingException {
-		try {
-			IceSoapParser<InvalidlyAnnotatedObjectList> parser = new IceSoapParserImpl<InvalidlyAnnotatedObjectList>(
-					InvalidlyAnnotatedObjectList.class);
+	public void testObjectWithListOfNonAnnotatedObjects()
+			throws XMLParsingException {
+		IceSoapParser<NonAnnotatedObjectList> parser = new IceSoapParserImpl<NonAnnotatedObjectList>(
+				NonAnnotatedObjectList.class);
 
-			parser.parse(SampleXml.getInvalidList());
+		NonAnnotatedObjectList objectList = parser.parse(SampleXml
+				.getInvalidList());
 
-			fail();
-		} catch (ClassDefException e) {
-			// we want this to happen
-		}
+		assertEquals(1, objectList.getObjects().get(0).getId());
+		assertEquals("Object1", objectList.getObjects().get(0).getName());
+		assertEquals(2, objectList.getObjects().get(1).getId());
+		assertEquals("Object2", objectList.getObjects().get(1).getName());
+		assertEquals(3, objectList.getObjects().get(2).getId());
+		assertEquals("Object3", objectList.getObjects().get(2).getName());
 	}
 
 	@SuppressWarnings("unused")
 	@Test
 	public void testInvalidlyAnnotatedList() {
 		try {
-			IceSoapListParser<InvalidlyAnnotatedObject> parser = new IceSoapListParserImpl<InvalidlyAnnotatedObject>(
-					InvalidlyAnnotatedObject.class);
+			IceSoapListParser<NonAnnotatedObject> parser = new IceSoapListParserImpl<NonAnnotatedObject>(
+					NonAnnotatedObject.class);
 
 			fail();
 		} catch (ClassDefException e) {
