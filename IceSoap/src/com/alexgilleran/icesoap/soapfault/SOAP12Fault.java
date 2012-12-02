@@ -17,7 +17,7 @@ public class SOAP12Fault {
 	private String code;
 	@XMLField("Code/Subcode/Value")
 	private String subCode;
-	@XMLField("Reason")
+	@XMLField("Reason/Text")
 	private List<FaultReason> reasons;
 	@XMLField("Node")
 	private String node;
