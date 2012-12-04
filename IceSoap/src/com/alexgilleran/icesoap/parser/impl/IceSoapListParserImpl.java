@@ -145,8 +145,7 @@ public class IceSoapListParserImpl<ListItemType> extends
 				object = null;
 			}
 
-			if (object != null || isXsiNil)
-			{
+			if (object != null || isXsiNil) {
 				listSoFar.add(object);
 				notifyObservers(object);
 			}

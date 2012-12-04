@@ -47,6 +47,16 @@ public class XPathRepository<T> {
 	 *         otherwise null.
 	 */
 	public T get(XPathElement key) {
+		XPathRecord<T> record = getFullRecord(key);
+
+		if (record != null) {
+			return record.getValue();
+		} else {
+			return null;
+		}
+	}
+
+	public XPathRecord<T> getFullRecord(XPathElement key) {
 		// Look for the set of elements with this name
 		Set<XPathElement> possibleElements = lookupMap.get(key.getName());
 
@@ -56,7 +66,8 @@ public class XPathRepository<T> {
 
 			for (XPathElement possElement : possibleElements) {
 				if (possElement.matches(key)) {
-					return valueMap.get(possElement);
+					return new XPathRecord<T>(possElement,
+							valueMap.get(possElement));
 				}
 			}
 		}
@@ -97,5 +108,23 @@ public class XPathRepository<T> {
 		Set<XPathElement> elementSet = new HashSet<XPathElement>();
 		elementSet.add(element);
 		return elementSet;
+	}
+
+	public static class XPathRecord<E> {
+		private E value;
+		private XPathElement key;
+
+		public XPathRecord(XPathElement key, E value) {
+			this.key = key;
+			this.value = value;
+		}
+
+		public E getValue() {
+			return value;
+		}
+
+		public XPathElement getKey() {
+			return key;
+		}
 	}
 }

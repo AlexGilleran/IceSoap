@@ -60,9 +60,9 @@ public abstract class BaseIceSoapParserImpl<ReturnType> implements IceSoapParser
 	 * 
 	 * @return The root xpath.
 	 */
-	protected XPathElement getRootXPath() {
-		return rootXPath;
-	}
+	// protected XPathElement getRootXPath() {
+	// return rootXPath;
+	// }
 
 	/**
 	 * {@inheritDoc}
@@ -76,7 +76,7 @@ public abstract class BaseIceSoapParserImpl<ReturnType> implements IceSoapParser
 			throw new XMLParsingException(e);
 		}
 
-		return parse(parser);
+		return parse(parser, null);
 	}
 
 	/**
@@ -359,6 +359,10 @@ public abstract class BaseIceSoapParserImpl<ReturnType> implements IceSoapParser
 			throw new ClassDefException("The xpath expression " + xpathString + " specified for " + source
 					+ " was an invalid XPath expression", e);
 		}
+	}
+
+	protected XPathElement getRootXPath() {
+		return rootXPath;
 	}
 
 }
