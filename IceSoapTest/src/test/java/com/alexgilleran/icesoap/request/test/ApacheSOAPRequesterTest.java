@@ -21,28 +21,34 @@ import org.apache.http.conn.ClientConnectionManager;
 import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.HttpContext;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 import com.alexgilleran.icesoap.envelope.SOAPEnvelope;
 import com.alexgilleran.icesoap.envelope.impl.BaseSOAPEnvelope;
+import com.alexgilleran.icesoap.request.SOAPRequester;
 import com.alexgilleran.icesoap.request.impl.ApacheSOAPRequester;
 
 public class ApacheSOAPRequesterTest {
 	private String encoding;
 	private SOAPEnvelope envelope;
 
-	@Test
-	public void testUtf8Encoding() throws ClientProtocolException, IOException {
+	@Before
+	public void setUp() {
 		encoding = "UTF-8";
 		envelope = buildDifficultEnvelope(encoding);
+	}
 
-		ApacheSOAPRequester requester = new TestApacheSOAPRequester();
+
+	@Test
+	public void testUtf8Encoding() throws ClientProtocolException, IOException {
+
+		SOAPRequester requester = new TestApacheSOAPRequester();
 		requester.doSoapRequest(envelope, "http://target.com");
 	}
 
 	private SOAPEnvelope buildDifficultEnvelope(String encoding) {
-		SOAPEnvelope env = new BaseSOAPEnvelope(encoding,
-				"http://namespace.com");
+		SOAPEnvelope env = new BaseSOAPEnvelope(encoding, "http://namespace.com");
 		env.getBody().addTextNode(null, "ÀÁÂÃÄÅÆÇÈÉýÿĂĄ", "ɑɔʥʣʨʪɯ");
 		env.getBody().addTextNode(null, "ѨѫѯРсшНЌЄЏ", "ڝڠڥکۛ٢شظڧ۞۸");
 		return env;
@@ -65,16 +71,14 @@ public class ApacheSOAPRequesterTest {
 		}
 
 		@Override
-		public HttpResponse execute(HttpUriRequest httpUriRequest)
-				throws IOException, ClientProtocolException {
+		public HttpResponse execute(HttpUriRequest httpUriRequest) throws IOException, ClientProtocolException {
 			HttpPost httpPost = (HttpPost) httpUriRequest;
 
 			// Assert.assertEquals(encoding, httpPost.getEntity()
 			// .getContentEncoding().getValue());
 
 			InputStream is = httpPost.getEntity().getContent();
-			byte[] streamOutput = new byte[(int) httpPost.getEntity()
-					.getContentLength()];
+			byte[] streamOutput = new byte[(int) httpPost.getEntity().getContentLength()];
 
 			int i;
 			do {
@@ -102,53 +106,47 @@ public class ApacheSOAPRequesterTest {
 		}
 
 		@Override
-		public HttpResponse execute(HttpUriRequest arg0, HttpContext arg1)
-				throws IOException, ClientProtocolException {
+		public HttpResponse execute(HttpUriRequest arg0, HttpContext arg1) throws IOException, ClientProtocolException {
 			// Do nothing, we aren't testing this.
 			return null;
 		}
 
 		@Override
-		public HttpResponse execute(HttpHost arg0, HttpRequest arg1)
-				throws IOException, ClientProtocolException {
+		public HttpResponse execute(HttpHost arg0, HttpRequest arg1) throws IOException, ClientProtocolException {
 			// Do nothing, we aren't testing this.
 			return null;
 		}
 
 		@Override
-		public <T> T execute(HttpUriRequest arg0,
-				ResponseHandler<? extends T> arg1) throws IOException,
+		public <T> T execute(HttpUriRequest arg0, ResponseHandler<? extends T> arg1) throws IOException,
 				ClientProtocolException {
 			// Do nothing, we aren't testing this.
 			return null;
 		}
 
 		@Override
-		public HttpResponse execute(HttpHost arg0, HttpRequest arg1,
-				HttpContext arg2) throws IOException, ClientProtocolException {
-			// Do nothing, we aren't testing this.
-			return null;
-		}
-
-		@Override
-		public <T> T execute(HttpUriRequest arg0,
-				ResponseHandler<? extends T> arg1, HttpContext arg2)
-				throws IOException, ClientProtocolException {
-			// Do nothing, we aren't testing this.
-			return null;
-		}
-
-		@Override
-		public <T> T execute(HttpHost arg0, HttpRequest arg1,
-				ResponseHandler<? extends T> arg2) throws IOException,
+		public HttpResponse execute(HttpHost arg0, HttpRequest arg1, HttpContext arg2) throws IOException,
 				ClientProtocolException {
 			// Do nothing, we aren't testing this.
 			return null;
 		}
 
 		@Override
-		public <T> T execute(HttpHost arg0, HttpRequest arg1,
-				ResponseHandler<? extends T> arg2, HttpContext arg3)
+		public <T> T execute(HttpUriRequest arg0, ResponseHandler<? extends T> arg1, HttpContext arg2)
+				throws IOException, ClientProtocolException {
+			// Do nothing, we aren't testing this.
+			return null;
+		}
+
+		@Override
+		public <T> T execute(HttpHost arg0, HttpRequest arg1, ResponseHandler<? extends T> arg2) throws IOException,
+				ClientProtocolException {
+			// Do nothing, we aren't testing this.
+			return null;
+		}
+
+		@Override
+		public <T> T execute(HttpHost arg0, HttpRequest arg1, ResponseHandler<? extends T> arg2, HttpContext arg3)
 				throws IOException, ClientProtocolException {
 			// Do nothing, we aren't testing this.
 			return null;

@@ -28,8 +28,7 @@ import com.alexgilleran.icesoap.request.SOAPRequester;
  * 
  * @param <ResultType>
  */
-public class RequestImpl<ResultType, SOAPFaultType> implements
-		Request<ResultType, SOAPFaultType> {
+public class RequestImpl<ResultType, SOAPFaultType> implements Request<ResultType, SOAPFaultType> {
 
 	/** Unknown response from server */
 	private static final String MESSAGE_ERROR = "Request returned with error code ";
@@ -38,11 +37,9 @@ public class RequestImpl<ResultType, SOAPFaultType> implements
 	/** Status returned if there's an error that returns a soap fault */
 	private static final int HTTP_ERROR_STATUS = 500;
 	/** Message for 500 error exception */
-	private static final String MESSAGE_ERROR_500 = MESSAGE_ERROR
-			+ HTTP_ERROR_STATUS;
+	private static final String MESSAGE_ERROR_500 = MESSAGE_ERROR + HTTP_ERROR_STATUS;
 	/** Message for 500 error exception, including SOAPFault */
-	private static final String MESSAGE_ERROR_500_SOAPFAULT = MESSAGE_ERROR_500
-			+ ". SOAPFault: ";
+	private static final String MESSAGE_ERROR_500_SOAPFAULT = MESSAGE_ERROR_500 + ". SOAPFault: ";
 	/** Message for 500 error exception, if no SOAPFault was parsed */
 	public static final String MESSAGE_ERROR_500_FAILED_SOAPFAULT = MESSAGE_ERROR_500
 			+ ". No returned soapfault could be parsed.";
@@ -104,11 +101,9 @@ public class RequestImpl<ResultType, SOAPFaultType> implements
 	 *            The implementation of {@link SOAPRequester} to use for
 	 *            requests.
 	 */
-	protected RequestImpl(String url, SOAPEnvelope soapEnv, String soapAction,
-			Class<ResultType> resultClass, Class<SOAPFaultType> soapFaultClass,
-			SOAPRequester requester) {
-		this(url, soapEnv, soapAction, new IceSoapParserImpl<ResultType>(
-				resultClass), soapFaultClass, requester);
+	protected RequestImpl(String url, SOAPEnvelope soapEnv, String soapAction, Class<ResultType> resultClass,
+			Class<SOAPFaultType> soapFaultClass, SOAPRequester requester) {
+		this(url, soapEnv, soapAction, new IceSoapParserImpl<ResultType>(resultClass), soapFaultClass, requester);
 	}
 
 	/**
@@ -129,8 +124,7 @@ public class RequestImpl<ResultType, SOAPFaultType> implements
 	 *            The implementation of {@link SOAPRequester} to use for
 	 *            requests.
 	 */
-	protected RequestImpl(String url, SOAPEnvelope soapEnv, String soapAction,
-			IceSoapParser<ResultType> parser,
+	protected RequestImpl(String url, SOAPEnvelope soapEnv, String soapAction, IceSoapParser<ResultType> parser,
 			Class<SOAPFaultType> soapFaultClass, SOAPRequester requester) {
 		this.parser = parser;
 		this.url = url;
@@ -212,8 +206,7 @@ public class RequestImpl<ResultType, SOAPFaultType> implements
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void registerObserver(
-			SOAPObserver<ResultType, SOAPFaultType> observer) {
+	public void registerObserver(SOAPObserver<ResultType, SOAPFaultType> observer) {
 		registry.registerObserver(observer);
 	}
 
@@ -221,8 +214,7 @@ public class RequestImpl<ResultType, SOAPFaultType> implements
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void deregisterObserver(
-			SOAPObserver<ResultType, SOAPFaultType> observer) {
+	public void deregisterObserver(SOAPObserver<ResultType, SOAPFaultType> observer) {
 		registry.deregisterObserver(observer);
 	}
 
@@ -286,8 +278,7 @@ public class RequestImpl<ResultType, SOAPFaultType> implements
 	 *            The object passed on progress reports - not used in the base
 	 *            class.
 	 */
-	protected class RequestTask<ProgressReportObject> extends
-			AsyncTask<Void, ProgressReportObject, ResultType> {
+	protected class RequestTask<ProgressReportObject> extends AsyncTask<Void, ProgressReportObject, ResultType> {
 
 		/**
 		 * {@inheritDoc}
@@ -333,14 +324,21 @@ public class RequestImpl<ResultType, SOAPFaultType> implements
 			}
 
 			if (response != null) {
+				responseData = response.getData();
+				
 				if (debugMode) {
-					responseXML = new Scanner(response.getData()).useDelimiter(
-							"\\A").next();
-					responseData = new ByteArrayInputStream(
-							responseXML.getBytes());
-				} else {
-					responseData = response.getData();
-				}
+					// \\A is a regex for the first character... putting that
+					// into useDelimiter gets us the whole response as a String
+					Scanner responseScanner = new Scanner(responseData).useDelimiter("\\A");
+
+					if (responseScanner.hasNext()) {
+						responseXML = responseScanner.next();
+						responseData = new ByteArrayInputStream(responseXML.getBytes());
+					}
+
+					responseScanner.close();
+
+				} 
 
 				switch (response.getHttpStatus()) {
 				case HTTP_OK_STATUS:
@@ -359,22 +357,19 @@ public class RequestImpl<ResultType, SOAPFaultType> implements
 						// exception and say we couldn't parse one.
 						String soapFaultMessage = null;
 						if (soapFault != null) {
-							soapFaultMessage = MESSAGE_ERROR_500_SOAPFAULT
-									+ soapFault.toString();
+							soapFaultMessage = MESSAGE_ERROR_500_SOAPFAULT + soapFault.toString();
 						} else {
 							soapFaultMessage = MESSAGE_ERROR_500_FAILED_SOAPFAULT;
 						}
 
 						throwException(new SOAPException(soapFaultMessage));
 					} catch (XMLParsingException e) {
-						throwException(new SOAPException(
-								MESSAGE_ERROR_500_FAILED_SOAPFAULT, e));
+						throwException(new SOAPException(MESSAGE_ERROR_500_FAILED_SOAPFAULT, e));
 					}
 
 					break;
 				default:
-					throwException(new SOAPException(MESSAGE_ERROR + " "
-							+ response.getHttpStatus()));
+					throwException(new SOAPException(MESSAGE_ERROR + " " + response.getHttpStatus()));
 				}
 
 			}
@@ -391,10 +386,8 @@ public class RequestImpl<ResultType, SOAPFaultType> implements
 		 * @throws XMLParsingException
 		 *             If an error occurs while parsing.
 		 */
-		private SOAPFaultType parseSoapFault(InputStream soapFaultData)
-				throws XMLParsingException {
-			IceSoapParser<SOAPFaultType> parser = new IceSoapParserImpl<SOAPFaultType>(
-					soapFaultClass);
+		private SOAPFaultType parseSoapFault(InputStream soapFaultData) throws XMLParsingException {
+			IceSoapParser<SOAPFaultType> parser = new IceSoapParserImpl<SOAPFaultType>(soapFaultClass);
 
 			return parser.parse(soapFaultData);
 		}
@@ -404,20 +397,15 @@ public class RequestImpl<ResultType, SOAPFaultType> implements
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result
-				+ ((caughtException == null) ? 0 : caughtException.hashCode());
+		result = prime * result + ((caughtException == null) ? 0 : caughtException.hashCode());
 		result = prime * result + (complete ? 1231 : 1237);
-		result = prime * result
-				+ ((currentTask == null) ? 0 : currentTask.hashCode());
+		result = prime * result + ((currentTask == null) ? 0 : currentTask.hashCode());
 		result = prime * result + (executing ? 1231 : 1237);
 		result = prime * result + ((parser == null) ? 0 : parser.hashCode());
-		result = prime * result
-				+ ((registry == null) ? 0 : registry.hashCode());
-		result = prime * result
-				+ ((this.result == null) ? 0 : this.result.hashCode());
+		result = prime * result + ((registry == null) ? 0 : registry.hashCode());
+		result = prime * result + ((this.result == null) ? 0 : this.result.hashCode());
 		result = prime * result + ((soapEnv == null) ? 0 : soapEnv.hashCode());
-		result = prime * result
-				+ ((soapRequester == null) ? 0 : soapRequester.hashCode());
+		result = prime * result + ((soapRequester == null) ? 0 : soapRequester.hashCode());
 		result = prime * result + ((url == null) ? 0 : url.hashCode());
 		return result;
 	}

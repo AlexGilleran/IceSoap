@@ -149,7 +149,7 @@ public class ApacheSOAPRequester implements SOAPRequester {
 	 * @return An {@link HttpPost} object representing the supplied information.
 	 * @throws UnsupportedEncodingException
 	 */
-	private HttpPost buildPostRequest(String url, SOAPEnvelope envelope,
+	protected HttpPost buildPostRequest(String url, SOAPEnvelope envelope,
 			String soapAction) throws UnsupportedEncodingException {
 		// Create a new HttpClient and Post Header
 		HttpPost httppost = new HttpPost(url);
