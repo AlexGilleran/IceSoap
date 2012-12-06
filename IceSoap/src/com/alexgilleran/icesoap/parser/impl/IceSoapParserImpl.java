@@ -54,8 +54,7 @@ import com.alexgilleran.icesoap.xpath.elements.XPathElement;
  * @param <ReturnType>
  *            The type of the object being parsed.
  */
-public class IceSoapParserImpl<ReturnType> extends
-		BaseIceSoapParserImpl<ReturnType> {
+public class IceSoapParserImpl<ReturnType> extends BaseIceSoapParserImpl<ReturnType> {
 	/** Null character **/
 	private static final char PRIMITIVE_NULL_CHAR = '\0';
 	/** Equivalent to null for primitive number types (0) **/
@@ -77,9 +76,8 @@ public class IceSoapParserImpl<ReturnType> extends
 	 * attribute.
 	 */
 	@SuppressWarnings("unchecked")
-	private static final Set<Class<?>> TEXT_NODE_CLASSES = new HashSet<Class<?>>(
-			Arrays.asList(long.class, float.class, int.class, double.class,
-					boolean.class, BigDecimal.class, String.class, Date.class));
+	private static final Set<Class<?>> TEXT_NODE_CLASSES = new HashSet<Class<?>>(Arrays.asList(long.class, float.class,
+			int.class, double.class, boolean.class, BigDecimal.class, String.class, Date.class));
 
 	/** Maintains a cache of instantiated parsers for reuse **/
 	private HashMap<XPathElement, BaseIceSoapParserImpl<?>> parserCache = new HashMap<XPathElement, BaseIceSoapParserImpl<?>>();
@@ -110,8 +108,7 @@ public class IceSoapParserImpl<ReturnType> extends
 	 *            specified by the {@link XMLObject} field of targetClass or the
 	 *            same, but cannot be within it.
 	 */
-	public IceSoapParserImpl(Class<ReturnType> targetClass,
-			XPathElement rootXPath) {
+	public IceSoapParserImpl(Class<ReturnType> targetClass, XPathElement rootXPath) {
 		super(rootXPath);
 		this.targetClass = targetClass;
 
@@ -148,8 +145,7 @@ public class IceSoapParserImpl<ReturnType> extends
 	 * @param fieldXPaths
 	 *            The repository to add fields too
 	 */
-	private void addXPathFieldsToRepo(Class<?> targetClass,
-			XPathRepository<Field> fieldXPaths) {
+	private void addXPathFieldsToRepo(Class<?> targetClass, XPathRepository<Field> fieldXPaths) {
 		for (Field field : targetClass.getDeclaredFields()) {
 			XMLField xPath = field.getAnnotation(XMLField.class);
 
@@ -160,8 +156,7 @@ public class IceSoapParserImpl<ReturnType> extends
 				if (!xPath.value().equals(XMLField.BLANK_XPATH_STRING)) {
 					// If the XPath has a value specified, compile it
 					lastFieldElement = compileXPath(xPath, field);
-					XPathElement firstFieldElement = lastFieldElement
-							.getFirstElement();
+					XPathElement firstFieldElement = lastFieldElement.getFirstElement();
 
 					if (firstFieldElement.isRelative()) {
 						// If the element is relative, add it to the absolute
@@ -228,24 +223,21 @@ public class IceSoapParserImpl<ReturnType> extends
 	 * @throws XMLParsingException
 	 */
 	@Override
-	protected ReturnType onNewTag(XPathPullParser xmlPullParser,
-			ReturnType objectToModify) throws XMLParsingException {
+	protected ReturnType onNewTag(XPathPullParser xmlPullParser, ReturnType objectToModify) throws XMLParsingException {
 		// Get the field to set and the XPath it was stored against
-		XPathRecord<Field> xPathRecord = fieldXPaths
-				.getFullRecord(xmlPullParser.getCurrentElement());
+		XPathRecord<Field> xPathRecord = fieldXPaths.getFullRecord(xmlPullParser.getCurrentElement());
 
 		if (xPathRecord != null) {
 			Object valueToSet = null;
 
 			if (xmlPullParser.isCurrentValueXsiNil()) {
 				setFieldToNull(objectToModify, xPathRecord.getValue());
-			} else if (needsNewParser(xPathRecord.getValue())) {
+			} else if (needsParser(xPathRecord.getValue())) {
 				// If a new parser is needed and the value is not nil (null),
 				// create the parser and set the value to the parsed value, else
 				// set it to the null above.
 
-				valueToSet = getParserForField(xPathRecord.getValue(),
-						xmlPullParser, xPathRecord.getKey()).parse(
+				valueToSet = getParserForField(xPathRecord.getValue(), xmlPullParser, xPathRecord.getKey()).parse(
 						xmlPullParser);
 				setField(objectToModify, xPathRecord.getValue(), valueToSet);
 			}
@@ -258,8 +250,7 @@ public class IceSoapParserImpl<ReturnType> extends
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected ReturnType onText(XPathPullParser pullParser,
-			ReturnType objectToModify) throws XMLParsingException {
+	protected ReturnType onText(XPathPullParser pullParser, ReturnType objectToModify) throws XMLParsingException {
 		Field fieldToSet = fieldXPaths.get(pullParser.getCurrentElement());
 
 		if (fieldToSet != null) {
@@ -268,16 +259,14 @@ public class IceSoapParserImpl<ReturnType> extends
 				XMLField annotation = fieldToSet.getAnnotation(XMLField.class);
 				boolean hasProcessor = hasProcessor(fieldToSet);
 
-				if (!needsNewParser(fieldToSet)) {
+				if (!needsParser(fieldToSet)) {
 					Object valueToSet;
 
 					if (hasProcessor) {
-						Processor processor = annotation.processor()
-								.newInstance();
+						Processor processor = annotation.processor().newInstance();
 						valueToSet = processor.process(textNodeValue);
 					} else {
-						valueToSet = convertToFieldType(fieldToSet,
-								textNodeValue);
+						valueToSet = convertToFieldType(fieldToSet, textNodeValue);
 					}
 
 					setField(objectToModify, fieldToSet, valueToSet);
@@ -300,19 +289,18 @@ public class IceSoapParserImpl<ReturnType> extends
 	 * @return Whether or not it has a processor.
 	 */
 	protected boolean hasProcessor(Field field) {
-		return !field.getAnnotation(XMLField.class).processor()
-				.equals(Processor.class);
+		return !field.getAnnotation(XMLField.class).processor().equals(Processor.class);
 	}
 
 	/**
-	 * Determines whether a new parser needs to be created - this is true if the
+	 * Determines whether a parser needs to be created - this is true if the
 	 * field's type is not derived from a text node or a list of types derived
 	 * from text nodes and will not be processed with a processor.
 	 * 
 	 * @param fieldToSet
 	 * @return
 	 */
-	private boolean needsNewParser(Field fieldToSet) {
+	private boolean needsParser(Field fieldToSet) {
 		// Is it a text node?
 		if (TEXT_NODE_CLASSES.contains(fieldToSet.getType())) {
 			return false;
@@ -326,8 +314,7 @@ public class IceSoapParserImpl<ReturnType> extends
 
 		// Is it a list of text nodes?
 		if (List.class.isAssignableFrom(fieldToSet.getType())
-				&& TEXT_NODE_CLASSES.contains(getListItemClass(fieldToSet
-						.getGenericType()))) {
+				&& TEXT_NODE_CLASSES.contains(getListItemClass(fieldToSet.getGenericType()))) {
 			return false;
 		}
 
@@ -352,8 +339,7 @@ public class IceSoapParserImpl<ReturnType> extends
 	 *            The pull parser used to do the parsing.
 	 * @return A new instance of {@link IceSoapParser}
 	 */
-	private BaseIceSoapParserImpl<?> getParserForField(Field field,
-			XPathPullParser pullParser, XPathElement fieldXPath) {
+	private BaseIceSoapParserImpl<?> getParserForField(Field field, XPathPullParser pullParser, XPathElement fieldXPath) {
 		Class<?> classForParser = field.getType();
 
 		if (List.class.isAssignableFrom(field.getType())) {
@@ -366,8 +352,7 @@ public class IceSoapParserImpl<ReturnType> extends
 		BaseIceSoapParserImpl<?> parserForClass = parserCache.get(fieldXPath);
 
 		if (parserForClass == null) {
-			parserForClass = new IceSoapParserImpl(classForParser,
-					pullParser.getCurrentElement());
+			parserForClass = new IceSoapParserImpl(classForParser, fieldXPath);
 			parserCache.put(fieldXPath, parserForClass);
 		}
 
@@ -388,8 +373,7 @@ public class IceSoapParserImpl<ReturnType> extends
 		Class<?> type = fieldToSet.getType();
 		Object value = null;
 
-		if (type == int.class || type == long.class || type == double.class
-				|| type == float.class) {
+		if (type == int.class || type == long.class || type == double.class || type == float.class) {
 			value = PRIMITIVE_NULL_NUMBER;
 		} else if (type == boolean.class) {
 			value = false;
@@ -411,8 +395,7 @@ public class IceSoapParserImpl<ReturnType> extends
 	 * @param valueToSet
 	 *            The value to set to the field.
 	 */
-	private void setField(ReturnType objectToModify, Field fieldToSet,
-			Object valueToSet) {
+	private void setField(ReturnType objectToModify, Field fieldToSet, Object valueToSet) {
 		try {
 			boolean isAccessibleBefore = fieldToSet.isAccessible();
 			fieldToSet.setAccessible(true);
@@ -456,8 +439,7 @@ public class IceSoapParserImpl<ReturnType> extends
 	 * @return The string's value as the appropriate type.
 	 * @throws XMLParseException
 	 */
-	private Object convertToFieldType(Field field, String valueString)
-			throws XMLParsingException {
+	private Object convertToFieldType(Field field, String valueString) throws XMLParsingException {
 		XMLField annotation = field.getAnnotation(XMLField.class);
 
 		if (int.class.isAssignableFrom(field.getType())) {
@@ -474,16 +456,11 @@ public class IceSoapParserImpl<ReturnType> extends
 			return new BigDecimal(valueString);
 		} else if (Date.class.isAssignableFrom(field.getType())) {
 			try {
-				return new SimpleDateFormat(annotation.dateFormat())
-						.parse(valueString);
+				return new SimpleDateFormat(annotation.dateFormat()).parse(valueString);
 			} catch (ParseException e) {
-				throw new XMLParsingException(
-						"Encountered date parsing exception when parsing "
-								+ field.toString()
-								+ " with format "
-								+ field.getAnnotation(XMLField.class)
-										.dateFormat() + " for value "
-								+ valueString, e);
+				throw new XMLParsingException("Encountered date parsing exception when parsing " + field.toString()
+						+ " with format " + field.getAnnotation(XMLField.class).dateFormat() + " for value "
+						+ valueString, e);
 			}
 		} else {
 			return valueString;
