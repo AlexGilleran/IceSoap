@@ -43,7 +43,7 @@ public class XPathRepository<T> {
 	 * 
 	 * @param key
 	 *            The element to retrieve an object for.
-	 * @return The object stored against the supplied effort if one is found,
+	 * @return The object stored against the supplied element if one is found,
 	 *         otherwise null.
 	 */
 	public T get(XPathElement key) {
@@ -56,6 +56,17 @@ public class XPathRepository<T> {
 		}
 	}
 
+	/**
+	 * Gets a record containing both the object stored against the supplied
+	 * {@link XPathElement} and the {@link XPathElement} that it was stored
+	 * against (which is usually simpler than the one used for the lookup.
+	 * 
+	 * @param key
+	 *            The element to retrieve an object for.
+	 * @return A {@link XPathRecord} object containing the object stored against
+	 *         the element that the {@link XPathElement} matches as well as the
+	 *         {@link XPathElement} that it was stored against.
+	 */
 	public XPathRecord<T> getFullRecord(XPathElement key) {
 		// Look for the set of elements with this name
 		Set<XPathElement> possibleElements = lookupMap.get(key.getName());
@@ -66,8 +77,7 @@ public class XPathRepository<T> {
 
 			for (XPathElement possElement : possibleElements) {
 				if (possElement.matches(key)) {
-					return new XPathRecord<T>(possElement,
-							valueMap.get(possElement));
+					return new XPathRecord<T>(possElement, valueMap.get(possElement));
 				}
 			}
 		}
@@ -110,6 +120,16 @@ public class XPathRepository<T> {
 		return elementSet;
 	}
 
+	/**
+	 * A simple object containing a value of a supplied generic type, as well as
+	 * an {@link XPathElement} that it's stored against.
+	 * 
+	 * @author Alex Gillean
+	 * 
+	 * @param <E>
+	 *            The type of the value to store against the
+	 *            {@link XPathElement} key.
+	 */
 	public static class XPathRecord<E> {
 		private E value;
 		private XPathElement key;
