@@ -56,22 +56,20 @@ public class ApacheSOAPRequester implements SOAPRequester {
 	private static final int DEFAULT_SOCKET_TIMEOUT = 20000;
 
 	/** Apache HTTP Client for making HTTP requests */
-	private HttpClient httpClient = buildHttpClient();
+	private HttpClient httpClient;
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Response doSoapRequest(SOAPEnvelope envelope, String targetUrl)
-			throws IOException {
+	public Response doSoapRequest(SOAPEnvelope envelope, String targetUrl) throws IOException {
 		return doSoapRequest(envelope, targetUrl, BLANK_SOAP_ACTION);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public Response doSoapRequest(SOAPEnvelope envelope, String targetUrl,
-			String soapAction) throws IOException {
+	public Response doSoapRequest(SOAPEnvelope envelope, String targetUrl, String soapAction) throws IOException {
 		return doHttpPost(buildPostRequest(targetUrl, envelope, soapAction));
 	}
 
@@ -87,12 +85,25 @@ public class ApacheSOAPRequester implements SOAPRequester {
 	 */
 	private Response doHttpPost(HttpPost httpPost) throws IOException {
 		// Execute HTTP Post Request
-		HttpResponse response = httpClient.execute(httpPost);
+		HttpResponse response = getHttpClient().execute(httpPost);
 
 		HttpEntity res = new BufferedHttpEntity(response.getEntity());
 
-		return new Response(res.getContent(), response.getStatusLine()
-				.getStatusCode());
+		return new Response(res.getContent(), response.getStatusLine().getStatusCode());
+	}
+
+	/**
+	 * Gets the HTTP Client for this requester, building one with
+	 * {@link #buildHttpClient()} if one has not already been built.
+	 * 
+	 * @return The instance of {@link HttpClient}
+	 */
+	private HttpClient getHttpClient() {
+		if (httpClient == null) {
+			httpClient = buildHttpClient();
+		}
+
+		return httpClient;
 	}
 
 	/**
@@ -102,15 +113,12 @@ public class ApacheSOAPRequester implements SOAPRequester {
 	 */
 	protected HttpClient buildHttpClient() {
 		HttpParams httpParameters = new BasicHttpParams();
-		HttpConnectionParams.setConnectionTimeout(httpParameters,
-				DEFAULT_CONN_TIMEOUT);
-		HttpConnectionParams.setSoTimeout(httpParameters,
-				DEFAULT_SOCKET_TIMEOUT);
+		HttpConnectionParams.setConnectionTimeout(httpParameters, DEFAULT_CONN_TIMEOUT);
+		HttpConnectionParams.setSoTimeout(httpParameters, DEFAULT_SOCKET_TIMEOUT);
 
 		SchemeRegistry schemeRegistry = getSchemeRegistry();
 
-		ThreadSafeClientConnManager cm = new ThreadSafeClientConnManager(
-				httpParameters, schemeRegistry);
+		ThreadSafeClientConnManager cm = new ThreadSafeClientConnManager(httpParameters, schemeRegistry);
 
 		return new DefaultHttpClient(cm, httpParameters);
 	}
@@ -129,10 +137,8 @@ public class ApacheSOAPRequester implements SOAPRequester {
 	protected SchemeRegistry getSchemeRegistry() {
 		SchemeRegistry schemeRegistry = new SchemeRegistry();
 
-		schemeRegistry.register(new Scheme(HTTP_NAME, PlainSocketFactory
-				.getSocketFactory(), DEFAULT_HTTP_PORT));
-		schemeRegistry.register(new Scheme(HTTPS_NAME, SSLSocketFactory
-				.getSocketFactory(), DEFAULT_HTTPS_PORT));
+		schemeRegistry.register(new Scheme(HTTP_NAME, PlainSocketFactory.getSocketFactory(), DEFAULT_HTTP_PORT));
+		schemeRegistry.register(new Scheme(HTTPS_NAME, SSLSocketFactory.getSocketFactory(), DEFAULT_HTTPS_PORT));
 
 		return schemeRegistry;
 	}
@@ -149,16 +155,15 @@ public class ApacheSOAPRequester implements SOAPRequester {
 	 * @return An {@link HttpPost} object representing the supplied information.
 	 * @throws UnsupportedEncodingException
 	 */
-	protected HttpPost buildPostRequest(String url, SOAPEnvelope envelope,
-			String soapAction) throws UnsupportedEncodingException {
+	protected HttpPost buildPostRequest(String url, SOAPEnvelope envelope, String soapAction)
+			throws UnsupportedEncodingException {
 		// Create a new HttpClient and Post Header
 		HttpPost httppost = new HttpPost(url);
 
 		httppost.setHeader(CONTENT_TYPE_LABEL, XML_CONTENT_TYPE);
 		httppost.setHeader(HEADER_KEY_SOAP_ACTION, soapAction);
 
-		HttpEntity entity = new StringEntity(envelope.toString(),
-				envelope.getEncoding());
+		HttpEntity entity = new StringEntity(envelope.toString(), envelope.getEncoding());
 
 		httppost.setEntity(entity);
 		return httppost;
@@ -169,8 +174,7 @@ public class ApacheSOAPRequester implements SOAPRequester {
 	 */
 	@Override
 	public void setConnectionTimeout(int timeout) {
-		HttpConnectionParams.setConnectionTimeout(httpClient.getParams(),
-				timeout);
+		HttpConnectionParams.setConnectionTimeout(getHttpClient().getParams(), timeout);
 	}
 
 	/**
@@ -178,6 +182,6 @@ public class ApacheSOAPRequester implements SOAPRequester {
 	 */
 	@Override
 	public void setSocketTimeout(int timeout) {
-		HttpConnectionParams.setSoTimeout(httpClient.getParams(), timeout);
+		HttpConnectionParams.setSoTimeout(getHttpClient().getParams(), timeout);
 	}
 }
