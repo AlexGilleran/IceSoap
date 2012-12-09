@@ -22,18 +22,15 @@ public class XPathTest {
 				"/example1/example2/@attribute",//
 				"/example1//example2/@attribute",//
 				"/example1[@predicate=\"value\"]",//
-				"/example1/example2[@predicate=\"value\"]"};
+				"/example1/example2[@predicate=\"value\"]" };
 	}
 
-	protected void testAgainstSelf(String xpathString)
-			throws XPathParsingException {
-		assertTrue(xpathString + " doesn't match itself",
-				matchStrings(xpathString, xpathString));
+	protected void testAgainstSelf(String xpathString) throws XPathParsingException {
+		assertTrue(xpathString + " doesn't match itself", matchStrings(xpathString, xpathString));
 	}
 
-	protected boolean matchStrings(String xpath1, String xpath2)
-			throws XPathParsingException {
-		return XPathFactory.getInstance().compile(xpath1)
-				.matches(XPathFactory.getInstance().compile(xpath2));
+	protected boolean matchStrings(String xpath1, String xpath2) throws XPathParsingException {
+		return XPathFactory.getInstance().compile(xpath1).keySet().iterator().next()
+				.matches(XPathFactory.getInstance().compile(xpath2).keySet().iterator().next());
 	}
 }

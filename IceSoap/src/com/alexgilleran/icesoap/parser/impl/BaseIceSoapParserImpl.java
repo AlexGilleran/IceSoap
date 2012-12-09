@@ -17,6 +17,7 @@ import com.alexgilleran.icesoap.parser.IceSoapParser;
 import com.alexgilleran.icesoap.parser.XPathPullParser;
 import com.alexgilleran.icesoap.request.Request;
 import com.alexgilleran.icesoap.xpath.XPathFactory;
+import com.alexgilleran.icesoap.xpath.XPathRepository;
 import com.alexgilleran.icesoap.xpath.elements.XPathElement;
 
 /**
@@ -29,10 +30,10 @@ import com.alexgilleran.icesoap.xpath.elements.XPathElement;
  */
 public abstract class BaseIceSoapParserImpl<ReturnType> implements IceSoapParser<ReturnType> {
 	/**
-	 * The xpath of the XML node that this parser will parse within - it will
-	 * start parsing at the start of this node, and stop parsing at the end.
+	 * The xpath(s) of the XML node that this parser will parse within - it will
+	 * start parsing at the start of these nodes, and stop parsing at the end.
 	 */
-	private XPathElement rootXPath;
+	private XPathRepository<XPathElement> rootXPaths;
 
 	/**
 	 * Instantiates a new {@link BaseIceSoapParserImpl}
@@ -43,26 +44,56 @@ public abstract class BaseIceSoapParserImpl<ReturnType> implements IceSoapParser
 	 *            parsing until it reaches the end of the xpath.
 	 */
 	protected BaseIceSoapParserImpl(XPathElement rootXPath) {
-		this.rootXPath = rootXPath;
+		XPathRepository<XPathElement> rootXPaths = new XPathRepository<XPathElement>();
+		rootXPaths.put(rootXPath, rootXPath);
 
-		if (rootXPath.isRelative()) {
-			throw new ClassDefException("Attempted to use " + this.getClass().getSimpleName()
-					+ " to parse relative XPath " + rootXPath.toString() + ". Please either annotate this class with "
-					+ XMLObject.class.getSimpleName()
-					+ " and an absolute XPath, or make sure to only use it as a field in other "
-					+ XMLObject.class.getSimpleName() + "-annotated classes rather than passing it directly to a "
-					+ Request.class.getSimpleName() + " or " + IceSoapParser.class.getSimpleName() + " object");
+		this.rootXPaths = rootXPaths;
+
+		checkIfXPathsRelative(rootXPaths);
+	}
+
+	/**
+	 * Instantiates a new {@link BaseIceSoapParserImpl}
+	 * 
+	 * @param rootXPaths
+	 *            The root xpath of the type to parse - the parser will keep
+	 *            traversing the document until it finds this xpath, then keep
+	 *            parsing until it reaches the end of the xpath.
+	 */
+	protected BaseIceSoapParserImpl(XPathRepository<XPathElement> rootXPaths) {
+		this.rootXPaths = rootXPaths;
+
+		checkIfXPathsRelative(rootXPaths);
+	}
+
+	/**
+	 * Checks the supplied XPaths to ensure that none are relative - if they
+	 * are, throws a {@link ClassDefException}.
+	 * 
+	 * @param xpathRepo
+	 *            The {@link XPathRepository} to check.
+	 */
+	private void checkIfXPathsRelative(XPathRepository<XPathElement> xpathRepo) {
+		for (XPathElement xpath : xpathRepo.keySet()) {
+			if (xpath.isRelative()) {
+				throw new ClassDefException("Attempted to use " + this.getClass().getSimpleName()
+						+ " to parse relative XPath " + xpath.toString() + ". Please either annotate this class with "
+						+ XMLObject.class.getSimpleName()
+						+ " and an absolute XPath, or make sure to only use it as a field in other "
+						+ XMLObject.class.getSimpleName() + "-annotated classes rather than passing it directly to a "
+						+ Request.class.getSimpleName() + " or " + IceSoapParser.class.getSimpleName() + " object");
+			}
 		}
 	}
 
 	/**
-	 * Gets the root xpath being parsed
+	 * Gets the root xpaths being parsed
 	 * 
-	 * @return The root xpath.
+	 * @return The root xpaths.
 	 */
-	 protected XPathElement getRootXPath() {
-		 return rootXPath;
-	 }
+	protected XPathRepository<XPathElement> getRootXPaths() {
+		return rootXPaths;
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -120,7 +151,7 @@ public abstract class BaseIceSoapParserImpl<ReturnType> implements IceSoapParser
 
 		try {
 			while (true) {
-				if (rootXPath == null) {
+				if (rootXPaths == null) {
 					// No root xpath is specified - just parse every element
 					// that comes along.
 					objectToModify = parseElement(parser, objectToModify);
@@ -130,10 +161,10 @@ public abstract class BaseIceSoapParserImpl<ReturnType> implements IceSoapParser
 					// the isInRootElement flag to true, if exiting set to
 					// false.
 					if (isInRootElement == false && parser.getEventType() == XPathPullParser.START_TAG
-							&& rootXPath.matches(parser.getCurrentElement())) {
+							&& rootXPaths.contains(parser.getCurrentElement())) {
 						isInRootElement = true;
 					} else if (isInRootElement == true && parser.getEventType() == XPathPullParser.END_TAG
-							&& rootXPath.matches(parser.getCurrentElement())) {
+							&& rootXPaths.contains(parser.getCurrentElement())) {
 						isInRootElement = false;
 						// No need to keep parsing with this parser - break out
 						// of the loop.
@@ -266,9 +297,9 @@ public abstract class BaseIceSoapParserImpl<ReturnType> implements IceSoapParser
 	 * 
 	 * @param targetClass
 	 *            Class to retrieve from
-	 * @return Root xpath or null if none is specified
+	 * @return A repo containing all the possible root XPaths for the class.
 	 */
-	protected static XPathElement retrieveRootXPath(Class<?> targetClass) {
+	protected static XPathRepository<XPathElement> retrieveRootXPath(Class<?> targetClass) {
 		XMLObject xPathAnnot = getXMLObjectAnnot(targetClass);
 
 		if (xPathAnnot != null) {
@@ -305,32 +336,32 @@ public abstract class BaseIceSoapParserImpl<ReturnType> implements IceSoapParser
 	}
 
 	/**
-	 * Gets the xpath from a {@link XMLField} annotation and compiles it to an
-	 * xpath element.
+	 * Gets the xpath from a {@link XMLField} annotation and compiles it to a
+	 * repo of XPathElements
 	 * 
 	 * @param soapFieldAnnot
 	 *            The annotation to get the xpath from .
 	 * @param sourceField
 	 *            The field that the annotation is sourced from (used for
 	 *            exception messages).
-	 * @return The last element of the compiled xpath.
+	 * @return A repo of XPathElements.
 	 */
-	protected final static XPathElement compileXPath(XMLField soapFieldAnnot, Field sourceField) {
+	protected final static XPathRepository<XPathElement> compileXPath(XMLField soapFieldAnnot, Field sourceField) {
 		return compileXPath(soapFieldAnnot.value(), sourceField.toString());
 	}
 
 	/**
-	 * Gets the xpath from a {@link XMLObject} annotation and compiles it to an
-	 * xpath element.
+	 * Gets the xpath from a {@link XMLObject} annotation and compiles it to a
+	 * repository of xpath elements.
 	 * 
 	 * @param soapObjectAnnot
 	 *            The SOAPObject annotation instance to get the xpath from.
 	 * @param sourceClass
 	 *            The class that the annotation comes from.
-	 * @return The last element of the compiled xpath.
+	 * @return A repo of XPathElements
 	 * @see #compileXPath(String, String)
 	 */
-	protected final static XPathElement compileXPath(XMLObject soapObjectAnnot, Class<?> sourceClass) {
+	protected final static XPathRepository<XPathElement> compileXPath(XMLObject soapObjectAnnot, Class<?> sourceClass) {
 		if (soapObjectAnnot.value() != "") {
 			return compileXPath(soapObjectAnnot.value(), sourceClass.getSimpleName());
 		}
@@ -340,8 +371,8 @@ public abstract class BaseIceSoapParserImpl<ReturnType> implements IceSoapParser
 	}
 
 	/**
-	 * Uses the {@link XPathFactory} to compile a String-based XPath to an
-	 * IceSoap {@link XPathElement}.
+	 * Uses the {@link XPathFactory} to compile a String-based XPath to a
+	 * repository of IceSoap {@link XPathElement}.
 	 * 
 	 * @param xpathString
 	 *            The string to parse.
@@ -350,9 +381,9 @@ public abstract class BaseIceSoapParserImpl<ReturnType> implements IceSoapParser
 	 *            message if the parsing hits a problem - for a class this
 	 *            should be the class name, for a field this should be the field
 	 *            class and name ({@link Field#toString()}).
-	 * @return The the last element in the xpath.
+	 * @return A repo of XPathElements
 	 */
-	private static XPathElement compileXPath(String xpathString, String source) {
+	private static XPathRepository<XPathElement> compileXPath(String xpathString, String source) {
 		try {
 			return XPathFactory.getInstance().compile(xpathString);
 		} catch (XPathParsingException e) {

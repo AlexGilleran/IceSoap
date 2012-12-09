@@ -1,5 +1,7 @@
 package com.alexgilleran.icesoap.xpath;
 
+import java.util.List;
+
 import org.jaxen.saxpath.Axis;
 import org.jaxen.saxpath.SAXPathException;
 import org.jaxen.saxpath.XPathHandler;
@@ -48,19 +50,21 @@ public class XPathFactory {
 	}
 
 	/**
-	 * Compiles an XPath expression in String format to IceSoap java object
-	 * format.
+	 * Compiles an XPath expression in String format to IceSoap java object (
+	 * {@link XPathElement}) format.
+	 * 
+	 * Note that this returns a repository of XPathElements in case a union ('|'
+	 * or pipe) operator is encountered - if there isn't one, the list will only
+	 * have one item at index 0.
 	 * 
 	 * @param xpathString
 	 *            The xpath expression to compile, as a String.
-	 * @return The last element of the compiled xpath, as an XPathElement
-	 *         instance.
+	 * @return A repository of the XPaths in the compiled expression.
 	 * @throws XPathParsingException
 	 *             Will occur if the passed XPath is invalid, or uses features
 	 *             that are currently unsupported.
 	 */
-	public XPathElement compile(String xpathString)
-			throws XPathParsingException {
+	public XPathRepository<XPathElement> compile(String xpathString) throws XPathParsingException {
 		try {
 			XPathReader reader = XPathReaderFactory.createReader();
 
@@ -68,7 +72,7 @@ public class XPathFactory {
 			reader.setXPathHandler(handler);
 			reader.parse(xpathString);
 
-			return handler.getXPath();
+			return handler.getXPaths();
 		} catch (SAXPathException e) {
 			// This will occur in the event of an invalid XPath - wrap with an
 			// IceSoap exception type and rethrow
@@ -88,10 +92,19 @@ public class XPathFactory {
 	 */
 	private class IceSoapXPathHandler implements XPathHandler {
 		/**
-		 * Holds the current element currently being passed - this will
-		 * eventually be returned.
+		 * Holds the current element being passed - this will eventually be
+		 * added to the list.
 		 */
 		private XPathElement currentElement;
+		/**
+		 * Repo of XPaths that have been got from the current expression (there
+		 * can be multiple xpaths retrieved from xpath expressions that use the
+		 * | operator)
+		 * 
+		 * We use the {@link XPathRepository} rather than something like a
+		 * {@link List} in order to facilitate faster lookups in the parsers.
+		 */
+		private XPathRepository<XPathElement> xpaths = new XPathRepository<XPathElement>();
 		/** Whether a predicate expression is currently being parsed. */
 		private boolean currentlyParsingPredicate = false;
 		/** Whether we are currently parsing a double-slash XPath element. */
@@ -101,10 +114,13 @@ public class XPathFactory {
 		 * with no slashes.
 		 */
 		private boolean relativeElement = false;
-		/**
-		 * The key (name) of the current predicate.
-		 */
+		/** The key (name) of the current predicate. */
 		private String currentPredicateKey;
+		/**
+		 * Remembers to create a detached element on the next name event rather
+		 * than attaching the new element to the old xpath
+		 */
+		boolean detachNextElement = true;
 
 		/**
 		 * Gets the XPath that has been parsed as a result of calls made to this
@@ -112,8 +128,8 @@ public class XPathFactory {
 		 * 
 		 * @return The final element in the last XPath.
 		 */
-		public XPathElement getXPath() {
-			return currentElement;
+		public XPathRepository<XPathElement> getXPaths() {
+			return xpaths;
 		}
 
 		/**
@@ -125,25 +141,26 @@ public class XPathFactory {
 		 * </p>
 		 */
 		@Override
-		public void startNameStep(int axis, String prefix, String localName)
-				throws SAXPathException {
+		public void startNameStep(int axis, String prefix, String localName) throws SAXPathException {
 			if (currentlyParsingPredicate) {
 				currentPredicateKey = localName;
 			} else {
+				if (detachNextElement) {
+					currentElement = null;
+					detachNextElement = false;
+				}
+
 				// Determine what kind of element we're parsing relative,
 				// singleslash, doubleslash) based on the previously called
 				// methods and the flags they've set.
 				if (allNodeStep) {
-					currentElement = new DoubleSlashXPathElement(localName,
-							currentElement);
+					currentElement = new DoubleSlashXPathElement(localName, currentElement);
 					allNodeStep = false;
 				} else if (relativeElement) {
-					currentElement = new RelativeXPathElement(localName,
-							currentElement);
+					currentElement = new RelativeXPathElement(localName, currentElement);
 					relativeElement = false;
 				} else {
-					currentElement = new SingleSlashXPathElement(localName,
-							currentElement);
+					currentElement = new SingleSlashXPathElement(localName, currentElement);
 				}
 
 				if (axis == Axis.ATTRIBUTE) {
@@ -210,6 +227,37 @@ public class XPathFactory {
 			// Flag this so we know to create a relative element for the first
 			// element.
 			relativeElement = true;
+		}
+
+		@Override
+		public void startAllNodeStep(int arg0) throws SAXPathException {
+			allNodeStep = true;
+		}
+
+		@Override
+		public void endXPath() throws SAXPathException {
+			xpaths.put(currentElement, currentElement);
+		}
+
+		/**
+		 * {@inheritDoc}
+		 * 
+		 * Called when a '|' operator is started.
+		 */
+		@Override
+		public void startUnionExpr() throws SAXPathException {
+			// For some reason this gets called not only on '|' operators but
+			// also right at the beginning and when predicates are encountered -
+			// filter these events out.
+			if (currentElement != null && !currentlyParsingPredicate) {
+				detachNextElement = true;
+				xpaths.put(currentElement, currentElement);
+			}
+		}
+
+		@Override
+		public void endUnionExpr(boolean create) throws SAXPathException {
+			// Currently unused.
 		}
 
 		@Override
@@ -314,18 +362,6 @@ public class XPathFactory {
 		}
 
 		@Override
-		public void endUnionExpr(boolean arg0) throws SAXPathException {
-			// Currently unused
-
-		}
-
-		@Override
-		public void endXPath() throws SAXPathException {
-			// Currently unused
-
-		}
-
-		@Override
 		public void number(int arg0) throws SAXPathException {
 			// Currently unused
 
@@ -341,11 +377,6 @@ public class XPathFactory {
 		public void startAdditiveExpr() throws SAXPathException {
 			// Currently unused
 
-		}
-
-		@Override
-		public void startAllNodeStep(int arg0) throws SAXPathException {
-			allNodeStep = true;
 		}
 
 		@Override
@@ -371,8 +402,7 @@ public class XPathFactory {
 		}
 
 		@Override
-		public void startFunction(String arg0, String arg1)
-				throws SAXPathException {
+		public void startFunction(String arg0, String arg1) throws SAXPathException {
 		}
 
 		@Override
@@ -394,8 +424,7 @@ public class XPathFactory {
 		}
 
 		@Override
-		public void startProcessingInstructionNodeStep(int arg0, String arg1)
-				throws SAXPathException {
+		public void startProcessingInstructionNodeStep(int arg0, String arg1) throws SAXPathException {
 		}
 
 		@Override
@@ -416,20 +445,13 @@ public class XPathFactory {
 		}
 
 		@Override
-		public void startUnionExpr() throws SAXPathException {
-			// Currently unused
-
-		}
-
-		@Override
 		public void startXPath() throws SAXPathException {
 			// Currently unused
 
 		}
 
 		@Override
-		public void variableReference(String arg0, String arg1)
-				throws SAXPathException {
+		public void variableReference(String arg0, String arg1) throws SAXPathException {
 			// Currently unused
 		}
 

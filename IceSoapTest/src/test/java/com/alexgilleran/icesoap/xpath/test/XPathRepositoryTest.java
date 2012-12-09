@@ -44,15 +44,15 @@ public class XPathRepositoryTest extends XPathTest {
 		final String xpath2 = "/xpath1/xpath2[@predicate=\"wrongvalue\"]";
 		final String xpath3 = "/xpath1/xpath2[@predicate=\"rightvalue\"]";
 
-		repo.put(XPathFactory.getInstance().compile(xpath1), xpath1);
-		repo.put(XPathFactory.getInstance().compile(xpath2), xpath2);
-		repo.put(XPathFactory.getInstance().compile(xpath3), xpath3);
+		repo.put(XPathFactory.getInstance().compile(xpath1).keySet().iterator().next(), xpath1);
+		repo.put(XPathFactory.getInstance().compile(xpath2).keySet().iterator().next(), xpath2);
+		repo.put(XPathFactory.getInstance().compile(xpath3).keySet().iterator().next(), xpath3);
 
-		assertEquals(repo.get(XPathFactory.getInstance().compile(xpath1)),
+		assertEquals(repo.get(XPathFactory.getInstance().compile(xpath1).keySet().iterator().next()),
 				xpath1);
-		assertEquals(repo.get(XPathFactory.getInstance().compile(xpath2)),
+		assertEquals(repo.get(XPathFactory.getInstance().compile(xpath2).keySet().iterator().next()),
 				xpath2);
-		assertEquals(repo.get(XPathFactory.getInstance().compile(xpath3)),
+		assertEquals(repo.get(XPathFactory.getInstance().compile(xpath3).keySet().iterator().next()),
 				xpath3);
 	}
 
@@ -61,14 +61,14 @@ public class XPathRepositoryTest extends XPathTest {
 		final String nodeXPath = "/xpath1/xpath";
 		final String attributeXPath = "/xpath1/@xpath";
 
-		repo.put(XPathFactory.getInstance().compile(nodeXPath), nodeXPath);
-		repo.put(XPathFactory.getInstance().compile(attributeXPath),
+		repo.put(XPathFactory.getInstance().compile(nodeXPath).keySet().iterator().next(), nodeXPath);
+		repo.put(XPathFactory.getInstance().compile(attributeXPath).keySet().iterator().next(),
 				attributeXPath);
 
-		assertEquals(repo.get(XPathFactory.getInstance().compile(nodeXPath)),
+		assertEquals(repo.get(XPathFactory.getInstance().compile(nodeXPath).keySet().iterator().next()),
 				nodeXPath);
 		assertEquals(
-				repo.get(XPathFactory.getInstance().compile(attributeXPath)),
+				repo.get(XPathFactory.getInstance().compile(attributeXPath).keySet().iterator().next()),
 				attributeXPath);
 	}
 
@@ -76,9 +76,9 @@ public class XPathRepositoryTest extends XPathTest {
 			throws XPathParsingException {
 		repo = new XPathRepository<String>();
 		XPathElement xpathElementToPut = XPathFactory.getInstance().compile(
-				xpathToPut);
+				xpathToPut).keySet().iterator().next();
 		XPathElement xpathElementToGet = XPathFactory.getInstance().compile(
-				xpathToGet);
+				xpathToGet).keySet().iterator().next();
 
 		assertNull(repo.get(xpathElementToGet));
 		repo.put(xpathElementToPut, xpathToGet);

@@ -101,15 +101,34 @@ public class IceSoapParserImpl<ReturnType> extends BaseIceSoapParserImpl<ReturnT
 	 *            The class of the object to parse - note that this must have a
 	 *            zero-arg constructor
 	 * @param rootXPath
-	 *            The root XPath to parse within - the parser will traverse the
-	 *            XML document until it finds the rootXPath and keep parsing
-	 *            until it finds the end, then finish. Note that the xml node
+	 *            A root XPath to parse within - the parser will traverse the
+	 *            XML document until it finds this XPath and keep parsing until
+	 *            it finds the end, then finish. Note that the xml node
 	 *            described by this {@link XPathElement} can be outside the node
 	 *            specified by the {@link XMLObject} field of targetClass or the
 	 *            same, but cannot be within it.
 	 */
 	public IceSoapParserImpl(Class<ReturnType> targetClass, XPathElement rootXPath) {
-		super(rootXPath);
+		this(targetClass, new XPathRepository<XPathElement>(rootXPath, rootXPath));
+	}
+
+	/**
+	 * Instantiates a new parser. * @param targetClass The class of the object
+	 * to parse.
+	 * 
+	 * @param targetClass
+	 *            The class of the object to parse - note that this must have a
+	 *            zero-arg constructor
+	 * @param rootXPaths
+	 *            The root XPaths to parse within - the parser will traverse the
+	 *            XML document until it finds the rootXPaths and keep parsing
+	 *            until it finds the end, then finish. Note that the xml node
+	 *            described by this {@link XPathElement} can be outside the node
+	 *            specified by the {@link XMLObject} field of targetClass or the
+	 *            same, but cannot be within it.
+	 */
+	public IceSoapParserImpl(Class<ReturnType> targetClass, XPathRepository<XPathElement> rootXPaths) {
+		super(rootXPaths);
 		this.targetClass = targetClass;
 
 		fieldXPaths = getFieldXPaths(targetClass);
@@ -149,26 +168,49 @@ public class IceSoapParserImpl<ReturnType> extends BaseIceSoapParserImpl<ReturnT
 		for (Field field : targetClass.getDeclaredFields()) {
 			XMLField xPath = field.getAnnotation(XMLField.class);
 
-			if (xPath != null) {
-				// Annotation is present - get the XPath from it
-				XPathElement lastFieldElement;
+			if (xPath == null) {
+				// Annotation is not present: do nothing.
+				return;
+			}
 
-				if (!xPath.value().equals(XMLField.BLANK_XPATH_STRING)) {
-					// If the XPath has a value specified, compile it
-					lastFieldElement = compileXPath(xPath, field);
-					XPathElement firstFieldElement = lastFieldElement.getFirstElement();
+			XPathRepository<XPathElement> lastFieldElements;
 
-					if (firstFieldElement.isRelative()) {
-						// If the element is relative, add it to the absolute
-						// XPath of its enclosing object.
-						firstFieldElement.setPreviousElement(getRootXPath());
-					}
-				} else {
-					// XPath has no value - set to the root value
-					lastFieldElement = getRootXPath();
+			if (!xPath.value().equals(XMLField.BLANK_XPATH_STRING)) {
+				// If the XPath has a value specified, compile it
+				lastFieldElements = compileXPath(xPath, field);
+
+				addRootToRelativeXPaths(lastFieldElements);
+			} else {
+				// XPath has no value - set to the root value
+				lastFieldElements = getRootXPaths();
+			}
+
+			for (XPathElement element : lastFieldElements.keySet()) {
+				fieldXPaths.put(element, field);
+			}
+		}
+
+	}
+
+	/**
+	 * Go through the supplied XPaths and for relative ones, add the root XPaths
+	 * to the front of them so they're no longer relative and can be matched
+	 * against.
+	 * 
+	 * @param xpaths
+	 *            An {@link XPathRepository} of the xpaths to check and modify
+	 *            if necessary.
+	 */
+	private void addRootToRelativeXPaths(XPathRepository<XPathElement> xpaths) {
+		for (XPathElement thisLastElement : xpaths.keySet()) {
+			XPathElement firstFieldElement = thisLastElement.getFirstElement();
+
+			if (firstFieldElement.isRelative()) {
+				// If the element is relative, add it to the
+				// absolute XPath of its enclosing objects.
+				for (XPathElement rootXPath : getRootXPaths().keySet()) {
+					firstFieldElement.setPreviousElement(rootXPath);
 				}
-
-				fieldXPaths.put(lastFieldElement, field);
 			}
 		}
 	}

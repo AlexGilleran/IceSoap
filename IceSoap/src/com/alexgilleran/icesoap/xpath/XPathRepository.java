@@ -39,7 +39,27 @@ public class XPathRepository<T> {
 	private Map<XPathElement, T> valueMap = new HashMap<XPathElement, T>();
 
 	/**
-	 * Gets the object stored against the supplied XPathElement.
+	 * Instantiates a new {@link XPathRepository} with no data.
+	 */
+	public XPathRepository() {
+		// zero-arg
+	}
+
+	/**
+	 * Instantiates a new {@link XPathRepository}, adding the provided key and
+	 * value.
+	 * 
+	 * @param key
+	 *            They key of an initial value to add
+	 * @param value
+	 *            An initial value to add.
+	 */
+	public XPathRepository(XPathElement key, T value) {
+		this.put(key, value);
+	}
+
+	/**
+	 * Gets the first object stored against the supplied XPathElement.
 	 * 
 	 * @param key
 	 *            The element to retrieve an object for.
@@ -54,6 +74,32 @@ public class XPathRepository<T> {
 		} else {
 			return null;
 		}
+	}
+
+	/**
+	 * Returns true of an element exists within the repo that matches the
+	 * supplied key.
+	 * 
+	 * @param key
+	 *            The key to match
+	 * @return Whether it's contained.
+	 */
+	public boolean contains(XPathElement key) {
+		if (get(key) != null) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	/**
+	 * Gets all the XPathElements with values stores against them in the
+	 * repository.
+	 * 
+	 * @return The set of XPathElements within the repository.
+	 */
+	public Set<XPathElement> keySet() {
+		return valueMap.keySet();
 	}
 
 	/**
@@ -147,4 +193,41 @@ public class XPathRepository<T> {
 			return key;
 		}
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((lookupMap == null) ? 0 : lookupMap.hashCode());
+		result = prime * result + ((valueMap == null) ? 0 : valueMap.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		XPathRepository<?> other = (XPathRepository<?>) obj;
+		if (lookupMap == null) {
+			if (other.lookupMap != null)
+				return false;
+		} else if (!lookupMap.equals(other.lookupMap))
+			return false;
+		if (valueMap == null) {
+			if (other.valueMap != null)
+				return false;
+		} else if (!valueMap.equals(other.valueMap))
+			return false;
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		return valueMap.toString();
+	}
+
 }
