@@ -20,6 +20,7 @@ import com.alexgilleran.icesoap.xpath.elements.XPathElement;
 public abstract class BaseXPathElement implements XPathElement {
 	/** The name of the element */
 	private String name;
+
 	/** The previous element */
 	private XPathElement previousElement;
 	/**
@@ -112,8 +113,7 @@ public abstract class BaseXPathElement implements XPathElement {
 				return false;
 			}
 
-			if (!this.predicates.get(predicateKey).equals(
-					otherElement.getPredicate(predicateKey))) {
+			if (!this.predicates.get(predicateKey).equals(otherElement.getPredicate(predicateKey))) {
 				return false;
 			}
 		}
@@ -144,8 +144,7 @@ public abstract class BaseXPathElement implements XPathElement {
 
 			while (it.hasNext()) {
 				String key = it.next();
-				builder.append("@").append(key).append("=").append("\"")
-						.append(predicates.get(key)).append("\"");
+				builder.append("@").append(key).append("=").append("\"").append(predicates.get(key)).append("\"");
 
 				if (it.hasNext()) {
 					builder.append(" and ");
@@ -197,15 +196,27 @@ public abstract class BaseXPathElement implements XPathElement {
 		return thisElement;
 	}
 
+	protected void copyInto(BaseXPathElement newElement) {
+		newElement.name = name;
+
+		if (previousElement != null) {
+			newElement.previousElement = previousElement.clone();
+		}
+
+		for (String key : predicates.keySet()) {
+			newElement.predicates.put(new String(key), new String(predicates.get(key)));
+		}
+	}
+
+	public abstract BaseXPathElement clone();
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		result = prime * result
-				+ ((predicates == null) ? 0 : predicates.hashCode());
-		result = prime * result
-				+ ((previousElement == null) ? 0 : previousElement.hashCode());
+		result = prime * result + ((predicates == null) ? 0 : predicates.hashCode());
+		result = prime * result + ((previousElement == null) ? 0 : previousElement.hashCode());
 		return result;
 	}
 

@@ -15,7 +15,7 @@ package com.alexgilleran.icesoap.xpath.elements;
  * @author Alex Gilleran
  * 
  */
-public interface XPathElement {
+public interface XPathElement extends Cloneable {
 	/**
 	 * Gets the name of the element. E.g.
 	 * 
@@ -27,6 +27,8 @@ public interface XPathElement {
 	 * 
 	 */
 	String getName();
+	
+	XPathElement clone();
 
 	/**
 	 * Gets the value of a predicate with the name passed in.

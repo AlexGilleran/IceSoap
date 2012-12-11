@@ -206,10 +206,14 @@ public class IceSoapParserImpl<ReturnType> extends BaseIceSoapParserImpl<ReturnT
 			XPathElement firstFieldElement = thisLastElement.getFirstElement();
 
 			if (firstFieldElement.isRelative()) {
+				xpaths.remove(firstFieldElement);
+
 				// If the element is relative, add it to the
 				// absolute XPath of its enclosing objects.
 				for (XPathElement rootXPath : getRootXPaths().keySet()) {
-					firstFieldElement.setPreviousElement(rootXPath);
+					XPathElement element = firstFieldElement.clone();
+					element.getFirstElement().setPreviousElement(rootXPath);
+					xpaths.put(element, element);
 				}
 			}
 		}

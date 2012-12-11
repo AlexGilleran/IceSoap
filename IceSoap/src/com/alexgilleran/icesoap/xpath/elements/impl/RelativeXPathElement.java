@@ -62,6 +62,21 @@ public class RelativeXPathElement extends SingleSlashXPathElement {
 		super.setPreviousElement(element);
 	}
 
+	@Override
+	public RelativeXPathElement clone() {
+		XPathElement previousElement = getPreviousElement();
+
+		if (previousElement != null) {
+			previousElement = previousElement.clone();
+		}
+
+		RelativeXPathElement newElement = new RelativeXPathElement(getName(), previousElement);
+
+		copyInto(newElement);
+
+		return newElement;
+	}
+
 	/**
 	 * {@inheritDoc}
 	 * 
@@ -72,10 +87,8 @@ public class RelativeXPathElement extends SingleSlashXPathElement {
 	@Override
 	public boolean matches(XPathElement otherElement) {
 		if (isFirstElement()) {
-			throw new RuntimeException(
-					"Attempt was made to match against relative xpath '"
-							+ this.toString()
-							+ "' when the xpath was not attached to an absolute xpath.");
+			throw new RuntimeException("Attempt was made to match against relative xpath '" + this.toString()
+					+ "' when the xpath was not attached to an absolute xpath.");
 		}
 
 		// If we get to here, there is a previous element so this should

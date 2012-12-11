@@ -48,12 +48,9 @@ public class XPathRepositoryTest extends XPathTest {
 		repo.put(XPathFactory.getInstance().compile(xpath2).keySet().iterator().next(), xpath2);
 		repo.put(XPathFactory.getInstance().compile(xpath3).keySet().iterator().next(), xpath3);
 
-		assertEquals(repo.get(XPathFactory.getInstance().compile(xpath1).keySet().iterator().next()),
-				xpath1);
-		assertEquals(repo.get(XPathFactory.getInstance().compile(xpath2).keySet().iterator().next()),
-				xpath2);
-		assertEquals(repo.get(XPathFactory.getInstance().compile(xpath3).keySet().iterator().next()),
-				xpath3);
+		assertEquals(repo.get(XPathFactory.getInstance().compile(xpath1).keySet().iterator().next()), xpath1);
+		assertEquals(repo.get(XPathFactory.getInstance().compile(xpath2).keySet().iterator().next()), xpath2);
+		assertEquals(repo.get(XPathFactory.getInstance().compile(xpath3).keySet().iterator().next()), xpath3);
 	}
 
 	@Test
@@ -62,23 +59,38 @@ public class XPathRepositoryTest extends XPathTest {
 		final String attributeXPath = "/xpath1/@xpath";
 
 		repo.put(XPathFactory.getInstance().compile(nodeXPath).keySet().iterator().next(), nodeXPath);
-		repo.put(XPathFactory.getInstance().compile(attributeXPath).keySet().iterator().next(),
-				attributeXPath);
+		repo.put(XPathFactory.getInstance().compile(attributeXPath).keySet().iterator().next(), attributeXPath);
 
-		assertEquals(repo.get(XPathFactory.getInstance().compile(nodeXPath).keySet().iterator().next()),
-				nodeXPath);
-		assertEquals(
-				repo.get(XPathFactory.getInstance().compile(attributeXPath).keySet().iterator().next()),
+		assertEquals(repo.get(XPathFactory.getInstance().compile(nodeXPath).keySet().iterator().next()), nodeXPath);
+		assertEquals(repo.get(XPathFactory.getInstance().compile(attributeXPath).keySet().iterator().next()),
 				attributeXPath);
 	}
 
-	private void testPut(String xpathToGet, String xpathToPut)
-			throws XPathParsingException {
+	@Test
+	public void testRemove() throws XPathParsingException {
+		XPathElement xpath1 = XPathFactory.getInstance().compile("//this/is/a/test").keySet().iterator().next();
+		XPathElement xpath2 = XPathFactory.getInstance().compile("/blah/herp").keySet().iterator().next();
+		XPathElement xpath3 = XPathFactory.getInstance().compile("//test").keySet().iterator().next();
+
+		repo.put(xpath1, xpath1.toString());
+		repo.put(xpath2, xpath2.toString());
+		repo.put(xpath3, xpath3.toString());
+
+		assertEquals(3, repo.size());
+
+		repo.remove(xpath2);
+
+		assertEquals(2, repo.size());
+
+		assertEquals(xpath1.toString(), repo.get(xpath1));
+		assertNull(repo.get(xpath2));
+		assertEquals(xpath3.toString(), repo.get(xpath3));
+	}
+
+	private void testPut(String xpathToGet, String xpathToPut) throws XPathParsingException {
 		repo = new XPathRepository<String>();
-		XPathElement xpathElementToPut = XPathFactory.getInstance().compile(
-				xpathToPut).keySet().iterator().next();
-		XPathElement xpathElementToGet = XPathFactory.getInstance().compile(
-				xpathToGet).keySet().iterator().next();
+		XPathElement xpathElementToPut = XPathFactory.getInstance().compile(xpathToPut).keySet().iterator().next();
+		XPathElement xpathElementToGet = XPathFactory.getInstance().compile(xpathToGet).keySet().iterator().next();
 
 		assertNull(repo.get(xpathElementToGet));
 		repo.put(xpathElementToPut, xpathToGet);

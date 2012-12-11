@@ -41,8 +41,7 @@ public class SingleSlashXPathElement extends BaseXPathElement {
 		if (!this.isFirstElement()) {
 			// Previous element is not null and this isn't a '//' element -
 			// see if the previous elements of both xpaths match
-			return getPreviousElement().matches(
-					otherElement.getPreviousElement());
+			return getPreviousElement().matches(otherElement.getPreviousElement());
 		}
 
 		return true;
@@ -54,5 +53,20 @@ public class SingleSlashXPathElement extends BaseXPathElement {
 	@Override
 	public String getPrefix() {
 		return PREFIX;
+	}
+
+	@Override
+	public SingleSlashXPathElement clone() {
+		XPathElement previousElement = getPreviousElement();
+
+		if (previousElement != null) {
+			previousElement = previousElement.clone();
+		}
+
+		SingleSlashXPathElement newElement = new SingleSlashXPathElement(getName(), previousElement);
+
+		copyInto(newElement);
+
+		return newElement;
 	}
 }

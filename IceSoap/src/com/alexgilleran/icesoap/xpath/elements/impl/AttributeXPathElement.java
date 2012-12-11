@@ -113,8 +113,7 @@ public class AttributeXPathElement implements XPathElement {
 	 */
 	@Override
 	public StringBuilder toStringBuilder() {
-		return wrappedElement.getPreviousElement().toStringBuilder()
-				.append(this.getPrefix()).append(this.getName());
+		return wrappedElement.getPreviousElement().toStringBuilder().append(this.getPrefix()).append(this.getName());
 	}
 
 	/**
@@ -145,8 +144,7 @@ public class AttributeXPathElement implements XPathElement {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result
-				+ ((wrappedElement == null) ? 0 : wrappedElement.hashCode());
+		result = prime * result + ((wrappedElement == null) ? 0 : wrappedElement.hashCode());
 		return result;
 	}
 
@@ -173,5 +171,12 @@ public class AttributeXPathElement implements XPathElement {
 	@Override
 	public XPathElement getFirstElement() {
 		return wrappedElement.getFirstElement();
+	}
+
+	@Override
+	public AttributeXPathElement clone() {
+		AttributeXPathElement newElement = new AttributeXPathElement(wrappedElement.clone());
+
+		return newElement;
 	}
 }

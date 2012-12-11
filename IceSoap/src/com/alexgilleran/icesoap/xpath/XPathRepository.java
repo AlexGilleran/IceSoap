@@ -76,6 +76,29 @@ public class XPathRepository<T> {
 		}
 	}
 
+	public T remove(XPathElement key) {
+		XPathRecord<T> record = getFullRecord(key);
+
+		if (record != null) {
+			valueMap.remove(record.getKey());
+
+			Set<XPathElement> elements = lookupMap.get(record.getKey().getName());
+			elements.remove(record.getKey());
+
+			if (elements.isEmpty()) {
+				lookupMap.remove(record.getKey());
+			}
+
+			return record.getValue();
+		} else {
+			return null;
+		}
+	}
+
+	public int size() {
+		return valueMap.size();
+	}
+
 	/**
 	 * Returns true of an element exists within the repo that matches the
 	 * supplied key.
