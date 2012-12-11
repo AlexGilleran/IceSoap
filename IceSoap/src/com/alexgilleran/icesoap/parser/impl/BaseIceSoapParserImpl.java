@@ -44,12 +44,7 @@ public abstract class BaseIceSoapParserImpl<ReturnType> implements IceSoapParser
 	 *            parsing until it reaches the end of the xpath.
 	 */
 	protected BaseIceSoapParserImpl(XPathElement rootXPath) {
-		XPathRepository<XPathElement> rootXPaths = new XPathRepository<XPathElement>();
-		rootXPaths.put(rootXPath, rootXPath);
-
-		this.rootXPaths = rootXPaths;
-
-		checkIfXPathsRelative(rootXPaths);
+		this(new XPathRepository<XPathElement>(rootXPath, rootXPath));
 	}
 
 	/**
@@ -292,14 +287,14 @@ public abstract class BaseIceSoapParserImpl<ReturnType> implements IceSoapParser
 	}
 
 	/**
-	 * Retrieves the root xpath from the annotation on the class. Note that this
-	 * may return null.
+	 * Retrieves the root xpath(s) from the annotation on the class. Note that
+	 * this may return null.
 	 * 
 	 * @param targetClass
 	 *            Class to retrieve from
 	 * @return A repo containing all the possible root XPaths for the class.
 	 */
-	protected static XPathRepository<XPathElement> retrieveRootXPath(Class<?> targetClass) {
+	protected static XPathRepository<XPathElement> retrieveRootXPaths(Class<?> targetClass) {
 		XMLObject xPathAnnot = getXMLObjectAnnot(targetClass);
 
 		if (xPathAnnot != null) {

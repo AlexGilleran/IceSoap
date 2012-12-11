@@ -11,23 +11,33 @@ import java.io.InputStream;
  * 
  */
 public class SampleXml {
+	private final static String PIPES_1 = 
+		  "<Object>"
+		+ "<Value1>value</Value1>"
+		+ "</Object>";
+	
+	private final static String PIPES_2 = 
+		  "<Object>"
+		+ "<Value2>value</Value2>"
+		+ "</Object>";
+
 	private final static String CRAPPY_LIST = 
-	  "<Reply>"
-	+ "<ReqTime>2012-11-29T15:22:17.927</ReqTime>"
-	+ "<Zones>"
-	+ 	"<ID>1</ID>"
-	+ "</Zones>"
-	+ "<Zones>"
-	+ 	"<ID>2</ID>"
-	+ "</Zones>"
-	+ "<Users>"
-	+ 	"<Name>USER_1</Name>"
-	+ "</Users>"
-	+ "<Users>"
-	+ 	"<Name>USER_2</Name>"
-	+ "</Users>"
-	+ "<ExitTO>0</ExitTO>"
-	+ "</Reply>";
+		  "<Reply>"
+		+ "<ReqTime>2012-11-29T15:22:17.927</ReqTime>"
+		+ "<Zones>"
+		+ 	"<ID>1</ID>"
+		+ "</Zones>"
+		+ "<Zones>"
+		+ 	"<ID>2</ID>"
+		+ "</Zones>"
+		+ "<Users>"
+		+ 	"<Name>USER_1</Name>"
+		+ "</Users>"
+		+ "<Users>"
+		+ 	"<Name>USER_2</Name>"
+		+ "</Users>"
+		+ "<ExitTO>0</ExitTO>"
+		+ "</Reply>";
 	
 	private final static String NIL_VALUES = "<?xml version=\"1.0\"?>"
 			+ "<NilValues xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">"
@@ -412,5 +422,13 @@ public class SampleXml {
 	
 	public static InputStream getCrappyList() {
 		return new ByteArrayInputStream(CRAPPY_LIST.getBytes());
+	}
+	
+	public static InputStream getPipes1() {
+		return new ByteArrayInputStream(PIPES_1.getBytes());
+	}
+	
+	public static InputStream getPipes2() {
+		return new ByteArrayInputStream(PIPES_2.getBytes());
 	}
 }

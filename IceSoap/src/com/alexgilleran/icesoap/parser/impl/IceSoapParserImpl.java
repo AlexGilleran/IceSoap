@@ -90,7 +90,7 @@ public class IceSoapParserImpl<ReturnType> extends BaseIceSoapParserImpl<ReturnT
 	 *            zero-arg constructor
 	 */
 	public IceSoapParserImpl(Class<ReturnType> targetClass) {
-		this(targetClass, retrieveRootXPath(targetClass));
+		this(targetClass, retrieveRootXPaths(targetClass));
 	}
 
 	/**
@@ -173,19 +173,19 @@ public class IceSoapParserImpl<ReturnType> extends BaseIceSoapParserImpl<ReturnT
 				return;
 			}
 
-			XPathRepository<XPathElement> lastFieldElements;
+			XPathRepository<XPathElement> xpathsFromField;
 
 			if (!xPath.value().equals(XMLField.BLANK_XPATH_STRING)) {
 				// If the XPath has a value specified, compile it
-				lastFieldElements = compileXPath(xPath, field);
+				xpathsFromField = compileXPath(xPath, field);
 
-				addRootToRelativeXPaths(lastFieldElements);
+				addRootToRelativeXPaths(xpathsFromField);
 			} else {
 				// XPath has no value - set to the root value
-				lastFieldElements = getRootXPaths();
+				xpathsFromField = getRootXPaths();
 			}
 
-			for (XPathElement element : lastFieldElements.keySet()) {
+			for (XPathElement element : xpathsFromField.keySet()) {
 				fieldXPaths.put(element, field);
 			}
 		}

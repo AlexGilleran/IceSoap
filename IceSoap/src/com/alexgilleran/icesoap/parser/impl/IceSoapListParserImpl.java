@@ -42,7 +42,7 @@ public class IceSoapListParserImpl<ListItemType> extends BaseIceSoapParserImpl<L
 	 *            The class of the item that will be parsed as part of the list.
 	 */
 	public IceSoapListParserImpl(Class<ListItemType> clazz) {
-		super(retrieveRootXPath(clazz));
+		super(retrieveRootXPaths(clazz));
 
 		this.parser = new IceSoapParserImpl<ListItemType>(clazz);
 	}
@@ -74,7 +74,7 @@ public class IceSoapListParserImpl<ListItemType> extends BaseIceSoapParserImpl<L
 			BaseIceSoapParserImpl<ListItemType> parser) {
 		super(containingXPath);
 
-		objectXPaths = super.retrieveRootXPath(clazz);
+		objectXPaths = super.retrieveRootXPaths(clazz);
 
 		this.parser = parser;
 	}
