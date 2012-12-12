@@ -11,15 +11,6 @@ import java.io.InputStream;
  * 
  */
 public class SampleXml {
-	private final static String PIPES_1 = 
-		  "<Object>"
-		+ "<Value1>value</Value1>"
-		+ "</Object>";
-	
-	private final static String PIPES_2 = 
-		  "<Object>"
-		+ "<Value2>value</Value2>"
-		+ "</Object>";
 
 	private final static String CRAPPY_LIST = 
 		  "<Reply>"
@@ -422,13 +413,5 @@ public class SampleXml {
 	
 	public static InputStream getCrappyList() {
 		return new ByteArrayInputStream(CRAPPY_LIST.getBytes());
-	}
-	
-	public static InputStream getPipes1() {
-		return new ByteArrayInputStream(PIPES_1.getBytes());
-	}
-	
-	public static InputStream getPipes2() {
-		return new ByteArrayInputStream(PIPES_2.getBytes());
 	}
 }

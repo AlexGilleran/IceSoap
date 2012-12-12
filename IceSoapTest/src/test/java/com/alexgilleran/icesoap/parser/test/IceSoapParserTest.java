@@ -7,6 +7,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -185,13 +187,59 @@ public class IceSoapParserTest {
 
 	@Test
 	public void testXPathUnionSimple() throws XMLParsingException {
+
+		String value = "value";
+		String[] sampleRootNames = { "Object", "Pipe", "HergyBlergy" };
+		String[] sampleValueNames = { "Value1", "Value2" };
+		String[] sampleInnerNames = { "inner", "innerValue" };
+		String[] sampleInnerValues = { "InnerValue1", "InnerValue11", "InnerValue2", "InnerValue22" };
+
+		for (String rootName : sampleRootNames) {
+			for (int i = 0; i < sampleValueNames.length; i++) {
+				for (int j = 0; j < sampleInnerValues.length; j = j + 2) {
+					testPipeXML(value, rootName, sampleValueNames[i], sampleInnerNames[i], sampleInnerValues[j],
+							sampleInnerValues[j + 1]);
+				}
+			}
+		}
+
+		testPipeXML(value, "HergyBlergy", "Value3", null, null, null);
+		testPipeXML(null, "Object", "Value3", null, null, null);
+	}
+
+	private void testPipeXML(String value, String rootName, String valueName, String innerObjectName,
+			String innerValueName1, String innerValueName2) throws XMLParsingException {
 		IceSoapParser<PipeTest> parser = new IceSoapParserImpl<PipeTest>(PipeTest.class);
+		String xml = buildPipeTestXML(value, rootName, valueName, innerObjectName, innerValueName1, innerValueName2);
 
-		PipeTest pipeTest = parser.parse(SampleXml.getPipes1());
-		assertEquals("value", pipeTest.getValue());
+		InputStream inputStream = new ByteArrayInputStream(xml.getBytes());
 
-		pipeTest = parser.parse(SampleXml.getPipes2());
-		assertEquals("value", pipeTest.getValue());
+		PipeTest pipeTest = parser.parse(inputStream);
+		assertEquals(xml, value, pipeTest.getValue());
+	}
+
+	private String buildPipeTestXML(String value, String rootName, String valueName, String innerObjectName,
+			String innerValueName1, String innerValueName2) {
+		StringBuilder build = new StringBuilder();
+
+		build.append("<").append(rootName).append(">");
+
+		build.append("<").append(valueName).append(">");
+		build.append(value);
+		build.append("</").append(valueName).append(">");
+
+		build.append("<").append(innerObjectName).append(">");
+		build.append("<").append(innerValueName1).append(">");
+		build.append(value);
+		build.append("</").append(innerValueName1).append(">");
+		build.append("<").append(innerValueName2).append(">");
+		build.append(value);
+		build.append("</").append(innerValueName2).append(">");
+		build.append("</").append(innerObjectName).append(">");
+
+		build.append("</").append(rootName).append(">");
+
+		return build.toString();
 	}
 
 }
