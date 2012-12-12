@@ -76,25 +76,38 @@ public class XPathRepository<T> {
 		}
 	}
 
+	/**
+	 * Removes the record with the supplied key from the repository. Note that
+	 * this does not attempt to match the XPathElement passed in - the key
+	 * supplied to {@link #remove(XPathElement)} must exactly match the one in
+	 * the repository.
+	 * 
+	 * @param key
+	 *            The (exact) key of the record to remove.
+	 * @return The value of the removed record. {@code null} will be returned if
+	 *         no value is found, or if {@code null} was stored against the
+	 *         supplied key.
+	 */
 	public T remove(XPathElement key) {
-		XPathRecord<T> record = getFullRecord(key);
+		T returnValue = valueMap.remove(key);
 
-		if (record != null) {
-			valueMap.remove(record.getKey());
-
-			Set<XPathElement> elements = lookupMap.get(record.getKey().getName());
-			elements.remove(record.getKey());
+		Set<XPathElement> elements = lookupMap.get(key.getName());
+		if (elements != null) {
+			elements.remove(key);
 
 			if (elements.isEmpty()) {
-				lookupMap.remove(record.getKey());
+				lookupMap.remove(key);
 			}
-
-			return record.getValue();
-		} else {
-			return null;
 		}
+
+		return returnValue;
 	}
 
+	/**
+	 * Gets the count of all records in the {@link XPathRepository}
+	 * 
+	 * @return The count of all records in the {@link XPathRepository}
+	 */
 	public int size() {
 		return valueMap.size();
 	}

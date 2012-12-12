@@ -202,18 +202,39 @@ public class IceSoapParserImpl<ReturnType> extends BaseIceSoapParserImpl<ReturnT
 	 *            if necessary.
 	 */
 	private void addRootToRelativeXPaths(XPathRepository<XPathElement> xpaths) {
-		for (XPathElement thisLastElement : xpaths.keySet()) {
-			XPathElement firstFieldElement = thisLastElement.getFirstElement();
+		// Make a copy of the repo keyset, as we may need to concurrently remove
+		// xpaths from the repo while looping through.
+		Set<XPathElement> xpathsSet = new HashSet<XPathElement>(xpaths.keySet());
 
-			if (firstFieldElement.isRelative()) {
-				xpaths.remove(firstFieldElement);
+		for (XPathElement thisXPath : xpathsSet) {
+			XPathElement firstXPathElement = thisXPath.getFirstElement();
 
-				// If the element is relative, add it to the
-				// absolute XPath of its enclosing objects.
-				for (XPathElement rootXPath : getRootXPaths().keySet()) {
-					XPathElement element = firstFieldElement.clone();
-					element.getFirstElement().setPreviousElement(rootXPath);
-					xpaths.put(element, element);
+			if (firstXPathElement.isRelative()) {
+				// If the xpath is relative, we want to add the root xpath(s) of
+				// the object to the start of it.
+
+				if (getRootXPaths().keySet().size() == 1) {
+					thisXPath.getFirstElement().setPreviousElement(getRootXPaths().keySet().iterator().next());
+				} else {
+					// As there are multiple root xpaths, we need to create an
+					// new instance of this field xpath for each root xpath
+					// (using the existing field xpath object as a prototype)
+					// and add the enclosing xpath to the start of each.
+
+					// Remove the existing xpath from the repo (we'll add a
+					// modified clone of it later)
+					xpaths.remove(thisXPath);
+
+					for (XPathElement rootXPath : getRootXPaths().keySet()) {
+						// Copy the relative xpath for the field
+						XPathElement element = thisXPath.clone();
+
+						// Append the new xpath to this root xpath.
+						element.getFirstElement().setPreviousElement(rootXPath);
+
+						// Put the new element in the xpaths repository.
+						xpaths.put(element, element);
+					}
 				}
 			}
 		}
