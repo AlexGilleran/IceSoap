@@ -14,4 +14,8 @@ public class PipeTest {
 	public String getValue() {
 		return value;
 	}
+
+	public PipeTestInner getInner() {
+		return inner;
+	}
 }

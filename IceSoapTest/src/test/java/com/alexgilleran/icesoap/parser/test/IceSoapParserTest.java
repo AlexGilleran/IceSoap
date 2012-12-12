@@ -191,31 +191,45 @@ public class IceSoapParserTest {
 		String value = "value";
 		String[] sampleRootNames = { "Object", "Pipe", "HergyBlergy" };
 		String[] sampleValueNames = { "Value1", "Value2" };
-		String[] sampleInnerNames = { "inner", "innerValue" };
-		String[] sampleInnerValues = { "InnerValue1", "InnerValue11", "InnerValue2", "InnerValue22" };
+		String[] sampleInnerNames = { "inner", "testInner" };
+		String[] sampleInnerValues = { "InnerValue1", "InnerValue2", "InnerValue11", "InnerValue22" };
 
+		// Test every permutation of different xpath combinations
 		for (String rootName : sampleRootNames) {
 			for (int i = 0; i < sampleValueNames.length; i++) {
 				for (int j = 0; j < sampleInnerValues.length; j = j + 2) {
-					testPipeXML(value, rootName, sampleValueNames[i], sampleInnerNames[i], sampleInnerValues[j],
-							sampleInnerValues[j + 1]);
+					PipeTest pipeTest = buildPipeTestObject(value, rootName, sampleValueNames[i], sampleInnerNames[i],
+							sampleInnerValues[j], sampleInnerValues[j + 1]);
+
+					assertEquals(value, pipeTest.getValue());
+					assertEquals(value, pipeTest.getInner().getInnerValue1());
+					assertEquals(value, pipeTest.getInner().getInnerValue2());
 				}
 			}
 		}
 
-		testPipeXML(value, "HergyBlergy", "Value3", null, null, null);
-		testPipeXML(null, "Object", "Value3", null, null, null);
+		// Test an absolute path
+		PipeTest pipeTest = buildPipeTestObject(value, "HergyBlergy", "Value3", "inner", "InnerValue1", "InnerValue2");
+		assertEquals(value, pipeTest.getValue());
+		assertEquals(value, pipeTest.getInner().getInnerValue1());
+		assertEquals(value, pipeTest.getInner().getInnerValue2());
+
+		// Test negative cases - ensure that Object/Value3, inner/inner4 and
+		// inner/inner5 resolve to nothing.
+		pipeTest = buildPipeTestObject(value, "Object", "Value3", "inner", "inner4", "inner5");
+		assertEquals(null, pipeTest.getValue());
+		assertEquals(null, pipeTest.getInner().getInnerValue1());
+		assertEquals(null, pipeTest.getInner().getInnerValue2());
 	}
 
-	private void testPipeXML(String value, String rootName, String valueName, String innerObjectName,
+	private PipeTest buildPipeTestObject(String value, String rootName, String valueName, String innerObjectName,
 			String innerValueName1, String innerValueName2) throws XMLParsingException {
 		IceSoapParser<PipeTest> parser = new IceSoapParserImpl<PipeTest>(PipeTest.class);
 		String xml = buildPipeTestXML(value, rootName, valueName, innerObjectName, innerValueName1, innerValueName2);
 
 		InputStream inputStream = new ByteArrayInputStream(xml.getBytes());
 
-		PipeTest pipeTest = parser.parse(inputStream);
-		assertEquals(xml, value, pipeTest.getValue());
+		return parser.parse(inputStream);
 	}
 
 	private String buildPipeTestXML(String value, String rootName, String valueName, String innerObjectName,
@@ -241,5 +255,4 @@ public class IceSoapParserTest {
 
 		return build.toString();
 	}
-
 }
