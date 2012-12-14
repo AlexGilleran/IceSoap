@@ -3,7 +3,6 @@
  */
 package com.alexgilleran.icesoap.parser;
 
-import java.io.IOException;
 import java.io.InputStream;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -18,29 +17,29 @@ import com.alexgilleran.icesoap.xpath.elements.XPathElement;
  * 
  * Only a few methods of {@link XmlPullParser} are supported. Note that unlike
  * the standard {@link XmlPullParser}, this treats attributes as an event in the
- * same way as a node.
+ * same sense as a node.
  * 
  * @author Alex Gilleran
  * 
  */
 public interface XPathPullParser {
-	/** Indicates that the current event is the start of a document */
-	public static int START_DOCUMENT = XmlPullParser.START_DOCUMENT;
-	/** Indicates that the current event is the end of a document */
-	public static final int END_DOCUMENT = XmlPullParser.END_DOCUMENT;
-	/** Indicates that the current event is the start of a tag */
-	public static final int START_TAG = XmlPullParser.START_TAG;
-	/** Indicates that the current event is the end of a tag */
-	public static final int END_TAG = XmlPullParser.END_TAG;
-	/** Indicates that the current event is a text value */
-	public static final int TEXT = XmlPullParser.TEXT;
-	/** Indicates that the current event is an attribute value */
-	public static final int ATTRIBUTE = 5;
+	/** Indicates that the current event is the start of a document. */
+	static int START_DOCUMENT = XmlPullParser.START_DOCUMENT;
+	/** Indicates that the current event is the end of a document. */
+	static final int END_DOCUMENT = XmlPullParser.END_DOCUMENT;
+	/** Indicates that the current event is the start of a tag. */
+	static final int START_TAG = XmlPullParser.START_TAG;
+	/** Indicates that the current event is the end of a tag. */
+	static final int END_TAG = XmlPullParser.END_TAG;
+	/** Indicates that the current event is a text value. */
+	static final int TEXT = XmlPullParser.TEXT;
+	/** Indicates that the current event is an attribute value. */
+	static final int ATTRIBUTE = 5;
 
 	/**
-	 * Get the String value of the current node, whether attribute or text. For
-	 * a text node, this will move to the end of the text node after getting the
-	 * value.
+	 * Get the {@link String} value of the current node, whether attribute or
+	 * text. For a text node, this will move to the end of the text node after
+	 * getting the value.
 	 * 
 	 * Note that if the event is {@link #ATTRIBUTE}, this will only ever return
 	 * the <i>value</i> of the attribute - get the name with
@@ -59,8 +58,8 @@ public interface XPathPullParser {
 	 * just tags. Attribute events will return the value {@link #ATTRIBUTE}.
 	 * 
 	 * @return The type of the next event, as an int.
-	 * @throws XmlPullParserException
-	 * @throws IOException
+	 * @throws XMLParsingException
+	 *             If an error is encountered in the XML.
 	 * @see org.xmlpull.v1.XmlPullParser#next()
 	 */
 	int next() throws XMLParsingException;
@@ -88,21 +87,20 @@ public interface XPathPullParser {
 	 * Sets the input for this parser.
 	 * 
 	 * @param inputStream
-	 *            The input stream to set
+	 *            The input stream to set.
 	 * @param inputEncoding
 	 *            The encoding of the stream - null will attempt auto-detection.
 	 * @throws XmlPullParserException
 	 * @see org.xmlpull.v1.XmlPullParser#setInput(java.io.InputStream,
 	 *      java.lang.String)
 	 */
-	void setInput(InputStream inputStream, String inputEncoding)
-			throws XmlPullParserException;
+	void setInput(InputStream inputStream, String inputEncoding) throws XmlPullParserException;
 
 	/**
-	 * Checks if the current element has the xsi:nil attribute
+	 * Checks if the current element has the xsi:nil attribute.
 	 * 
 	 * @return Whether it does.
 	 */
-	public boolean isCurrentValueXsiNil();
+	boolean isCurrentValueXsiNil();
 
 }

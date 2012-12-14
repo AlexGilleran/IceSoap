@@ -12,13 +12,13 @@ import com.alexgilleran.icesoap.annotation.XMLObject;
 /**
  * A dictionary
  */
-@XMLObject("//Dictionary")
+@XMLObject("/lulz | //Dictionary")
 public class Dictionary {
 	/** The ID of the dictionary as defined by the web service */
 	@XMLField("Id")
 	private String id;
 	/** The name of the dictionary */
-	@XMLField("Name")
+	@XMLField("//farts | Name")
 	private String name;
 
 	/**

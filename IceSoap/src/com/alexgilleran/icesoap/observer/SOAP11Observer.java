@@ -12,8 +12,7 @@ import com.alexgilleran.icesoap.soapfault.SOAP11Fault;
  * @param <ReturnType>
  *            The type of the object that will be retrieved from this request.
  */
-public interface SOAP11Observer<ReturnType> extends
-		SOAPObserver<ReturnType, SOAP11Fault> {
+public interface SOAP11Observer<ReturnType> extends SOAPObserver<ReturnType, SOAP11Fault> {
 
 	/**
 	 * {@inheritDoc}
@@ -22,6 +21,5 @@ public interface SOAP11Observer<ReturnType> extends
 	 * 1.2 Faults, or need to parse extra details of the SOAP Fault, please use
 	 * {@link SOAPObserver} directly.
 	 */
-	public abstract void onException(Request<ReturnType, SOAP11Fault> request,
-			SOAPException e);
+	abstract void onException(Request<ReturnType, SOAP11Fault> request, SOAPException e);
 }

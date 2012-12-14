@@ -4,7 +4,6 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import java.text.SimpleDateFormat;
 
 import com.alexgilleran.icesoap.parser.processor.Processor;
 
@@ -24,7 +23,7 @@ import com.alexgilleran.icesoap.parser.processor.Processor;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 public @interface XMLField {
-	public final static String BLANK_XPATH_STRING = "";
+	final static String BLANK_XPATH_STRING = "";
 
 	/** The XPath of the field, as a String. */
 	String value() default (BLANK_XPATH_STRING);

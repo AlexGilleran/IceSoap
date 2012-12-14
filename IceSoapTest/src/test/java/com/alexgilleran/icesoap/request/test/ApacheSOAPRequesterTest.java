@@ -25,7 +25,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.alexgilleran.icesoap.envelope.SOAPEnvelope;
-import com.alexgilleran.icesoap.envelope.impl.BaseSOAPEnvelope;
+import com.alexgilleran.icesoap.envelope.impl.BaseSOAP11Envelope;
 import com.alexgilleran.icesoap.request.SOAPRequester;
 import com.alexgilleran.icesoap.request.impl.ApacheSOAPRequester;
 
@@ -39,7 +39,6 @@ public class ApacheSOAPRequesterTest {
 		envelope = buildDifficultEnvelope(encoding);
 	}
 
-
 	@Test
 	public void testUtf8Encoding() throws ClientProtocolException, IOException {
 
@@ -48,7 +47,8 @@ public class ApacheSOAPRequesterTest {
 	}
 
 	private SOAPEnvelope buildDifficultEnvelope(String encoding) {
-		SOAPEnvelope env = new BaseSOAPEnvelope(encoding, "http://namespace.com");
+		SOAPEnvelope env = new BaseSOAP11Envelope();
+		env.setEncoding(encoding);
 		env.getBody().addTextNode(null, "ÀÁÂÃÄÅÆÇÈÉýÿĂĄ", "ɑɔʥʣʨʪɯ");
 		env.getBody().addTextNode(null, "ѨѫѯРсшНЌЄЏ", "ڝڠڥکۛ٢شظڧ۞۸");
 		return env;

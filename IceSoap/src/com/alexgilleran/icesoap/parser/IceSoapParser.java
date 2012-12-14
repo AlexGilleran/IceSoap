@@ -15,18 +15,19 @@ import com.alexgilleran.icesoap.exception.XMLParsingException;
  * @author Alex Gilleran
  * 
  * @param <ReturnType>
- *            The class of the object to return. For instance, if I wanted to
- *            return a "Product" object from this parser, I would specify {code
- *            <Product>} and override the resulting methods
+ *            The class of the object to return.
  */
 public interface IceSoapParser<ReturnType> {
 	/**
-	 * Instantiates a ReturnType object and then uses the provided
-	 * {@link XPathPullParser} to populate it with data.
+	 * Instantiates a ReturnType object and then populates it with data parsed
+	 * from the provided {@link InputStream}.
 	 * 
-	 * 
+	 * @param inputStream
+	 *            A stream containing the XML to parse.
 	 * @return The object created by parsing the tag
 	 * @throws XMLParsingException
+	 *             In the event of invalid XML being encountered during the
+	 *             parse.
 	 */
 	ReturnType parse(InputStream inputStream) throws XMLParsingException;
 }

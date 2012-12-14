@@ -21,7 +21,7 @@ import com.alexgilleran.icesoap.xpath.XPathRepository;
 import com.alexgilleran.icesoap.xpath.elements.XPathElement;
 
 /**
- * Contains common code for the implementation of {@link IceSoapParser}
+ * Contains common code for the implementation of {@link IceSoapParser}.
  * 
  * @author Alex Gilleran
  * 
@@ -51,9 +51,10 @@ public abstract class BaseIceSoapParserImpl<ReturnType> implements IceSoapParser
 	 * Instantiates a new {@link BaseIceSoapParserImpl}
 	 * 
 	 * @param rootXPaths
-	 *            The root xpath of the type to parse - the parser will keep
-	 *            traversing the document until it finds this xpath, then keep
-	 *            parsing until it reaches the end of the xpath.
+	 *            An XPathRepository containing the root xpath(s) of the type to
+	 *            parse - the parser will keep traversing the document until it
+	 *            finds this xpath, then keep parsing until it reaches the end
+	 *            of the xpath.
 	 */
 	protected BaseIceSoapParserImpl(XPathRepository<XPathElement> rootXPaths) {
 		this.rootXPaths = rootXPaths;

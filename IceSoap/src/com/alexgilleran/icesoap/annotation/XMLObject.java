@@ -5,8 +5,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import com.alexgilleran.icesoap.parser.IceSoapParser;
-
 /**
  * Annotation for POJOs intended to be automatically created by IceSoap. If this
  * annotation is used on a class, the {@link XMLField} annotation should also be

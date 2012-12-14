@@ -9,20 +9,40 @@ import com.alexgilleran.icesoap.xml.XMLNode;
 import com.alexgilleran.icesoap.xml.XMLParentNode;
 import com.alexgilleran.icesoap.xml.impl.XMLParentNodeImpl;
 
-public class BaseSOAPEnvelope extends XMLParentNodeImpl implements SOAPEnvelope {
-	public final static String NS_PREFIX_SOAPENV = "soapenv";
-	public final static String NS_PREFIX_SOAPENC = "soapenc";
+/**
+ * Base implementation of {@link SOAPEnvelope}, containing logic contained by
+ * both SOAP 1.1 and SOAP 1.2 envelopes - when creating envelopes, use
+ * {@link BaseSOAP11Envelope} or {@link BaseSOAP12Envelope} depending on your
+ * SOAP version.
+ * 
+ * @author Alex Gilleran
+ * 
+ */
+public abstract class BaseSOAPEnvelope extends XMLParentNodeImpl implements SOAPEnvelope {
+	/** Prefix for SOAP envelope namespace. */
+	public static final String NS_PREFIX_SOAPENV = "soapenv";
+	/** Prefix for SOAP encoding namespace. */
+	public static final String NS_PREFIX_SOAPENC = "soapenc";
+	/** The default encoding to use for envelopes. */
+	public static final String DEFAULT_ENCODING = "UTF-8";
+	/** The name for the enclosing envelope node. */
+	public static final String NODE_NAME = "Envelope";
 
-	public final static String DEFAULT_ENCODING = "UTF-8";
-	public final static String NODE_NAME = "Envelope";
-
-	/** The SOAP header element */
+	/** The SOAP header element. */
 	private XMLParentNode header;
-	/** The SOAP body element */
+	/** The SOAP body element. */
 	private XMLParentNode body;
-	/** The encoding type */
+	/** The encoding type. */
 	private String encoding = DEFAULT_ENCODING;
 
+	/**
+	 * Instantiates a new {@link BaseSOAPEnvelope}.
+	 * 
+	 * @param envelopeNs
+	 *            The URI of the envelope namespace.
+	 * @param encodingNs
+	 *            The URI of the encoding namespace.
+	 */
 	public BaseSOAPEnvelope(String envelopeNs, String encodingNs) {
 		super(envelopeNs, NODE_NAME);
 
@@ -39,8 +59,7 @@ public class BaseSOAPEnvelope extends XMLParentNodeImpl implements SOAPEnvelope 
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void serialize(XmlSerializer cereal)
-			throws IllegalArgumentException, IllegalStateException, IOException {
+	public void serialize(XmlSerializer cereal) throws IllegalArgumentException, IllegalStateException, IOException {
 		cereal.startDocument(DEFAULT_ENCODING, true);
 
 		super.serialize(cereal);

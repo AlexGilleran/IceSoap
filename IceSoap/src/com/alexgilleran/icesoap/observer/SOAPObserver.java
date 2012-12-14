@@ -11,18 +11,17 @@ import com.alexgilleran.icesoap.request.Request;
  * @param <ReturnType>
  *            The type of the object that will be retrieved from this request.
  * @param <SOAPFaultType>
- *            The type of the class to use for SOAPFaults
+ *            The type of the class to use for SOAPFaults.
  */
 public interface SOAPObserver<ReturnType, SOAPFaultType> {
-
 	/**
-	 * Called when the running SOAP {@link Request} completes
+	 * Called when the running SOAP {@link Request} completes.
 	 * 
 	 * @param request
 	 *            The {@link Request} instance that has completed - retrieve the
 	 *            result object from it using {@link Request#getResult()}
 	 */
-	public abstract void onCompletion(Request<ReturnType, SOAPFaultType> request);
+	abstract void onCompletion(Request<ReturnType, SOAPFaultType> request);
 
 	/**
 	 * Called if the running SOAP request hits an exception during execution.
@@ -33,7 +32,6 @@ public interface SOAPObserver<ReturnType, SOAPFaultType> {
 	 * @param e
 	 *            The exception that's been encountered.
 	 */
-	public abstract void onException(
-			Request<ReturnType, SOAPFaultType> request, SOAPException e);
+	abstract void onException(Request<ReturnType, SOAPFaultType> request, SOAPException e);
 
 }

@@ -16,12 +16,14 @@ import com.alexgilleran.icesoap.envelope.SOAPEnvelope;
  * 
  */
 public class BaseSOAP11Envelope extends BaseSOAPEnvelope {
-	public final static String NS_URI_SOAPENV = "http://schemas.xmlsoap.org/soap/envelope/";
-	public final static String NS_URI_SOAPENC = "http://schemas.xmlsoap.org/soap/encoding/";
+	/** URI for the Soap 1.1 Envelope Namespace. */
+	public static final String NS_URI_SOAPENV = "http://schemas.xmlsoap.org/soap/envelope/";
+	/** URI for the Soap 1.1 Encoding Namespace. */
+	public static final String NS_URI_SOAPENC = "http://schemas.xmlsoap.org/soap/encoding/";
 
 	/**
 	 * Initialises the class - sets up the basic "soapenv", "soapenc", "xsd" and
-	 * "xsi" namespaces present in all SOAP messages
+	 * "xsi" namespaces present in all SOAP messages.
 	 */
 	public BaseSOAP11Envelope() {
 		super(NS_URI_SOAPENV, NS_URI_SOAPENC);
