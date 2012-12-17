@@ -16,8 +16,7 @@ import com.alexgilleran.icesoap.request.Request;
  * @param <SOAPFaultType>
  *            The type of the class to use for SOAPFaults
  */
-public interface SOAPListObserver<ReturnType, SOAPFaultType> extends
-		SOAPObserver<List<ReturnType>, SOAPFaultType> {
+public interface SOAPListObserver<ReturnType, SOAPFaultType> extends SOAPObserver<List<ReturnType>, SOAPFaultType> {
 
 	/**
 	 * Called (on the UI thread) when a new list item is received and parsed
@@ -28,7 +27,6 @@ public interface SOAPListObserver<ReturnType, SOAPFaultType> extends
 	 * @param item
 	 *            The item instance.
 	 */
-	public abstract void onNewItem(
-			Request<List<ReturnType>, SOAPFaultType> request, ReturnType item);
+	void onNewItem(Request<List<ReturnType>, SOAPFaultType> request, ReturnType item);
 
 }

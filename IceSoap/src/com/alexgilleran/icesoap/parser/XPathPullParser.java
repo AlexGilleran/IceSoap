@@ -24,17 +24,17 @@ import com.alexgilleran.icesoap.xpath.elements.XPathElement;
  */
 public interface XPathPullParser {
 	/** Indicates that the current event is the start of a document. */
-	static int START_DOCUMENT = XmlPullParser.START_DOCUMENT;
+	int START_DOCUMENT = XmlPullParser.START_DOCUMENT;
 	/** Indicates that the current event is the end of a document. */
-	static final int END_DOCUMENT = XmlPullParser.END_DOCUMENT;
+	int END_DOCUMENT = XmlPullParser.END_DOCUMENT;
 	/** Indicates that the current event is the start of a tag. */
-	static final int START_TAG = XmlPullParser.START_TAG;
+	int START_TAG = XmlPullParser.START_TAG;
 	/** Indicates that the current event is the end of a tag. */
-	static final int END_TAG = XmlPullParser.END_TAG;
+	int END_TAG = XmlPullParser.END_TAG;
 	/** Indicates that the current event is a text value. */
-	static final int TEXT = XmlPullParser.TEXT;
+	int TEXT = XmlPullParser.TEXT;
 	/** Indicates that the current event is an attribute value. */
-	static final int ATTRIBUTE = 5;
+	int ATTRIBUTE = 5;
 
 	/**
 	 * Get the {@link String} value of the current node, whether attribute or
@@ -80,6 +80,7 @@ public interface XPathPullParser {
 	 * @return The current event type as an int - compare with the public
 	 *         constants in this class.
 	 * @throws XmlPullParserException
+	 *             If an error is encountered in the XML.
 	 */
 	int getEventType() throws XmlPullParserException;
 
@@ -91,6 +92,7 @@ public interface XPathPullParser {
 	 * @param inputEncoding
 	 *            The encoding of the stream - null will attempt auto-detection.
 	 * @throws XmlPullParserException
+	 *             If an error is encountered in the XML.
 	 * @see org.xmlpull.v1.XmlPullParser#setInput(java.io.InputStream,
 	 *      java.lang.String)
 	 */

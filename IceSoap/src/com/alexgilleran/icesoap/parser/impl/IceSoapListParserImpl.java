@@ -14,7 +14,7 @@ import com.alexgilleran.icesoap.xpath.XPathRepository;
 import com.alexgilleran.icesoap.xpath.elements.XPathElement;
 
 /**
- * Implementation of {@link IceSoapListParser}
+ * Implementation of {@link IceSoapListParser}.
  * 
  * @author Alex Gilleran
  * 
@@ -69,6 +69,8 @@ public class IceSoapListParserImpl<ListItemType> extends BaseIceSoapParserImpl<L
 	 * @param containingXPath
 	 *            The XPath of the XML element that contains the list.
 	 * @param parser
+	 *            The parser to be used for parsing the items that go inside the
+	 *            list.
 	 */
 	protected IceSoapListParserImpl(Class<ListItemType> clazz, XPathElement containingXPath,
 			BaseIceSoapParserImpl<ListItemType> parser) {
@@ -93,8 +95,8 @@ public class IceSoapListParserImpl<ListItemType> extends BaseIceSoapParserImpl<L
 	/**
 	 * Deregisters an observer. This will no longer receive parsing events.
 	 * 
-	 * @param the
-	 *            observer to register.
+	 * @param observer
+	 *            The observer to register.
 	 */
 	public void deregisterItemObserver(ItemObserver<ListItemType> observer) {
 		observers.remove(observer);
@@ -150,6 +152,9 @@ public class IceSoapListParserImpl<ListItemType> extends BaseIceSoapParserImpl<L
 		return listSoFar;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	protected List<ListItemType> onText(XPathPullParser pullParser, List<ListItemType> objectToModify)
 			throws XMLParsingException {

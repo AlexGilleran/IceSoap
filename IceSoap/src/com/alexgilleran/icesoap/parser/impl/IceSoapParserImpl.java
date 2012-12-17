@@ -45,9 +45,11 @@ import com.alexgilleran.icesoap.xpath.elements.XPathElement;
  * exception is thrown.</li> <li>For complex types annotated by
  * {@link XMLObject}, it will instantiate another parser to parse an instance of
  * this object, then set the instance to that field and continue parsing.</li>
- * <li>If the field is a {@link List}, it will instantiate an
- * {@link IceSoapListParser} and use it to parse the list... when the parser is
- * finished, it will set the field to the returned list and continue parsing.</li>
+ * <li>If the field is a {@link List}, every time an element is encountered that
+ * matches the XPath specified in the {@link List} field's {@link XMLField}
+ * annotation, it will parse that object and add it to the list. This will work
+ * even if there's elements in between. Note that this is different to how it
+ * used to work in 1.0.4 and previous.
  * 
  * @author Alex Gilleran
  * 
@@ -120,12 +122,9 @@ public class IceSoapParserImpl<ReturnType> extends BaseIceSoapParserImpl<ReturnT
 	 *            The class of the object to parse - note that this must have a
 	 *            zero-arg constructor
 	 * @param rootXPaths
-	 *            The root XPaths to parse within - the parser will traverse the
-	 *            XML document until it finds the rootXPaths and keep parsing
-	 *            until it finds the end, then finish. Note that the xml node
-	 *            described by this {@link XPathElement} can be outside the node
-	 *            specified by the {@link XMLObject} field of targetClass or the
-	 *            same, but cannot be within it.
+	 *            The root XPath(s) to parse within - the parser will traverse
+	 *            the XML document until it finds one of these and keep parsing
+	 *            until it finds the end, then finish.
 	 */
 	public IceSoapParserImpl(Class<ReturnType> targetClass, XPathRepository<XPathElement> rootXPaths) {
 		super(rootXPaths);
@@ -175,7 +174,7 @@ public class IceSoapParserImpl<ReturnType> extends BaseIceSoapParserImpl<ReturnT
 
 			XPathRepository<XPathElement> xpathsFromField;
 
-			if (!xPath.value().equals(XMLField.BLANK_XPATH_STRING)) {
+			if (!xPath.value().equals(XMLField.DEFAULT_XPATH_STRING)) {
 				// If the XPath has a value specified, compile it
 				xpathsFromField = compileXPath(xPath, field);
 

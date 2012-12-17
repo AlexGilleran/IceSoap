@@ -4,7 +4,8 @@ import com.alexgilleran.icesoap.exception.SOAPException;
 import com.alexgilleran.icesoap.request.Request;
 
 /**
- * Used to receive events from a running SOAP Request on the Android UI thread.
+ * Used to receive events from a running SOAP Request (in a background thread)
+ * on the Android UI thread.
  * 
  * @author Alex Gilleran
  * 
@@ -21,7 +22,7 @@ public interface SOAPObserver<ReturnType, SOAPFaultType> {
 	 *            The {@link Request} instance that has completed - retrieve the
 	 *            result object from it using {@link Request#getResult()}
 	 */
-	abstract void onCompletion(Request<ReturnType, SOAPFaultType> request);
+	void onCompletion(Request<ReturnType, SOAPFaultType> request);
 
 	/**
 	 * Called if the running SOAP request hits an exception during execution.
@@ -32,6 +33,6 @@ public interface SOAPObserver<ReturnType, SOAPFaultType> {
 	 * @param e
 	 *            The exception that's been encountered.
 	 */
-	abstract void onException(Request<ReturnType, SOAPFaultType> request, SOAPException e);
+	void onException(Request<ReturnType, SOAPFaultType> request, SOAPException e);
 
 }

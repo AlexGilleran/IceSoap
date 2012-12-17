@@ -23,10 +23,13 @@ import com.alexgilleran.icesoap.parser.processor.Processor;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 public @interface XMLField {
-	final static String BLANK_XPATH_STRING = "";
+	/**
+	 * The XPath string to use if none is defined for a XMLField-annotated field
+	 */
+	static String DEFAULT_XPATH_STRING = "";
 
 	/** The XPath of the field, as a String. */
-	String value() default (BLANK_XPATH_STRING);
+	String value() default (DEFAULT_XPATH_STRING);
 
 	/**
 	 * The format to use for parsing this field, if it's a date - in the same

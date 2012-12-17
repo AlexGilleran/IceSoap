@@ -21,7 +21,7 @@ import com.alexgilleran.icesoap.xpath.XPathRepository;
 import com.alexgilleran.icesoap.xpath.elements.XPathElement;
 
 /**
- * Contains common code for the implementation of {@link IceSoapParser}.
+ * Contains common code for the implementations of {@link IceSoapParser}.
  * 
  * @author Alex Gilleran
  * 
@@ -39,22 +39,25 @@ public abstract class BaseIceSoapParserImpl<ReturnType> implements IceSoapParser
 	 * Instantiates a new {@link BaseIceSoapParserImpl}
 	 * 
 	 * @param rootXPath
-	 *            The root xpath of the type to parse - the parser will keep
-	 *            traversing the document until it finds this xpath, then keep
-	 *            parsing until it reaches the end of the xpath.
+	 *            The (single) root xpath of the type to parse - the parser will
+	 *            keep traversing the document until it finds this xpath, then
+	 *            keep parsing until it reaches the end of the xpath.
 	 */
 	protected BaseIceSoapParserImpl(XPathElement rootXPath) {
 		this(new XPathRepository<XPathElement>(rootXPath, rootXPath));
 	}
 
 	/**
-	 * Instantiates a new {@link BaseIceSoapParserImpl}
+	 * Instantiates a new {@link BaseIceSoapParserImpl}.
 	 * 
 	 * @param rootXPaths
 	 *            An XPathRepository containing the root xpath(s) of the type to
 	 *            parse - the parser will keep traversing the document until it
-	 *            finds this xpath, then keep parsing until it reaches the end
-	 *            of the xpath.
+	 *            finds any of the xpaths in the repository, then keep parsing
+	 *            until it reaches the end of the xpath. Note that this is an
+	 *            "OR" relationship intended to reflect the functionality of the
+	 *            XPath "|" - it will only parse an object corresponding to the
+	 *            first one of these XPaths it encounters, then finish.
 	 */
 	protected BaseIceSoapParserImpl(XPathRepository<XPathElement> rootXPaths) {
 		this.rootXPaths = rootXPaths;
@@ -83,7 +86,7 @@ public abstract class BaseIceSoapParserImpl<ReturnType> implements IceSoapParser
 	}
 
 	/**
-	 * Gets the root xpaths being parsed
+	 * Gets the root xpaths being parsed.
 	 * 
 	 * @return The root xpaths.
 	 */
@@ -111,9 +114,9 @@ public abstract class BaseIceSoapParserImpl<ReturnType> implements IceSoapParser
 	 * ReturnType.
 	 * 
 	 * This method allows for nested parsers... i.e. a parser parses a big
-	 * object, calling parsers to parse the non-primitive fields within. The
-	 * parser passed in can be at the very start of the document, or at some
-	 * place in the middle.
+	 * object, instantiating new parsers to parse the non-primitive fields
+	 * within. The current location of the parser passed in can be the very
+	 * start of the document, or at some place in the middle.
 	 * 
 	 * @param parser
 	 *            The {@link XPathPullParser} instance to use for parsing.
@@ -137,11 +140,11 @@ public abstract class BaseIceSoapParserImpl<ReturnType> implements IceSoapParser
 	 *            modified by the parser according to the xml.
 	 * @return A parsed instance of ReturnType.
 	 * @throws XMLParsingException
+	 *             If a problem is encountered with the underlying
+	 *             {@link XmlPullParser} - usually as a result of poorly-formed
+	 *             XML.
 	 * 
 	 */
-	// NOTE: This is the most important bit of code in all of IceSoap, and also
-	// the nastiest - unfortunately this is the best way I've come up with to do
-	// it.
 	protected final ReturnType parse(XPathPullParser parser, ReturnType objectToModify) throws XMLParsingException {
 		boolean isInRootElement = false;
 
@@ -152,25 +155,16 @@ public abstract class BaseIceSoapParserImpl<ReturnType> implements IceSoapParser
 					// that comes along.
 					objectToModify = parseElement(parser, objectToModify);
 				} else {
-					// If this matches the root element, it must be either
-					// entering or exiting it. If it's entering (START_TAG), set
-					// the isInRootElement flag to true, if exiting set to
-					// false.
-					if (isInRootElement == false && parser.getEventType() == XPathPullParser.START_TAG
-							&& rootXPaths.contains(parser.getCurrentElement())) {
+					if (isInRootElement == false && enteringRootElement(parser)) {
 						isInRootElement = true;
-					} else if (isInRootElement == true && parser.getEventType() == XPathPullParser.END_TAG
-							&& rootXPaths.contains(parser.getCurrentElement())) {
+					} else if (isInRootElement == true && exitingRootElement(parser)) {
 						isInRootElement = false;
-						// No need to keep parsing with this parser - break out
-						// of the loop.
+
+						// No need to keep parsing with this parser
 						break;
 					}
 
-					if (parser.getEventType() != XPathPullParser.END_TAG
-							&& parser.getEventType() != XPathPullParser.END_DOCUMENT && isInRootElement) {
-						// If we're starting a tag and in the root element,
-						// parse this element.
+					if (isInRootElement && isEventTypeParseable(parser.getEventType())) {
 						objectToModify = parseElement(parser, objectToModify);
 					}
 				}
@@ -193,8 +187,48 @@ public abstract class BaseIceSoapParserImpl<ReturnType> implements IceSoapParser
 	}
 
 	/**
-	 * Initializes the parsed object if an instance is not passed in. In general
-	 * this is done through reflection.
+	 * Determines whether the {@link XPathPullParser} event provided should
+	 * result in an attempt to parse the event (i.e. a new tag, text or
+	 * attribute event).
+	 * 
+	 * @param eventType
+	 *            The event, as an {@link XPathPullParser} event integer.
+	 * @return Whether this event is parseable.
+	 */
+	private boolean isEventTypeParseable(int eventType) {
+		return eventType != XPathPullParser.END_TAG && eventType != XPathPullParser.END_DOCUMENT;
+	}
+
+	/**
+	 * Determines whether the current location of the provided parser is at the
+	 * very start of a root XPath.
+	 * 
+	 * @param parser
+	 *            The parser to determine the location.
+	 * @return Whether the location is at the start of a root XPath.
+	 * @throws XmlPullParserException
+	 *             If a problem is encountered in the {@link XmlPullParser}
+	 */
+	private boolean enteringRootElement(XPathPullParser parser) throws XmlPullParserException {
+		return parser.getEventType() == XPathPullParser.START_TAG && rootXPaths.contains(parser.getCurrentElement());
+	}
+
+	/**
+	 * Determines whether the current location of the provided parser is at the
+	 * very end of a root XPath.
+	 * 
+	 * @param parser
+	 *            The parser to determine the location.
+	 * @return Whether the location is at the end of a root XPath.
+	 * @throws XmlPullParserException
+	 *             If a problem is encountered in the {@link XmlPullParser}
+	 */
+	private boolean exitingRootElement(XPathPullParser parser) throws XmlPullParserException {
+		return parser.getEventType() == XPathPullParser.END_TAG && rootXPaths.contains(parser.getCurrentElement());
+	}
+
+	/**
+	 * Initializes the parsed object if an instance is not passed in.
 	 * 
 	 * @return A new, blank instance of ReturnType.
 	 */
@@ -205,7 +239,7 @@ public abstract class BaseIceSoapParserImpl<ReturnType> implements IceSoapParser
 	 * {@link XPathPullParser}'s current position.
 	 * 
 	 * @param pullParser
-	 *            An instance of {@link XPathPullParser}
+	 *            An instance of {@link XPathPullParser}.
 	 * @param objectToModify
 	 *            The object to modify - can be left null, in which case it will
 	 *            be initialized with {@link #initializeParsedObject()}.
@@ -247,6 +281,8 @@ public abstract class BaseIceSoapParserImpl<ReturnType> implements IceSoapParser
 	 *            The object to modify.
 	 * @return Should be the passed in objectToModify object, with changes.
 	 * @throws XMLParsingException
+	 *             Thrown if problems occur during the XML parse, usually due to
+	 *             badly formed XML.
 	 */
 	protected abstract ReturnType onNewTag(XPathPullParser pullParser, ReturnType objectToModify)
 			throws XMLParsingException;
@@ -262,9 +298,11 @@ public abstract class BaseIceSoapParserImpl<ReturnType> implements IceSoapParser
 	 * @param pullParser
 	 *            The pull parser that's encountered the text event
 	 * @param objectToModify
-	 *            The object to modify with details from the parser.
-	 * @return objectToModify
+	 *            The object to modify.
+	 * @return Should be the passed in objectToModify object, with changes.
 	 * @throws XMLParsingException
+	 *             Thrown if problems occur during the XML parse, usually due to
+	 *             badly formed XML.
 	 */
 	protected abstract ReturnType onText(XPathPullParser pullParser, ReturnType objectToModify)
 			throws XMLParsingException;
@@ -288,8 +326,9 @@ public abstract class BaseIceSoapParserImpl<ReturnType> implements IceSoapParser
 	}
 
 	/**
-	 * Retrieves the root xpath(s) from the annotation on the class. Note that
-	 * this may return null.
+	 * Retrieves the root xpath(s) from the annotation on the class - there will
+	 * be only one in most cases, but more if the xpath "|" operator has been
+	 * used to define multiple xpaths. Note that this may return null.
 	 * 
 	 * @param targetClass
 	 *            Class to retrieve from
@@ -308,10 +347,10 @@ public abstract class BaseIceSoapParserImpl<ReturnType> implements IceSoapParser
 	}
 
 	/**
-	 * Gets the @{@link XMLObject} annotation from a class hierarchy. I.e. it
-	 * will check the passed class, if the annotation isn't present it will
-	 * check the superclass and so on until it either finds the annotation and
-	 * returns it, or gets to the top of the hierarchy and returns null.
+	 * Gets the @{@link XMLObject} annotation from a class hierarchy. Checks the
+	 * passed class, if the annotation isn't present it will check the
+	 * superclass and so on until it either finds the annotation and returns it,
+	 * or gets to the top of the hierarchy and returns null.
 	 * 
 	 * @param targetClass
 	 *            The class to look at.
@@ -333,7 +372,7 @@ public abstract class BaseIceSoapParserImpl<ReturnType> implements IceSoapParser
 
 	/**
 	 * Gets the xpath from a {@link XMLField} annotation and compiles it to a
-	 * repo of XPathElements
+	 * repo of {@link XPathElement}s.
 	 * 
 	 * @param soapFieldAnnot
 	 *            The annotation to get the xpath from .

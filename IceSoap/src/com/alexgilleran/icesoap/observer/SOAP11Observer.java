@@ -21,5 +21,5 @@ public interface SOAP11Observer<ReturnType> extends SOAPObserver<ReturnType, SOA
 	 * 1.2 Faults, or need to parse extra details of the SOAP Fault, please use
 	 * {@link SOAPObserver} directly.
 	 */
-	abstract void onException(Request<ReturnType, SOAP11Fault> request, SOAPException e);
+	void onException(Request<ReturnType, SOAP11Fault> request, SOAPException e);
 }

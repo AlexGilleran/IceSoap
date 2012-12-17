@@ -3,9 +3,9 @@ package com.alexgilleran.icesoap.observer.registry;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.alexgilleran.icesoap.observer.SOAP11ListObserver;
 import com.alexgilleran.icesoap.observer.SOAP11Observer;
 import com.alexgilleran.icesoap.observer.SOAPListObserver;
+import com.alexgilleran.icesoap.request.ListRequest;
 import com.alexgilleran.icesoap.request.Request;
 
 /**
