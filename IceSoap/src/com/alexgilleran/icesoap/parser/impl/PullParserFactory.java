@@ -19,9 +19,9 @@ import android.util.Xml;
  * @author Alex Gilleran
  */
 public class PullParserFactory {
-	/** The singleton instance of this class */
-	private static PullParserFactory INSTANCE = null;
-	/** The XmlPullParserFactory to use for new parsers and serializers */
+	/** The singleton instance of this class/ */
+	private static PullParserFactory instance = null;
+	/** The XmlPullParserFactory to use for new parsers and serializers/ */
 	private XmlPullParserFactory parserFactory = getFactory();
 
 	/**
@@ -32,9 +32,9 @@ public class PullParserFactory {
 	}
 
 	/**
-	 * Lazily loads an instance of {@link XmlPullParserFactory}
+	 * Lazily loads an instance of {@link XmlPullParserFactory}/
 	 * 
-	 * @return An instance
+	 * @return An instance of the factory.
 	 */
 	private XmlPullParserFactory getFactory() {
 		try {
@@ -50,17 +50,17 @@ public class PullParserFactory {
 	 * @return An instance of the factory.
 	 */
 	public static PullParserFactory getInstance() {
-		if (INSTANCE == null) {
-			INSTANCE = new PullParserFactory();
+		if (instance == null) {
+			instance = new PullParserFactory();
 		}
 
-		return INSTANCE;
+		return instance;
 	}
 
 	/**
-	 * Builds a new instance of {@link XmlPullParser}
+	 * Builds a new instance of {@link XmlPullParser}.
 	 * 
-	 * @return a new instance of {@link XmlPullParser}
+	 * @return a new instance of {@link XmlPullParser}.
 	 */
 	public XmlPullParser buildParser() {
 		try {
@@ -71,9 +71,9 @@ public class PullParserFactory {
 	}
 
 	/**
-	 * Builds a new instance of {@link XmlSerializer}
+	 * Builds a new instance of {@link XmlSerializer}.
 	 * 
-	 * @return a new instance of {@link XmlSerializer}
+	 * @return a new instance of {@link XmlSerializer}.
 	 */
 	public XmlSerializer buildSerializer() {
 		try {

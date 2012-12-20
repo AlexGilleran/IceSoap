@@ -16,10 +16,10 @@ public class RelativeXPathElement extends SingleSlashXPathElement {
 	private static final String PREFIX = "";
 
 	/**
-	 * Instantiates a new {@link RelativeXPathElement}
+	 * Instantiates a new {@link RelativeXPathElement}.
 	 * 
 	 * @param name
-	 *            The name of the new element
+	 *            The name of the new element.
 	 * @param previousElement
 	 *            The previous element - note that this can be set to null.
 	 */

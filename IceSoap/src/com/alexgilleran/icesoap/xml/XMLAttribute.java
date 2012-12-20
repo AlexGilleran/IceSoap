@@ -14,7 +14,7 @@ public interface XMLAttribute {
 	/**
 	 * Gets the namespace URI of the attribute as a string.
 	 * 
-	 * @return
+	 * @return the namespace URI of the attribute as a string.
 	 */
 	String getNamespace();
 
@@ -49,7 +49,7 @@ public interface XMLAttribute {
 	String getValue();
 
 	/**
-	 * Set the value of the attribute
+	 * Set the value of the attribute.
 	 * 
 	 * @param value
 	 *            The new value as a String.

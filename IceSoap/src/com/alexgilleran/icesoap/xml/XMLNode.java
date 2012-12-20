@@ -5,7 +5,6 @@ package com.alexgilleran.icesoap.xml;
 
 import java.util.Collection;
 
-
 import com.alexgilleran.icesoap.xml.impl.XMLAttributeImpl;
 
 /**
@@ -15,18 +14,18 @@ import com.alexgilleran.icesoap.xml.impl.XMLAttributeImpl;
  * 
  */
 public interface XMLNode extends XMLElement {
-	/** Prefix for the XMLSchema namespace */
-	public final static String NS_PREFIX_XSD = "xsd";
-	/** URL of the XMLSchema namespace */
-	public final static String NS_URI_XSD = "http://www.w3.org/2001/XMLSchema";
-	/** Prefix for the XmlSchema-instance namespace */
-	public final static String NS_PREFIX_XSI = "xsi";
-	/** URL of the XmlSchema-instance namespace */
-	public final static String NS_URI_XSI = "http://www.w3.org/2001/XMLSchema-instance";
-	/** The name of the xsi:nil element */
-	public static final String XSI_NIL_NAME = "nil";
-	/** The value of the xsi:nil element if true */
-	public static final String XSI_NIL_TRUE = "true";
+	/** Prefix for the XMLSchema namespace. */
+	final static String NS_PREFIX_XSD = "xsd";
+	/** URL of the XMLSchema namespace. */
+	final static String NS_URI_XSD = "http://www.w3.org/2001/XMLSchema";
+	/** Prefix for the XmlSchema-instance namespace. */
+	final static String NS_PREFIX_XSI = "xsi";
+	/** URL of the XmlSchema-instance namespace. */
+	final static String NS_URI_XSI = "http://www.w3.org/2001/XMLSchema-instance";
+	/** The name of the xsi:nil element. */
+	final static String XSI_NIL_NAME = "nil";
+	/** The value of the xsi:nil element if true. */
+	final static String XSI_NIL_TRUE = "true";
 
 	/**
 	 * Get all the attributes of this element.
@@ -78,12 +77,12 @@ public interface XMLNode extends XMLElement {
 	/**
 	 * Get the name of the element.
 	 * 
-	 * @return The name as a string
+	 * @return The name as a string.
 	 */
 	String getName();
 
 	/**
-	 * Sets the name of the element
+	 * Sets the name of the element.
 	 * 
 	 * @param name
 	 *            The new name as a string.

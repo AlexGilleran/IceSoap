@@ -30,73 +30,74 @@ import com.alexgilleran.icesoap.request.SOAPRequester;
  */
 public class RequestImpl<ResultType, SOAPFaultType> implements Request<ResultType, SOAPFaultType> {
 
-	/** Unknown response from server */
+	/** Unknown response from server. */
 	private static final String MESSAGE_ERROR = "Request returned with error code ";
-	/** Status returned if SOAP Request has executed successfully */
+	/** Status returned if SOAP Request has executed successfully. */
 	private static final int HTTP_OK_STATUS = 200;
-	/** Status returned if there's an error that returns a soap fault */
+	/** Status returned if there's an error that returns a soap fault. */
 	private static final int HTTP_ERROR_STATUS = 500;
-	/** Message for 500 error exception */
+	/** Message for 500 error exception. */
 	private static final String MESSAGE_ERROR_500 = MESSAGE_ERROR + HTTP_ERROR_STATUS;
-	/** Message for 500 error exception, including SOAPFault */
+	/** Message for 500 error exception, including SOAPFault. */
 	private static final String MESSAGE_ERROR_500_SOAPFAULT = MESSAGE_ERROR_500 + ". SOAPFault: ";
-	/** Message for 500 error exception, if no SOAPFault was parsed */
+	/** Message for 500 error exception, if no SOAPFault was parsed. */
 	public static final String MESSAGE_ERROR_500_FAILED_SOAPFAULT = MESSAGE_ERROR_500
 			+ ". No returned soapfault could be parsed.";
 
-	/** Registry of observers to send events to */
+	/** Registry of observers to send events to. */
 	private ObserverRegistry<ResultType, SOAPFaultType> registry = new ObserverRegistry<ResultType, SOAPFaultType>();
-	/** Parser to use to parse the response */
+	/** Parser to use to parse the response. */
 	private IceSoapParser<ResultType> parser;
-	/** The URL to post the request to */
+	/** The URL to post the request to. */
 	private String url;
-	/** The envelope to serialize and POST */
+	/** The envelope to serialize and POST. */
 	private SOAPEnvelope soapEnv;
-	/** The {@link AsyncTask} that the request will be performed within */
+	/** The {@link AsyncTask} that the request will be performed within. */
 	private RequestTask<?> currentTask = null;
-	/** The result of the request */
+	/** The result of the request. */
 	private ResultType result;
 	/** Flag - is the request complete? */
 	private boolean complete = false;
 	/** Flag - is the request currently executing? */
 	private boolean executing = false;
-	/** Class to perform SOAP requests */
+	/** Class to perform SOAP requests. */
 	private SOAPRequester soapRequester;
-	/** The SOAPAction to perform */
+	/** The SOAPAction to perform. */
 	private String soapAction;
 	/**
 	 * A class representing the SOAP Fault that will be encountered in the event
-	 * of a fault occuring
+	 * of a fault occuring.
 	 */
 	private Class<SOAPFaultType> soapFaultClass;
-	/** A SOAPFault, if one has been encountered */
+	/** A SOAPFault, if one has been encountered. */
 	private SOAPFaultType soapFault;
 	/**
 	 * If an exception is caught, it is stored here until it can be thrown on
-	 * the UI thread
+	 * the UI thread.
 	 */
 	private SOAPException caughtException = null;
-	/** Whether this request is in debug mode **/
+
+	/** Whether this request is in debug mode. **/
 	private boolean debugMode = false;
-	/** Request XML to be stored in debug mode **/
+	/** Request XML to be stored in debug mode. **/
 	private String requestXML;
-	/** Response XML to be stored in debug mode **/
+	/** Response XML to be stored in debug mode. **/
 	private String responseXML;
 
 	/**
 	 * Creates a new request, automatically creating the parser.
 	 * 
 	 * @param url
-	 *            The URL to post the request to
+	 *            The URL to post the request to.
 	 * @param soapEnv
-	 *            The SOAP envelope to send, as a {@link SOAPEnvelope}
+	 *            The SOAP envelope to send, as a {@link SOAPEnvelope}.
 	 * @param soapAction
-	 *            The SOAP Action to pass in the HTTP header - can be null
+	 *            The SOAP Action to pass in the HTTP header - can be null.
 	 * @param resultClass
 	 *            The class of the type to return from the request.
 	 * @param soapFaultClass
 	 *            The class of the SOAPFault that will be returned if one is
-	 *            encountered
+	 *            encountered.
 	 * @param requester
 	 *            The implementation of {@link SOAPRequester} to use for
 	 *            requests.
@@ -110,16 +111,16 @@ public class RequestImpl<ResultType, SOAPFaultType> implements Request<ResultTyp
 	 * Creates a new request.
 	 * 
 	 * @param url
-	 *            The URL to post the request to
+	 *            The URL to post the request to.
 	 * @param soapEnv
-	 *            The SOAP envelope to send, as a {@link SOAPEnvelope}
+	 *            The SOAP envelope to send, as a {@link SOAPEnvelope}.
 	 * @param soapAction
-	 *            The SOAP Action to pass in the HTTP header - can be null
+	 *            The SOAP Action to pass in the HTTP header - can be null.
 	 * @param parser
 	 *            The {@link IceSoapParser} to use to parse the response.
 	 * @param soapFaultClass
 	 *            The class of the SOAPFault that will be returned if one is
-	 *            encountered
+	 *            encountered.
 	 * @param requester
 	 *            The implementation of {@link SOAPRequester} to use for
 	 *            requests.
@@ -325,7 +326,7 @@ public class RequestImpl<ResultType, SOAPFaultType> implements Request<ResultTyp
 
 			if (response != null) {
 				responseData = response.getData();
-				
+
 				if (debugMode) {
 					// \\A is a regex for the first character... putting that
 					// into useDelimiter gets us the whole response as a String
@@ -338,7 +339,7 @@ public class RequestImpl<ResultType, SOAPFaultType> implements Request<ResultTyp
 
 					responseScanner.close();
 
-				} 
+				}
 
 				switch (response.getHttpStatus()) {
 				case HTTP_OK_STATUS:

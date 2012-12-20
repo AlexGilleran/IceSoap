@@ -13,15 +13,18 @@ import com.alexgilleran.icesoap.annotation.XMLObject;
  */
 @XMLObject("//Fault")
 public class SOAP11Fault {
+	/** The contents of the {@code faultCode} element, as a String. */
 	@XMLField("faultcode")
 	private String faultCode;
+	/** The contents of the {@code faultString} element, as a String. */
 	@XMLField("faultstring")
 	private String faultString;
+	/** The contents of the {@code faultActor} element, as a String. */
 	@XMLField("faultactor")
 	private String faultActor;
 
 	/**
-	 * Mandatory zero-arg constructor for automatic parsing
+	 * Mandatory zero-arg constructor for initializing via reflection.
 	 */
 	public SOAP11Fault() {
 
@@ -70,12 +73,9 @@ public class SOAP11Fault {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result
-				+ ((faultActor == null) ? 0 : faultActor.hashCode());
-		result = prime * result
-				+ ((faultCode == null) ? 0 : faultCode.hashCode());
-		result = prime * result
-				+ ((faultString == null) ? 0 : faultString.hashCode());
+		result = prime * result + ((faultActor == null) ? 0 : faultActor.hashCode());
+		result = prime * result + ((faultCode == null) ? 0 : faultCode.hashCode());
+		result = prime * result + ((faultString == null) ? 0 : faultString.hashCode());
 		return result;
 	}
 
@@ -108,7 +108,7 @@ public class SOAP11Fault {
 
 	@Override
 	public String toString() {
-		return "SOAP11Fault [faultCode=" + faultCode + ", faultString="
-				+ faultString + ", faultActor=" + faultActor + "]";
+		return "SOAP11Fault [faultCode=" + faultCode + ", faultString=" + faultString + ", faultActor=" + faultActor
+				+ "]";
 	}
 }

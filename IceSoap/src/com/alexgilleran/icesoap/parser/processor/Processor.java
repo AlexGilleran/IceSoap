@@ -5,7 +5,7 @@ package com.alexgilleran.icesoap.parser.processor;
  * method {@link #process(String)}, in which input is taken in as a String
  * (straight from the SOAP Envelope), this information is processed by
  * implementation code, then the result is returned as an instance of the
- * generic OutputType
+ * generic OutputType.
  * 
  * @author Alex Gilleran
  * 

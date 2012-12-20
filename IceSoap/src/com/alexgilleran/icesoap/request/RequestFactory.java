@@ -21,11 +21,11 @@ public interface RequestFactory {
 	 * 
 	 * @param <ReturnType>
 	 *            The type of the object that will be returned by this request
-	 *            when executed (if successful)
+	 *            when executed (if successful).
 	 * @param url
-	 *            The url to POST the request to
+	 *            The url to POST the request to.
 	 * @param soapEnvelope
-	 *            The {@link SOAPEnvelope} to post
+	 *            The {@link SOAPEnvelope} to post.
 	 * @param soapAction
 	 *            The SOAP action to use. Can be set to null as some SOAP
 	 *            services use this and some don't.
@@ -35,8 +35,7 @@ public interface RequestFactory {
 	 *         registered and be executed.
 	 * @see #buildRequest(String, SOAPEnvelope, String, Class, Class)
 	 */
-	public <ReturnType> SOAP11Request<ReturnType> buildRequest(String url,
-			SOAPEnvelope soapEnvelope, String soapAction,
+	<ReturnType> SOAP11Request<ReturnType> buildRequest(String url, SOAPEnvelope soapEnvelope, String soapAction,
 			Class<ReturnType> resultClass);
 
 	/**
@@ -62,9 +61,8 @@ public interface RequestFactory {
 	 * @return A request with the passed parameters, ready to have observers
 	 *         registered and be executed.
 	 */
-	public <ReturnType, SOAPFaultType> Request<ReturnType, SOAPFaultType> buildRequest(
-			String url, SOAPEnvelope soapEnvelope, String soapAction,
-			Class<ReturnType> resultClass, Class<SOAPFaultType> soapFaultClass);
+	<ReturnType, SOAPFaultType> Request<ReturnType, SOAPFaultType> buildRequest(String url, SOAPEnvelope soapEnvelope,
+			String soapAction, Class<ReturnType> resultClass, Class<SOAPFaultType> soapFaultClass);
 
 	/**
 	 * Creates a {@link ListRequest} that will parse a default
@@ -74,11 +72,11 @@ public interface RequestFactory {
 	 * 
 	 * @param <ReturnType>
 	 *            The type of the objects inside the list that will be returned
-	 *            by this request when executed (if successful)
+	 *            by this request when executed (if successful).
 	 * @param url
-	 *            The url to POST the request to
+	 *            The url to POST the request to.
 	 * @param soapEnvelope
-	 *            The {@link SOAPEnvelope} to post
+	 *            The {@link SOAPEnvelope} to post.
 	 * @param soapAction
 	 *            The SOAP action to use. Can be set to null as some SOAP
 	 *            services use this and some don't.
@@ -88,9 +86,8 @@ public interface RequestFactory {
 	 * @return A request with the passed parameters, ready to have observers
 	 *         registered and be executed.
 	 */
-	public <ReturnType> SOAP11ListRequest<ReturnType> buildListRequest(
-			String url, SOAPEnvelope soapEnvelope, String soapAction,
-			Class<ReturnType> resultClass);
+	<ReturnType> SOAP11ListRequest<ReturnType> buildListRequest(String url, SOAPEnvelope soapEnvelope,
+			String soapAction, Class<ReturnType> resultClass);
 
 	/**
 	 * Builds a {@link ListRequest} with the passed parameters. Use this sort of
@@ -100,11 +97,11 @@ public interface RequestFactory {
 	 * 
 	 * @param <ReturnType>
 	 *            The type of the objects inside the list that will be returned
-	 *            by this request when executed (if successful)
+	 *            by this request when executed (if successful).
 	 * @param url
-	 *            The url to POST the request to
+	 *            The url to POST the request to.
 	 * @param soapEnvelope
-	 *            The {@link SOAPEnvelope} to post
+	 *            The {@link SOAPEnvelope} to post.
 	 * @param soapAction
 	 *            The SOAP action to use. Can be set to null as some SOAP
 	 *            services use this and some don't.
@@ -117,9 +114,9 @@ public interface RequestFactory {
 	 * @return A request with the passed parameters, ready to have observers
 	 *         registered and be executed.
 	 */
-	public <ReturnType, SOAPFaultType> ListRequest<ReturnType, SOAPFaultType> buildListRequest(
-			String url, SOAPEnvelope soapEnvelope, String soapAction,
-			Class<ReturnType> resultClass, Class<SOAPFaultType> soapFaultClass);
+	<ReturnType, SOAPFaultType> ListRequest<ReturnType, SOAPFaultType> buildListRequest(String url,
+			SOAPEnvelope soapEnvelope, String soapAction, Class<ReturnType> resultClass,
+			Class<SOAPFaultType> soapFaultClass);
 
 	/**
 	 * Sets the implementation of {@link SOAPRequester} that will be used when
@@ -128,13 +125,13 @@ public interface RequestFactory {
 	 * 
 	 * @param soapRequester
 	 */
-	public void setSOAPRequester(SOAPRequester soapRequester);
+	void setSOAPRequester(SOAPRequester soapRequester);
 
 	/**
 	 * Gets the instance of {@link SOAPRequester} currently being used for
 	 * creating requests.
 	 * 
-	 * @return The instance of {@link SOAPRequester}
+	 * @return The instance of {@link SOAPRequester}.
 	 */
-	public SOAPRequester getSOAPRequester();
+	SOAPRequester getSOAPRequester();
 }

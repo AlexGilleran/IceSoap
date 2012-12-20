@@ -9,14 +9,14 @@ import com.alexgilleran.icesoap.xpath.elements.XPathElement;
  * 
  */
 public class DoubleSlashXPathElement extends BaseXPathElement implements Cloneable {
-	/** The prefix of this element when represented as a String */
+	/** The prefix of this element when represented as a String. */
 	private static final String PREFIX = "//";
 
 	/**
 	 * Instantiates a new {@link DoubleSlashXPathElement}
 	 * 
 	 * @param name
-	 *            The name of the new element
+	 *            The name of the new element.
 	 * @param previousElement
 	 *            The previous element - note that this can be set to null.
 	 */
@@ -71,11 +71,11 @@ public class DoubleSlashXPathElement extends BaseXPathElement implements Cloneab
 	@Override
 	public DoubleSlashXPathElement clone() {
 		XPathElement previousElement = getPreviousElement();
-		
+
 		if (previousElement != null) {
 			previousElement = previousElement.clone();
 		}
-		
+
 		DoubleSlashXPathElement newElement = new DoubleSlashXPathElement(getName(), previousElement);
 
 		copyInto(newElement);

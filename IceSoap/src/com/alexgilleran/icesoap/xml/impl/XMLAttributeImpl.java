@@ -3,18 +3,18 @@ package com.alexgilleran.icesoap.xml.impl;
 import com.alexgilleran.icesoap.xml.XMLAttribute;
 
 /**
- * Basic implementation of {@link XMLAttribute}
+ * Basic implementation of {@link XMLAttribute}.
  * 
  * @author Alex Gilleran
  * 
  */
 public class XMLAttributeImpl extends XMLObjectBase implements XMLAttribute {
-	/** Value of the attribute */
+	/** Value of the attribute. */
 	private String value;
 
 	/**
 	 * @param namespace
-	 *            The namespace of the attribute (can be null)
+	 *            The namespace of the attribute (can be null).
 	 * @param name
 	 *            The name of the attribute.
 	 * @param value
@@ -50,8 +50,7 @@ public class XMLAttributeImpl extends XMLObjectBase implements XMLAttribute {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		result = prime * result
-				+ ((namespace == null) ? 0 : namespace.hashCode());
+		result = prime * result + ((namespace == null) ? 0 : namespace.hashCode());
 		result = prime * result + ((value == null) ? 0 : value.hashCode());
 		return result;
 	}

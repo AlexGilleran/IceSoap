@@ -28,14 +28,14 @@ import com.alexgilleran.icesoap.observer.SOAP11Observer;
  */
 public interface Request<ResultType, SOAPFaultType> {
 	/**
-	 * Executes the request
+	 * Executes the request.
 	 */
 	void execute();
 
 	/**
 	 * Registers the provided observer then executes the request - this is
 	 * equivalent to calling {@link #registerObserver(SOAP11Observer)}, then
-	 * {@link #execute()}
+	 * {@link #execute()}.
 	 * 
 	 * @param observer
 	 *            An observer to register
@@ -52,7 +52,7 @@ public interface Request<ResultType, SOAPFaultType> {
 	void registerObserver(SOAPObserver<ResultType, SOAPFaultType> observer);
 
 	/**
-	 * Remove an observer
+	 * Remove an observer.
 	 * 
 	 * @param observer
 	 *            The observer to remove.
@@ -60,7 +60,7 @@ public interface Request<ResultType, SOAPFaultType> {
 	void deregisterObserver(SOAPObserver<ResultType, SOAPFaultType> observer);
 
 	/**
-	 * Cancels the request - akin to cancelling an {@link AsyncTask}
+	 * Cancels the request - akin to cancelling an {@link AsyncTask}.
 	 */
 	void cancel();
 
@@ -88,9 +88,9 @@ public interface Request<ResultType, SOAPFaultType> {
 	boolean isComplete();
 
 	/**
-	 * Retrieves an exception if one has been encountered
+	 * Retrieves an exception if one has been encountered.
 	 * 
-	 * @return The encountered exception if one exists, otherwise null
+	 * @return The encountered exception if one exists, otherwise null.
 	 */
 	Throwable getException();
 
@@ -113,7 +113,7 @@ public interface Request<ResultType, SOAPFaultType> {
 
 	/**
 	 * Gets the request XML as a string, if debug mode has been activated with
-	 * {@link #setDebugMode(boolean)}
+	 * {@link #setDebugMode(boolean)}.
 	 * 
 	 * @return The request XML as a string.
 	 */

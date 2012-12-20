@@ -10,14 +10,14 @@ import com.alexgilleran.icesoap.xpath.elements.XPathElement;
  */
 public class SingleSlashXPathElement extends BaseXPathElement {
 
-	/** The prefix of a single slash element is / */
+	/** The prefix of a single slash element is /. */
 	private static final String PREFIX = "/";
 
 	/**
-	 * Instantiates a new {@link SingleSlashXPathElement}
+	 * Instantiates a new {@link SingleSlashXPathElement}.
 	 * 
 	 * @param name
-	 *            The name of the new element
+	 *            The name of the new element.
 	 * @param previousElement
 	 *            The previous element - note that this can be set to null.
 	 */

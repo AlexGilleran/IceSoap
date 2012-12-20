@@ -13,14 +13,14 @@ import com.alexgilleran.icesoap.xml.XMLElement;
  * 
  */
 public class XMLTextElement implements XMLElement {
-	/** The text content of the element */
-	String content;
+	/** The text content of the element. */
+	private String content;
 
 	/**
 	 * Creates a new instance
 	 * 
 	 * @param content
-	 *            The string content of the element
+	 *            The string content of the element.
 	 */
 	public XMLTextElement(String content) {
 		this.content = content;
@@ -30,8 +30,7 @@ public class XMLTextElement implements XMLElement {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void serialize(XmlSerializer serializer)
-			throws IllegalArgumentException, IllegalStateException, IOException {
+	public void serialize(XmlSerializer serializer) throws IOException {
 		serializer.text(content);
 	}
 

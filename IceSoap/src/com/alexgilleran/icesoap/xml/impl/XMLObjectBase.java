@@ -8,20 +8,19 @@ import com.alexgilleran.icesoap.xml.XMLNode;
 
 /**
  * Abstract class for implementations of {@link XMLAttribute} and
- * {@link XMLNode}
+ * {@link XMLNode}.
  * 
  * @author Alex Gilleran
  * 
  */
 public abstract class XMLObjectBase {
-
-	/** The namespace of the element */
+	/** The namespace of the element. */
 	protected String namespace;
-	/** The name of the attribute */
+	/** The name of the attribute. */
 	protected String name;
 
 	/**
-	 * Instantiates a new XMLObject
+	 * Instantiates a new XMLObject.
 	 * 
 	 * @param namespace
 	 *            The namespace of the object (can be null).
@@ -34,28 +33,38 @@ public abstract class XMLObjectBase {
 	}
 
 	/**
-	 * {inheritDoc}
+	 * Get the namespace URI for this element.
+	 * 
+	 * @return The namespace URI, as a String.
 	 */
 	public String getNamespace() {
 		return namespace;
 	}
 
 	/**
-	 * {inheritDoc}
+	 * Sets the namespace of this element.
+	 * 
+	 * @param namespace
+	 *            The namespace URI as a String.
 	 */
 	public void setNamespace(String namespace) {
 		this.namespace = namespace;
 	}
 
 	/**
-	 * {inheritDoc}
+	 * Get the name of the element.
+	 * 
+	 * @return The name as a string.
 	 */
 	public String getName() {
 		return name;
 	}
 
 	/**
-	 * {inheritDoc}
+	 * Sets the name of the element.
+	 * 
+	 * @param name
+	 *            The new name as a string.
 	 */
 	public void setName(String name) {
 		this.name = name;
@@ -66,8 +75,7 @@ public abstract class XMLObjectBase {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		result = prime * result
-				+ ((namespace == null) ? 0 : namespace.hashCode());
+		result = prime * result + ((namespace == null) ? 0 : namespace.hashCode());
 		return result;
 	}
 

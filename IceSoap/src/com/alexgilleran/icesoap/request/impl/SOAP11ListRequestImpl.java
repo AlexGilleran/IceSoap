@@ -3,7 +3,10 @@
  */
 package com.alexgilleran.icesoap.request.impl;
 
+import java.util.List;
+
 import com.alexgilleran.icesoap.envelope.SOAPEnvelope;
+import com.alexgilleran.icesoap.request.ListRequest;
 import com.alexgilleran.icesoap.request.SOAP11ListRequest;
 import com.alexgilleran.icesoap.request.SOAPRequester;
 import com.alexgilleran.icesoap.soapfault.SOAP11Fault;
@@ -14,9 +17,12 @@ import com.alexgilleran.icesoap.soapfault.SOAP11Fault;
  * 
  * @author Alex Gilleran
  * 
+ * @param <ResultType>
+ *            The type of the object to retrieve from this request. If the type
+ *            is a {@link List}, you may want to consider using
+ *            {@link ListRequest} instead.
  */
-public class SOAP11ListRequestImpl<ResultType> extends
-		ListRequestImpl<ResultType, SOAP11Fault> implements
+public class SOAP11ListRequestImpl<ResultType> extends ListRequestImpl<ResultType, SOAP11Fault> implements
 		SOAP11ListRequest<ResultType> {
 
 	/**
@@ -34,11 +40,9 @@ public class SOAP11ListRequestImpl<ResultType> extends
 	 *            The implementation of {@link SOAPRequester} to use for
 	 *            requests.
 	 */
-	protected SOAP11ListRequestImpl(String url, SOAPEnvelope soapEnv,
-			String soapAction, Class<ResultType> resultClass,
+	protected SOAP11ListRequestImpl(String url, SOAPEnvelope soapEnv, String soapAction, Class<ResultType> resultClass,
 			SOAPRequester requester) {
-		super(url, soapEnv, soapAction, resultClass, SOAP11Fault.class,
-				requester);
+		super(url, soapEnv, soapAction, resultClass, SOAP11Fault.class, requester);
 	}
 
 }

@@ -17,18 +17,18 @@ import com.alexgilleran.icesoap.xpath.elements.impl.SingleSlashXPathElement;
  * Wrapper for {@link XmlPullParser} for XPath operations. Basically this acts
  * in much the same manner as an {@link XmlPullParser}, but keeps track of the
  * current position in the document as an {@link XPathElement}, which can be
- * retrieved at any time.
+ * retrieved at any time. It also changes the parser so that attributes are an
+ * event.
  * 
  * @author Alex Gilleran
  * 
  */
 public class XPathPullParserImpl implements XPathPullParser {
-	/** The wrapped {@link XmlPullParser} */
-	private XmlPullParser parser = PullParserFactory.getInstance()
-			.buildParser();
-	/** The element that the parser is currently at */
+	/** The wrapped {@link XmlPullParser}. */
+	private XmlPullParser parser = PullParserFactory.getInstance().buildParser();
+	/** The element that the parser is currently at. */
 	private XPathElement currentElement;
-	/** The type of the current event as an int */
+	/** The type of the current event as an int. */
 	private int eventType;
 	/**
 	 * Flag - keeps track of whether to remove the last XPath element on the
@@ -142,15 +142,13 @@ public class XPathPullParserImpl implements XPathPullParser {
 
 	/**
 	 * Adds a the element that the parser is currently at to the current xpath,
-	 * trimming any attribute information
+	 * trimming any attribute information.
 	 */
 	private void addNewElement() {
-		// As we've started a new element, the attribute index starts from 0
-		// again
+		// As we've started a new element, the attribute index starts from again
 		currentAttributeIndex = 0;
 
-		currentElement = new SingleSlashXPathElement(parser.getName(),
-				currentElement);
+		currentElement = new SingleSlashXPathElement(parser.getName(), currentElement);
 
 		// Add predicates
 		addPredicates();
@@ -164,16 +162,14 @@ public class XPathPullParserImpl implements XPathPullParser {
 		int attributeCount = parser.getAttributeCount();
 		if (attributeCount > 0) {
 			for (int i = 0; i < attributeCount; i++) {
-				currentElement.addPredicate(parser.getAttributeName(i),
-						parser.getAttributeValue(i));
+				currentElement.addPredicate(parser.getAttributeName(i), parser.getAttributeValue(i));
 			}
 		}
 	}
 
 	@Override
 	public boolean isCurrentValueXsiNil() {
-		return (XMLNode.XSI_NIL_TRUE.equals(parser.getAttributeValue(
-				XMLNode.NS_URI_XSI, XMLNode.XSI_NIL_NAME)));
+		return (XMLNode.XSI_NIL_TRUE.equals(parser.getAttributeValue(XMLNode.NS_URI_XSI, XMLNode.XSI_NIL_NAME)));
 	}
 
 	/**
@@ -191,8 +187,7 @@ public class XPathPullParserImpl implements XPathPullParser {
 	 */
 	private void trimEndedElement() {
 		if (removeLastXPathElement) {
-			// If the flag was set to remove the last XPath element, do it
-			// now
+			// If the flag was set to remove the last XPath element, do it now
 			currentElement = currentElement.getPreviousElement();
 			removeLastXPathElement = false;
 		}
@@ -229,8 +224,7 @@ public class XPathPullParserImpl implements XPathPullParser {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void setInput(InputStream inputStream, String inputEncoding)
-			throws XmlPullParserException {
+	public void setInput(InputStream inputStream, String inputEncoding) throws XmlPullParserException {
 		parser.setInput(inputStream, inputEncoding);
 	}
 }

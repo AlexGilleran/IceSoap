@@ -20,13 +20,12 @@ import com.alexgilleran.icesoap.xml.XMLNode;
  * @author Alex Gilleran
  * 
  */
-public abstract class XMLNodeBase extends XMLObjectBase implements
-		XMLNode {
-	/** Name for xsi:type attribute */
+public abstract class XMLNodeBase extends XMLObjectBase implements XMLNode {
+	/** Name for xsi:type attribute. */
 	private static final String TYPE_ATTRIBUTE_NAME = "type";
-	/** Namespace prefixes declared in this element (map of prefixes to urls) */
+	/** Namespace prefixes declared in this element (map of prefixes to urls). */
 	private Map<String, String> declaredPrefixes = new HashMap<String, String>();
-	/** The attributes of the element */
+	/** The attributes of the element. */
 	private Set<XMLAttribute> attributes = new HashSet<XMLAttribute>();
 	/**
 	 * The xsi:type of the element - if this is set, it will be put into the
@@ -35,10 +34,10 @@ public abstract class XMLNodeBase extends XMLObjectBase implements
 	private XMLAttribute type = null;
 
 	/**
-	 * Creates a new XML Element
+	 * Creates a new XML Element.
 	 * 
 	 * @param namespace
-	 *            The namespace of the element (can be null)
+	 *            The namespace of the element (can be null).
 	 * @param name
 	 *            The name of the element.
 	 */
@@ -72,8 +71,7 @@ public abstract class XMLNodeBase extends XMLObjectBase implements
 		// If there's been no type set, make a new attribute to represent it and
 		// remember it in case it needs changing in the future
 		if (this.type == null) {
-			this.type = addAttribute(XMLNode.NS_URI_XSI,
-					TYPE_ATTRIBUTE_NAME, type);
+			this.type = addAttribute(XMLNode.NS_URI_XSI, TYPE_ATTRIBUTE_NAME, type);
 		} else {
 			this.type.setValue(type);
 		}
@@ -87,10 +85,12 @@ public abstract class XMLNodeBase extends XMLObjectBase implements
 		declaredPrefixes.put(prefix, namespace);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public String toString() {
 		try {
-			XmlSerializer cereal = PullParserFactory.getInstance()
-					.buildSerializer();
+			XmlSerializer cereal = PullParserFactory.getInstance().buildSerializer();
 			StringWriter writer = new StringWriter();
 
 			cereal.setOutput(writer);
@@ -112,8 +112,7 @@ public abstract class XMLNodeBase extends XMLObjectBase implements
 	/**
 	 * {@inheritDoc}
 	 */
-	public void serialize(XmlSerializer serializer)
-			throws IllegalArgumentException, IllegalStateException, IOException {
+	public void serialize(XmlSerializer serializer) throws IllegalArgumentException, IllegalStateException, IOException {
 		serializePrefixes(serializer);
 
 		serializer.startTag(namespace, name);
@@ -128,12 +127,12 @@ public abstract class XMLNodeBase extends XMLObjectBase implements
 	 * Serializes the prefixes before the tag is started.
 	 * 
 	 * @param serializer
-	 * @throws IllegalArgumentException
-	 * @throws IllegalStateException
+	 *            XmlSerializer to append to
+	 * 
 	 * @throws IOException
+	 *             If a general I/O error occurs.
 	 */
-	protected void serializePrefixes(XmlSerializer serializer)
-			throws IllegalArgumentException, IllegalStateException, IOException {
+	protected void serializePrefixes(XmlSerializer serializer) throws IOException {
 		for (String key : declaredPrefixes.keySet()) {
 			serializer.setPrefix(key, declaredPrefixes.get(key));
 		}
@@ -144,15 +143,12 @@ public abstract class XMLNodeBase extends XMLObjectBase implements
 	 * 
 	 * @param serializer
 	 *            XMLPull serializer to use for serialization
-	 * @throws IllegalArgumentException
-	 * @throws IllegalStateException
 	 * @throws IOException
+	 *             If a general I/O error occurs.
 	 */
-	protected void serializeAttributes(XmlSerializer serializer)
-			throws IllegalArgumentException, IllegalStateException, IOException {
+	protected void serializeAttributes(XmlSerializer serializer) throws IOException {
 		for (XMLAttribute attribute : attributes) {
-			serializer.attribute(attribute.getNamespace(), attribute.getName(),
-					attribute.getValue());
+			serializer.attribute(attribute.getNamespace(), attribute.getName(), attribute.getValue());
 		}
 	}
 
@@ -160,23 +156,18 @@ public abstract class XMLNodeBase extends XMLObjectBase implements
 	 * Serializes the content of the element, be it text or other elements.
 	 * 
 	 * @param serializer
-	 *            XMLPull serializer to use for serialization
-	 * @throws IllegalArgumentException
-	 * @throws IllegalStateException
+	 *            XMLPull serializer to use for serialization.
 	 * @throws IOException
+	 *             If a general I/O error occurs.
 	 */
-	protected abstract void serializeContent(XmlSerializer serializer)
-			throws IllegalArgumentException, IllegalStateException, IOException;
+	protected abstract void serializeContent(XmlSerializer serializer) throws IOException;
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result
-				+ ((attributes == null) ? 0 : attributes.hashCode());
-		result = prime
-				* result
-				+ ((declaredPrefixes == null) ? 0 : declaredPrefixes.hashCode());
+		result = prime * result + ((attributes == null) ? 0 : attributes.hashCode());
+		result = prime * result + ((declaredPrefixes == null) ? 0 : declaredPrefixes.hashCode());
 		result = prime * result + ((type == null) ? 0 : type.hashCode());
 		return result;
 	}

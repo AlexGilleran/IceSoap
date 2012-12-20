@@ -7,22 +7,22 @@ import org.xmlpull.v1.XmlSerializer;
 import com.alexgilleran.icesoap.xml.XMLTextNode;
 
 /**
- * Implementation of {@link XMLTextNode}
+ * Implementation of {@link XMLTextNode}.
  * 
  * @author Alex Gilleran
  * 
  */
 public class XMLTextNodeImpl extends XMLNodeBase implements XMLTextNode {
-	/** The blank value - returned if the value is null */
+	/** The blank value - returned if the value is null. */
 	private static final String BLANK_VALUE = "";
 	/** The text value of the text element. */
 	private String value;
 
 	/**
-	 * Instantiates a new XML text element
+	 * Instantiates a new XML text element.
 	 * 
 	 * @param namespace
-	 *            The namespace of the text element (can be null)
+	 *            The namespace of the text element (can be null).
 	 * @param name
 	 *            The name of the text element.
 	 * @param value
@@ -50,8 +50,8 @@ public class XMLTextNodeImpl extends XMLNodeBase implements XMLTextNode {
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected void serializeContent(XmlSerializer cereal)
-			throws IllegalArgumentException, IllegalStateException, IOException {
+	protected void serializeContent(XmlSerializer cereal) throws IllegalArgumentException, IllegalStateException,
+			IOException {
 		if (value == null) {
 			cereal.attribute(NS_URI_XSI, XSI_NIL_NAME, XSI_NIL_TRUE);
 		} else {

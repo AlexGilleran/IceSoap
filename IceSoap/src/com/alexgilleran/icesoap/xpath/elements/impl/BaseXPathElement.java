@@ -18,22 +18,21 @@ import com.alexgilleran.icesoap.xpath.elements.XPathElement;
  * 
  */
 public abstract class BaseXPathElement implements XPathElement {
-	/** The name of the element */
+	/** The name of the element. */
 	private String name;
-
-	/** The previous element */
+	/** The previous element. */
 	private XPathElement previousElement;
 	/**
 	 * A map representing all the predicates for this element, mapping from name
-	 * to value
+	 * to value.
 	 */
 	private Map<String, String> predicates = new HashMap<String, String>();
 
 	/**
-	 * Instantiates a new BaseXPathElement
+	 * Instantiates a new BaseXPathElement.
 	 * 
 	 * @param name
-	 *            The name of the new element
+	 *            The name of the new element.
 	 * @param previousElement
 	 *            The previous element - note that this can be set to null.
 	 */
@@ -196,6 +195,14 @@ public abstract class BaseXPathElement implements XPathElement {
 		return thisElement;
 	}
 
+	/**
+	 * Copies the members accessible at this level of the inheritance hierarchy
+	 * in this object, into a new element - designed to be used by
+	 * {@link #clone()}.
+	 * 
+	 * @param newElement
+	 *            The new element to copy details into.
+	 */
 	protected void copyInto(BaseXPathElement newElement) {
 		newElement.name = name;
 
@@ -208,6 +215,7 @@ public abstract class BaseXPathElement implements XPathElement {
 		}
 	}
 
+	@Override
 	public abstract BaseXPathElement clone();
 
 	@Override

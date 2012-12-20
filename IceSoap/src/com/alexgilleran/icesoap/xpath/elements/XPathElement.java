@@ -27,7 +27,13 @@ public interface XPathElement extends Cloneable {
 	 * 
 	 */
 	String getName();
-	
+
+	/**
+	 * Performs a deep-copy of this {@link XPathElement} instance - this
+	 * includes deep copies of the entire previous element chain.
+	 * 
+	 * @return A new copy of the XPathElement.
+	 */
 	XPathElement clone();
 
 	/**
@@ -176,7 +182,7 @@ public interface XPathElement extends Cloneable {
 	 * element to <code>/element</code> as above, the resulting entire XPath
 	 * will become <code>/element/allnode/xpath</code>.
 	 * 
-	 * @param element
+	 * @param previousElement
 	 *            The element to set as the previous element to this one.
 	 */
 	void setPreviousElement(XPathElement previousElement);

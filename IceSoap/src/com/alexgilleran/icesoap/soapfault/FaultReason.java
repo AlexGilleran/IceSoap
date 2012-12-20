@@ -12,9 +12,11 @@ import com.alexgilleran.icesoap.annotation.XMLObject;
  */
 @XMLObject("//Reason/Text")
 public class FaultReason {
+	/** Lang field of the reason */
 	@XMLField("@lang")
 	private String lang;
 
+	/** The reason itself. */
 	@XMLField
 	private String reason;
 

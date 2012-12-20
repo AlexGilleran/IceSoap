@@ -14,44 +14,41 @@ import com.alexgilleran.icesoap.request.ListRequest;
 import com.alexgilleran.icesoap.request.SOAPRequester;
 
 /**
- * Implementation of {@link ListRequest}
+ * Implementation of {@link ListRequest}.
  * 
  * @author Alex Gilleran
  * 
  * @param <ResultType>
  *            The type of the contents of the list to retrieve.
  */
-public class ListRequestImpl<ResultType, SOAPFaultType> extends
-		RequestImpl<List<ResultType>, SOAPFaultType> implements
+public class ListRequestImpl<ResultType, SOAPFaultType> extends RequestImpl<List<ResultType>, SOAPFaultType> implements
 		ListRequest<ResultType, SOAPFaultType> {
-	/** The parser to use to parse the result */
+	/** The parser to use to parse the result. */
 	private IceSoapListParser<ResultType> parser;
-	/** The registry to use to dispatch item-related events */
+	/** The registry to use to dispatch item-related events. */
 	private ListObserverRegistry<ResultType, SOAPFaultType> itemRegistry = new ListObserverRegistry<ResultType, SOAPFaultType>();
 
 	/**
 	 * Creates a new request, automatically creating the parser.
 	 * 
 	 * @param url
-	 *            The URL to post the request to
+	 *            The URL to post the request to.
 	 * @param soapEnv
-	 *            The SOAP envelope to send, as a {@link SOAPEnvelope}
+	 *            The SOAP envelope to send, as a {@link SOAPEnvelope}.
 	 * @param soapAction
-	 *            The SOAP Action to pass in the HTTP header - can be null
+	 *            The SOAP Action to pass in the HTTP header - can be null.
 	 * @param resultClass
 	 *            The class of the type to return from the request.
 	 * @param soapFaultClass
 	 *            The class of the SOAPFault that will be returned if one is
-	 *            encountered
+	 *            encountered.
 	 * @param requester
 	 *            The implementation of {@link SOAPRequester} to use for
 	 *            requests.
 	 */
-	protected ListRequestImpl(String url, SOAPEnvelope soapEnv,
-			String soapAction, Class<ResultType> resultClass,
+	protected ListRequestImpl(String url, SOAPEnvelope soapEnv, String soapAction, Class<ResultType> resultClass,
 			Class<SOAPFaultType> soapFaultClass, SOAPRequester requester) {
-		this(url, soapEnv, new IceSoapListParserImpl<ResultType>(resultClass),
-				soapAction, soapFaultClass, requester);
+		this(url, soapEnv, new IceSoapListParserImpl<ResultType>(resultClass), soapAction, soapFaultClass, requester);
 	}
 
 	/**
@@ -60,18 +57,17 @@ public class ListRequestImpl<ResultType, SOAPFaultType> extends
 	 * @param url
 	 *            The URL to post the request to
 	 * @param soapEnv
-	 *            The SOAP envelope to send, as a {@link SOAPEnvelope}
+	 *            The SOAP envelope to send, as a {@link SOAPEnvelope}.
 	 * @param parser
 	 *            The {@link IceSoapListParser} to use to parse the response.
 	 * @param soapAction
-	 *            The SOAP Action to pass in the HTTP header - can be null
+	 *            The SOAP Action to pass in the HTTP header - can be null.
 	 * @param requester
 	 *            The implementation of {@link SOAPRequester} to use for
 	 *            requests.
 	 */
-	protected ListRequestImpl(String url, SOAPEnvelope soapEnv,
-			IceSoapListParser<ResultType> parser, String soapAction,
-			Class<SOAPFaultType> soapFaultClass, SOAPRequester requester) {
+	protected ListRequestImpl(String url, SOAPEnvelope soapEnv, IceSoapListParser<ResultType> parser,
+			String soapAction, Class<SOAPFaultType> soapFaultClass, SOAPRequester requester) {
 		super(url, soapEnv, soapAction, parser, soapFaultClass, requester);
 
 		this.parser = parser;
@@ -90,8 +86,7 @@ public class ListRequestImpl<ResultType, SOAPFaultType> extends
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void registerObserver(
-			SOAPListObserver<ResultType, SOAPFaultType> observer) {
+	public void registerObserver(SOAPListObserver<ResultType, SOAPFaultType> observer) {
 		super.registerObserver(observer);
 
 		itemRegistry.registerObserver(observer);
@@ -101,8 +96,7 @@ public class ListRequestImpl<ResultType, SOAPFaultType> extends
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void deregisterObserver(
-			SOAPListObserver<ResultType, SOAPFaultType> observer) {
+	public void deregisterObserver(SOAPListObserver<ResultType, SOAPFaultType> observer) {
 		super.deregisterObserver(observer);
 
 		itemRegistry.deregisterObserver(observer);
@@ -135,6 +129,10 @@ public class ListRequestImpl<ResultType, SOAPFaultType> extends
 
 		/**
 		 * Sends notifications about new items on the UI thread.
+		 * 
+		 * @param item
+		 *            The item that's just been parsed, on index 0 - all other
+		 *            indexes are unused.
 		 */
 		@Override
 		protected void onProgressUpdate(ResultType... item) {

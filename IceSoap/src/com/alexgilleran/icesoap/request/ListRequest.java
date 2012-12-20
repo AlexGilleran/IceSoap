@@ -6,7 +6,6 @@ import com.alexgilleran.icesoap.observer.SOAP11Observer;
 import com.alexgilleran.icesoap.observer.SOAPListObserver;
 
 /**
- * {@inheritDoc}
  * 
  * This request deals specifically with SOAP calls that recall a list of items,
  * allowing listeners to be bound that will be called every time a new object is

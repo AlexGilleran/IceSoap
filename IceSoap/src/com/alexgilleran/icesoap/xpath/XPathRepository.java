@@ -32,10 +32,10 @@ public class XPathRepository<T> {
 
 	/**
 	 * Holds an index of XPathElements against their names to facilitate faster
-	 * lookups
+	 * lookups.
 	 */
 	private Map<String, Set<XPathElement>> lookupMap = new HashMap<String, Set<XPathElement>>();
-	/** Holds the values stored against XPathElements */
+	/** Holds the values stored against XPathElements. */
 	private Map<XPathElement, T> valueMap = new HashMap<XPathElement, T>();
 
 	/**
@@ -50,7 +50,7 @@ public class XPathRepository<T> {
 	 * value.
 	 * 
 	 * @param key
-	 *            They key of an initial value to add
+	 *            They key of an initial value to add.
 	 * @param value
 	 *            An initial value to add.
 	 */
@@ -123,9 +123,9 @@ public class XPathRepository<T> {
 	public boolean contains(XPathElement key) {
 		if (get(key) != null) {
 			return true;
-		} else {
-			return false;
 		}
+
+		return false;
 	}
 
 	/**
@@ -206,25 +206,37 @@ public class XPathRepository<T> {
 	 * A simple object containing a value of a supplied generic type, as well as
 	 * an {@link XPathElement} that it's stored against.
 	 * 
-	 * @author Alex Gillean
+	 * @author Alex Gilleran
 	 * 
 	 * @param <E>
 	 *            The type of the value to store against the
 	 *            {@link XPathElement} key.
 	 */
 	public static class XPathRecord<E> {
+		/** The value stored for the record */
 		private E value;
+		/** The key the record is stored against */
 		private XPathElement key;
 
+		/**
+		 * Instantiates a new {@link XPathRecord}.
+		 * 
+		 * @param key
+		 *            The value stored for the record.
+		 * @param value
+		 *            The key the record is stored against.
+		 */
 		public XPathRecord(XPathElement key, E value) {
 			this.key = key;
 			this.value = value;
 		}
 
+		/** The value stored for the record. */
 		public E getValue() {
 			return value;
 		}
 
+		/** The key the record is stored against. */
 		public XPathElement getKey() {
 			return key;
 		}
@@ -265,5 +277,4 @@ public class XPathRepository<T> {
 	public String toString() {
 		return valueMap.toString();
 	}
-
 }

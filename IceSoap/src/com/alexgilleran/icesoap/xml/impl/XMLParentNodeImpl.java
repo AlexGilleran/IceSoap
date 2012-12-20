@@ -12,13 +12,13 @@ import com.alexgilleran.icesoap.xml.XMLParentNode;
 import com.alexgilleran.icesoap.xml.XMLTextNode;
 
 /**
- * Implementation of {@link XMLParentNode}
+ * Implementation of {@link XMLParentNode}.
  * 
  * @author Alex Gilleran
  * 
  */
 public class XMLParentNodeImpl extends XMLNodeBase implements XMLParentNode {
-	/** List of subelements of the node */
+	/** List of subelements of the node. */
 	private List<XMLElement> subElements = new ArrayList<XMLElement>();
 
 	/**
@@ -69,8 +69,7 @@ public class XMLParentNodeImpl extends XMLNodeBase implements XMLParentNode {
 	 */
 	@Override
 	public XMLTextNode addTextNode(String namespace, String name, String value) {
-		XMLTextNodeImpl newTextElement = new XMLTextNodeImpl(namespace, name,
-				value);
+		XMLTextNodeImpl newTextElement = new XMLTextNodeImpl(namespace, name, value);
 
 		subElements.add(newTextElement);
 
@@ -81,8 +80,7 @@ public class XMLParentNodeImpl extends XMLNodeBase implements XMLParentNode {
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected void serializeContent(XmlSerializer cereal)
-			throws IllegalArgumentException, IllegalStateException, IOException {
+	protected void serializeContent(XmlSerializer cereal) throws IOException {
 		for (XMLElement element : subElements) {
 			element.serialize(cereal);
 		}
@@ -92,8 +90,7 @@ public class XMLParentNodeImpl extends XMLNodeBase implements XMLParentNode {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result
-				+ ((subElements == null) ? 0 : subElements.hashCode());
+		result = prime * result + ((subElements == null) ? 0 : subElements.hashCode());
 		return result;
 	}
 

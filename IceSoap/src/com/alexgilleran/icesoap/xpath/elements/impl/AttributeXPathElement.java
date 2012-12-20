@@ -13,6 +13,8 @@ import com.alexgilleran.icesoap.xpath.elements.XPathElement;
  * 
  */
 public class AttributeXPathElement implements XPathElement {
+	/** Prefix applied to attributes when representing as a {@link String} */
+	private final static String XPATH_ATTRIBUTE_PREFIX = "@";
 	/** The wrapped XPath element. */
 	private XPathElement wrappedElement;
 
@@ -73,7 +75,7 @@ public class AttributeXPathElement implements XPathElement {
 	 */
 	@Override
 	public String getPrefix() {
-		return wrappedElement.getPrefix() + "@";
+		return wrappedElement.getPrefix() + XPATH_ATTRIBUTE_PREFIX;
 	}
 
 	/**

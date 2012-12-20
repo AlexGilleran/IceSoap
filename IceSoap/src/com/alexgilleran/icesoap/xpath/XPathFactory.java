@@ -99,7 +99,7 @@ public class XPathFactory {
 		/**
 		 * Repo of XPaths that have been got from the current expression (there
 		 * can be multiple xpaths retrieved from xpath expressions that use the
-		 * | operator)
+		 * | operator).
 		 * 
 		 * We use the {@link XPathRepository} rather than something like a
 		 * {@link List} in order to facilitate faster lookups in the parsers.
@@ -118,9 +118,9 @@ public class XPathFactory {
 		private String currentPredicateKey;
 		/**
 		 * Remembers to create a detached element on the next name event rather
-		 * than attaching the new element to the old xpath
+		 * than attaching the new element to the old xpath.
 		 */
-		boolean detachNextElement = true;
+		private boolean detachNextElement = true;
 
 		/**
 		 * Gets the XPath that has been parsed as a result of calls made to this
@@ -296,135 +296,121 @@ public class XPathFactory {
 		@Override
 		public void endCommentNodeStep() throws SAXPathException {
 			// Currently unused
-
 		}
 
 		@Override
 		public void endEqualityExpr(int arg0) throws SAXPathException {
+			// Currently unused
 		}
 
 		@Override
 		public void endFilterExpr() throws SAXPathException {
+			// Currently unused
 		}
 
 		@Override
 		public void endFunction() throws SAXPathException {
 			// Currently unused
-
 		}
 
 		@Override
 		public void endMultiplicativeExpr(int arg0) throws SAXPathException {
 			// Currently unused
-
 		}
 
 		@Override
 		public void endOrExpr(boolean arg0) throws SAXPathException {
 			// Currently unused
-
 		}
 
 		@Override
 		public void endPathExpr() throws SAXPathException {
 			// Currently unused
-
 		}
 
 		@Override
 		public void endProcessingInstructionNodeStep() throws SAXPathException {
 			// Currently unused
-
 		}
 
 		@Override
 		public void endRelationalExpr(int arg0) throws SAXPathException {
 			// Currently unused
-
 		}
 
 		@Override
 		public void endRelativeLocationPath() throws SAXPathException {
 			// Currently unused
-
 		}
 
 		@Override
 		public void endTextNodeStep() throws SAXPathException {
 			// Currently unused
-
 		}
 
 		@Override
 		public void endUnaryExpr(int arg0) throws SAXPathException {
 			// Currently unused
-
 		}
 
 		@Override
 		public void number(int arg0) throws SAXPathException {
 			// Currently unused
-
 		}
 
 		@Override
 		public void number(double arg0) throws SAXPathException {
 			// Currently unused
-
 		}
 
 		@Override
 		public void startAdditiveExpr() throws SAXPathException {
 			// Currently unused
-
 		}
 
 		@Override
 		public void startAndExpr() throws SAXPathException {
 			// Currently unused
-
 		}
 
 		@Override
 		public void startCommentNodeStep(int arg0) throws SAXPathException {
 			// Currently unused
-
 		}
 
 		@Override
 		public void startEqualityExpr() throws SAXPathException {
-
+			// Currently unused
 		}
 
 		@Override
 		public void startFilterExpr() throws SAXPathException {
-
+			// Currently unused
 		}
 
 		@Override
 		public void startFunction(String arg0, String arg1) throws SAXPathException {
+			// Currently unused
 		}
 
 		@Override
 		public void startMultiplicativeExpr() throws SAXPathException {
 			// Currently unused
-
 		}
 
 		@Override
 		public void startOrExpr() throws SAXPathException {
 			// Currently unused
-
 		}
 
 		@Override
 		public void startPathExpr() throws SAXPathException {
 			// Currently unused
-
 		}
 
 		@Override
 		public void startProcessingInstructionNodeStep(int arg0, String arg1) throws SAXPathException {
+			// Currently unused
 		}
 
 		@Override
@@ -435,25 +421,21 @@ public class XPathFactory {
 		@Override
 		public void startTextNodeStep(int arg0) throws SAXPathException {
 			// Currently unused
-
 		}
 
 		@Override
 		public void startUnaryExpr() throws SAXPathException {
 			// Currently unused
-
 		}
 
 		@Override
 		public void startXPath() throws SAXPathException {
 			// Currently unused
-
 		}
 
 		@Override
 		public void variableReference(String arg0, String arg1) throws SAXPathException {
 			// Currently unused
 		}
-
 	}
 }

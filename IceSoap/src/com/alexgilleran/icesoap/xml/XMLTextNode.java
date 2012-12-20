@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.alexgilleran.icesoap.xml;
 
 /**
@@ -18,6 +15,6 @@ public interface XMLTextNode extends XMLNode {
 	 * @return The text value of the text element, or "" if no value was
 	 *         specified.
 	 */
-	public abstract String getValue();
+	String getValue();
 
 }

@@ -6,7 +6,6 @@ import java.io.UnsupportedEncodingException;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.conn.scheme.PlainSocketFactory;
@@ -23,12 +22,11 @@ import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 
 import com.alexgilleran.icesoap.envelope.SOAPEnvelope;
-import com.alexgilleran.icesoap.exception.SOAPException;
 import com.alexgilleran.icesoap.request.SOAPRequester;
 
 /**
  * Singleton implementation of {@link SOAPRequester}, using the Apache HTTP
- * Client
+ * Client.
  * 
  * @author Alex Gilleran
  * 
@@ -36,26 +34,26 @@ import com.alexgilleran.icesoap.request.SOAPRequester;
 public class ApacheSOAPRequester implements SOAPRequester {
 	/** Soap action to use if none is specified. */
 	private static final String BLANK_SOAP_ACTION = "";
-	/** Port for HTTPS communication */
+	/** Port for HTTPS communication. */
 	private static final int DEFAULT_HTTPS_PORT = 443;
-	/** Port for HTTP communication */
+	/** Port for HTTP communicatio.n */
 	private static final int DEFAULT_HTTP_PORT = 80;
-	/** Name of HTTPS */
+	/** Name of HTTPS. */
 	private static final String HTTPS_NAME = "https";
-	/** Name of HTTP */
+	/** Name of HTTP. */
 	private static final String HTTP_NAME = "http";
-	/** HTTP content type submitted in HTTP POST request for SOAP calls */
+	/** HTTP content type submitted in HTTP POST request for SOAP calls. */
 	private static final String XML_CONTENT_TYPE = "text/xml; charset=UTF-8";
-	/** Label for content-type header */
+	/** Label for content-type header. */
 	private static final String CONTENT_TYPE_LABEL = "Content-type";
-	/** Key for SOAP action header */
+	/** Key for SOAP action header. */
 	private static final String HEADER_KEY_SOAP_ACTION = "SOAPAction";
-	/** Timeout for making a connection */
+	/** Timeout for making a connection. */
 	private static final int DEFAULT_CONN_TIMEOUT = 5000;
-	/** Timeout for recieving data */
+	/** Timeout for recieving data. */
 	private static final int DEFAULT_SOCKET_TIMEOUT = 20000;
 
-	/** Apache HTTP Client for making HTTP requests */
+	/** Apache HTTP Client for making HTTP requests. */
 	private HttpClient httpClient;
 
 	/**
@@ -79,9 +77,8 @@ public class ApacheSOAPRequester implements SOAPRequester {
 	 * @param httpPost
 	 *            The {@link HttpPost} to perform.
 	 * @return An {@link InputStream} of the response.
-	 * @throws ClientProtocolException
 	 * @throws IOException
-	 * @throws SOAPException
+	 *             If there's an IO error.
 	 */
 	private Response doHttpPost(HttpPost httpPost) throws IOException {
 		// Execute HTTP Post Request
@@ -154,6 +151,7 @@ public class ApacheSOAPRequester implements SOAPRequester {
 	 *            SOAPAction for the header.
 	 * @return An {@link HttpPost} object representing the supplied information.
 	 * @throws UnsupportedEncodingException
+	 *             If the character encoding for the envelope is unsupported.
 	 */
 	protected HttpPost buildPostRequest(String url, SOAPEnvelope envelope, String soapAction)
 			throws UnsupportedEncodingException {
