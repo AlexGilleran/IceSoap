@@ -1,3 +1,6 @@
+IceSoap
+=======
+
 IceSoap provides quick, easy, asynchronous access to SOAP web services from Android devices. It allows for SOAP responses to be bound to Java POJOs via annotations (using a subset of xpath), while still retaining the speed of the native android XmlPullParser.
 
 This came about from a project intending to provide a front-end for Websphere Commerce Server via its (rather complex) web service layer. I found KSoap to be too difficult to work with, and doing each SOAP call manually with its own parser was a nightmare of nested-ifs to try to represent XML hierarchies with one-dimensional XmlPullParser code. I was also frustrated at how easy it would all be if I could just connect to a JSON-based service instead. There had to be a better way...
@@ -6,4 +9,8 @@ And so, IceSoap was born. IceSoap aims to get you up and connected to your web s
 
 IceSoap doesn't generate code to implement SOAP - rather its design is closer to that of JSON libraries like GSON - you simply create a Java POJO to represent the object you want to get from the web service, annotate it with XPaths so it can find the fields it needs, then let IceSoap parse it for you. Use of background threads is baked into the code, so all you have to worry about is what to send and what to do with it when it comes back.
 
-So [http://code.google.com/p/icesoap/wiki/Installation download IceSoap], read the [http://code.google.com/p/icesoap/wiki/GettingStarted_Contents Getting Started Guide], have a look at the [http://code.google.com/p/icesoap/source/browse/IceSoapExample#IceSoapExample%2Fsrc%2Fmain%2Fjava%2Fcom%2Falexgilleran%2Ficesoap%2Fexample example] and get going! Javadoc is [http://icesoap.googlecode.com/git/IceSoap/javadoc/index.html here].
+So [download IceSoap](http://code.google.com/p/icesoap/wiki/Installation), read the [Getting Started Guide](http://code.google.com/p/icesoap/wiki/GettingStarted_Contents), have a look at the [example](https://github.com/AlexGilleran/IceSoap/tree/master/IceSoapExample/src/main/java/com/alexgilleran/icesoap/example) and get going! Javadoc is [here](http://icesoap.googlecode.com/git-history/icesoap-1.0.5/IceSoap/javadoc/index.html).
+
+Github vs Google Code
+---------------------
+Note that this isn't the primary repository for IceSoap - issue tracking and documentation is all kept in [Google Code](http://code.google.com/p/icesoap). The code is kept up-to-date on both, however, in order to facilitate forking/pull requests etc on Github for those who prefer it to Google Code.
