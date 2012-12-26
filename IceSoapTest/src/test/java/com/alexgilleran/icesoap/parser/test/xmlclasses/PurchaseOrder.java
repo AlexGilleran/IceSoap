@@ -10,10 +10,16 @@ import com.alexgilleran.icesoap.annotation.XMLObject;
 
 @XMLObject("/PurchaseOrder")
 public class PurchaseOrder {
+	public static final String UNANNOTATED_FIELD_VALUE = "value";
+
 	@XMLField("@PurchaseOrderNumber")
 	private long purchaseOrderNumber;
 	@XMLField("@OrderDate")
 	private Date orderDate;
+
+	/** This is here to make sure an unannotated field doesn't ruin the parser. */
+	private String unannotatedField = UNANNOTATED_FIELD_VALUE;
+
 	@XMLField("Address[@Type=\"Shipping\"]")
 	private Address shippingAddress;
 	@XMLField("/PurchaseOrder/Address[@Type=\"Billing\"]")
@@ -51,5 +57,9 @@ public class PurchaseOrder {
 
 	public Item getItem926aa() {
 		return item926aa;
+	}
+
+	public String getUnannotatedField() {
+		return unannotatedField;
 	}
 }

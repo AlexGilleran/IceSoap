@@ -100,6 +100,9 @@ public class IceSoapParserTest {
 		assertEquals(new BigDecimal("39.98"), po.getItem926aa().getUsPrice());
 		assertEquals(FORMAT.parse("1999-05-21"), po.getItem926aa().getShipDate());
 		assertEquals(null, po.getItem926aa().getComment());
+
+		// Unannotated Field
+		assertEquals(PurchaseOrder.UNANNOTATED_FIELD_VALUE, po.getUnannotatedField());
 	}
 
 	/**

@@ -166,28 +166,25 @@ public class IceSoapParserImpl<ReturnType> extends BaseIceSoapParserImpl<ReturnT
 		for (Field field : targetClass.getDeclaredFields()) {
 			XMLField xPath = field.getAnnotation(XMLField.class);
 
-			if (xPath == null) {
-				// Annotation is not present: do nothing.
-				return;
-			}
+			if (xPath != null) {
+				// Annotation is not present: do nothing for this field.
+				XPathRepository<XPathElement> xpathsFromField;
 
-			XPathRepository<XPathElement> xpathsFromField;
+				if (!xPath.value().equals(XMLField.DEFAULT_XPATH_STRING)) {
+					// If the XPath has a value specified, compile it
+					xpathsFromField = compileXPath(xPath, field);
 
-			if (!xPath.value().equals(XMLField.DEFAULT_XPATH_STRING)) {
-				// If the XPath has a value specified, compile it
-				xpathsFromField = compileXPath(xPath, field);
+					addRootToRelativeXPaths(xpathsFromField);
+				} else {
+					// XPath has no value - set to the root value
+					xpathsFromField = getRootXPaths();
+				}
 
-				addRootToRelativeXPaths(xpathsFromField);
-			} else {
-				// XPath has no value - set to the root value
-				xpathsFromField = getRootXPaths();
-			}
-
-			for (XPathElement element : xpathsFromField.keySet()) {
-				fieldXPaths.put(element, field);
+				for (XPathElement element : xpathsFromField.keySet()) {
+					fieldXPaths.put(element, field);
+				}
 			}
 		}
-
 	}
 
 	/**
