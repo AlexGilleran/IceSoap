@@ -45,7 +45,7 @@ public class ApacheSOAPRequester implements SOAPRequester {
 	/** HTTP content type submitted in HTTP POST request for SOAP calls. */
 	private static final String XML_CONTENT_TYPE_PREFIX = "text/xml; charset=";
 	/** Label for content-type header. */
-	private static final String CONTENT_TYPE_LABEL = "Content-type";
+	public static final String CONTENT_TYPE_LABEL = "Content-type";
 	/** Key for SOAP action header. */
 	private static final String HEADER_KEY_SOAP_ACTION = "SOAPAction";
 	/** Timeout for making a connection. */

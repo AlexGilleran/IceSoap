@@ -33,15 +33,18 @@ public class ApacheSOAPRequesterTest {
 	private String encoding;
 	private SOAPEnvelope envelope;
 
-	@Before
-	public void setUp() {
+	@Test
+	public void testUtf8Encoding() throws ClientProtocolException, IOException {
 		encoding = "UTF-8";
 		envelope = buildDifficultEnvelope(encoding);
+		SOAPRequester requester = new TestApacheSOAPRequester();
+		requester.doSoapRequest(envelope, "http://target.com");
 	}
 
 	@Test
-	public void testUtf8Encoding() throws ClientProtocolException, IOException {
-
+	public void testUtf16Encoding() throws ClientProtocolException, IOException {
+		encoding = "UTF-16";
+		envelope = buildDifficultEnvelope(encoding);
 		SOAPRequester requester = new TestApacheSOAPRequester();
 		requester.doSoapRequest(envelope, "http://target.com");
 	}
@@ -74,8 +77,8 @@ public class ApacheSOAPRequesterTest {
 		public HttpResponse execute(HttpUriRequest httpUriRequest) throws IOException, ClientProtocolException {
 			HttpPost httpPost = (HttpPost) httpUriRequest;
 
-			// Assert.assertEquals(encoding, httpPost.getEntity()
-			// .getContentEncoding().getValue());
+			Assert.assertEquals("text/xml; charset=" + ApacheSOAPRequesterTest.this.encoding,
+					httpPost.getHeaders(ApacheSOAPRequester.CONTENT_TYPE_LABEL)[0].getValue());
 
 			InputStream is = httpPost.getEntity().getContent();
 			byte[] streamOutput = new byte[(int) httpPost.getEntity().getContentLength()];
