@@ -30,6 +30,16 @@ public class SampleXml {
 		+ "<ExitTO>0</ExitTO>"
 		+ "</Reply>";
 	
+	private final static String PRIMITIVE_OBJECTS = "<?xml version=\"1.0\"?>"
+			+ "<NilValues xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">"
+				+ "<char>a</char>"
+				+ "<int>1</int>"
+				+ "<long>2</long>"
+				+ "<float>1.5</float>"
+				+ "<double>1.6</double>"
+				+ "<boolean>true</boolean>"
+			+ "</NilValues>";
+	
 	private final static String NIL_VALUES = "<?xml version=\"1.0\"?>"
 			+ "<NilValues xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">"
 				+ "<char xsi:nil=\"true\" />"
@@ -413,5 +423,9 @@ public class SampleXml {
 	
 	public static InputStream getCrappyList() {
 		return new ByteArrayInputStream(CRAPPY_LIST.getBytes());
+	}
+
+	public static ByteArrayInputStream getPrimitiveObjects() {
+		return new ByteArrayInputStream(PRIMITIVE_OBJECTS.getBytes());
 	}
 }

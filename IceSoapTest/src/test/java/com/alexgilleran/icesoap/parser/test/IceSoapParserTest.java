@@ -24,6 +24,7 @@ import com.alexgilleran.icesoap.parser.test.xmlclasses.Alert;
 import com.alexgilleran.icesoap.parser.test.xmlclasses.Booleans;
 import com.alexgilleran.icesoap.parser.test.xmlclasses.NilValues;
 import com.alexgilleran.icesoap.parser.test.xmlclasses.PipeTest;
+import com.alexgilleran.icesoap.parser.test.xmlclasses.PrimitiveObjects;
 import com.alexgilleran.icesoap.parser.test.xmlclasses.ProcessorTest;
 import com.alexgilleran.icesoap.parser.test.xmlclasses.PurchaseOrder;
 import com.alexgilleran.icesoap.parser.test.xmlclasses.Reply;
@@ -47,6 +48,26 @@ public class IceSoapParserTest {
 		assertEquals(values.getIntValue(), 0);
 		assertEquals(values.getLongValue(), 0);
 		assertEquals(values.getStringValue(), null);
+	}
+
+	@Test
+	public void testPrimitiveObjects() throws XMLParsingException, ParseException {
+		IceSoapParser<PrimitiveObjects> parser = new IceSoapParserImpl<PrimitiveObjects>(PrimitiveObjects.class);
+		PrimitiveObjects values = parser.parse(SampleXml.getPrimitiveObjects());
+
+		assertEquals(values.getCharValue(), new Character('a'));
+		assertEquals(values.getDoubleValue(), new Double(1.6), 0);
+		assertEquals(values.getFloatValue(), new Float(1.5), 0);
+		assertEquals(values.getIntValue(), new Integer(1));
+		assertEquals(values.getLongValue(), new Long(2));
+
+		values = parser.parse(SampleXml.getNilValues());
+
+		assertEquals(values.getCharValue(), null);
+		assertEquals(values.getDoubleValue(), null);
+		assertEquals(values.getFloatValue(), null);
+		assertEquals(values.getIntValue(), null);
+		assertEquals(values.getLongValue(), null);
 	}
 
 	/**

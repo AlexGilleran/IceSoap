@@ -78,7 +78,8 @@ public class IceSoapParserImpl<ReturnType> extends BaseIceSoapParserImpl<ReturnT
 	 */
 	@SuppressWarnings("unchecked")
 	private static final Set<Class<?>> TEXT_NODE_CLASSES = new HashSet<Class<?>>(Arrays.asList(long.class, float.class,
-			int.class, double.class, boolean.class, BigDecimal.class, String.class, Date.class));
+			int.class, double.class, boolean.class, char.class, BigDecimal.class, String.class, Date.class, Long.class,
+			Float.class, Integer.class, Double.class, Boolean.class, Character.class));
 
 	/** Maintains a cache of instantiated parsers for reuse **/
 	private HashMap<XPathElement, BaseIceSoapParserImpl<?>> parserCache = new HashMap<XPathElement, BaseIceSoapParserImpl<?>>();
@@ -325,7 +326,7 @@ public class IceSoapParserImpl<ReturnType> extends BaseIceSoapParserImpl<ReturnT
 					Object valueToSet;
 
 					if (hasProcessor) {
-						Processor processor = annotation.processor().newInstance();
+						Processor<?> processor = annotation.processor().newInstance();
 						valueToSet = processor.process(textNodeValue);
 					} else {
 						valueToSet = convertToFieldType(fieldToSet, textNodeValue);
@@ -457,6 +458,7 @@ public class IceSoapParserImpl<ReturnType> extends BaseIceSoapParserImpl<ReturnT
 	 * @param valueToSet
 	 *            The value to set to the field.
 	 */
+	@SuppressWarnings("unchecked")
 	private void setField(ReturnType objectToModify, Field fieldToSet, Object valueToSet) {
 		try {
 			boolean isAccessibleBefore = fieldToSet.isAccessible();
@@ -470,7 +472,7 @@ public class IceSoapParserImpl<ReturnType> extends BaseIceSoapParserImpl<ReturnT
 					newList.add(valueToSet);
 
 					valueToSet = newList;
-				} else {
+				} else if (valueOfField instanceof List<?>) {
 					((List<Object>) valueOfField).add(valueToSet);
 
 					valueToSet = valueOfField;
@@ -504,15 +506,15 @@ public class IceSoapParserImpl<ReturnType> extends BaseIceSoapParserImpl<ReturnT
 	private Object convertToFieldType(Field field, String valueString) throws XMLParsingException {
 		XMLField annotation = field.getAnnotation(XMLField.class);
 
-		if (int.class.isAssignableFrom(field.getType())) {
+		if (int.class.isAssignableFrom(field.getType()) || Integer.class.isAssignableFrom(field.getType())) {
 			return Integer.parseInt(valueString);
-		} else if (long.class.isAssignableFrom(field.getType())) {
+		} else if (long.class.isAssignableFrom(field.getType()) || Long.class.isAssignableFrom(field.getType())) {
 			return Long.parseLong(valueString);
-		} else if (float.class.isAssignableFrom(field.getType())) {
+		} else if (float.class.isAssignableFrom(field.getType()) || Float.class.isAssignableFrom(field.getType())) {
 			return Float.parseFloat(valueString);
-		} else if (double.class.isAssignableFrom(field.getType())) {
+		} else if (double.class.isAssignableFrom(field.getType()) || Double.class.isAssignableFrom(field.getType())) {
 			return Double.parseDouble(valueString);
-		} else if (boolean.class.isAssignableFrom(field.getType())) {
+		} else if (boolean.class.isAssignableFrom(field.getType()) || Boolean.class.isAssignableFrom(field.getType())) {
 			return Boolean.parseBoolean(valueString);
 		} else if (BigDecimal.class.isAssignableFrom(field.getType())) {
 			return new BigDecimal(valueString);
@@ -524,8 +526,10 @@ public class IceSoapParserImpl<ReturnType> extends BaseIceSoapParserImpl<ReturnT
 						+ " with format " + field.getAnnotation(XMLField.class).dateFormat() + " for value "
 						+ valueString, e);
 			}
-		} else {
-			return valueString;
+		} else if (char.class.isAssignableFrom(field.getType()) || Character.class.isAssignableFrom(field.getType())) {
+			return Character.valueOf(valueString.charAt(0));
 		}
+
+		return valueString;
 	}
 }
