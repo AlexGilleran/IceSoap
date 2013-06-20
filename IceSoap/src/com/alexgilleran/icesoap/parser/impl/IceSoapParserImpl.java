@@ -3,14 +3,13 @@ package com.alexgilleran.icesoap.parser.impl;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.management.modelmbean.XMLParseException;
@@ -21,6 +20,15 @@ import com.alexgilleran.icesoap.exception.ClassDefException;
 import com.alexgilleran.icesoap.exception.XMLParsingException;
 import com.alexgilleran.icesoap.parser.IceSoapParser;
 import com.alexgilleran.icesoap.parser.XPathPullParser;
+import com.alexgilleran.icesoap.parser.impl.stringparsers.BigDecimalParser;
+import com.alexgilleran.icesoap.parser.impl.stringparsers.BooleanParser;
+import com.alexgilleran.icesoap.parser.impl.stringparsers.CharacterParser;
+import com.alexgilleran.icesoap.parser.impl.stringparsers.DateParser;
+import com.alexgilleran.icesoap.parser.impl.stringparsers.DoubleParser;
+import com.alexgilleran.icesoap.parser.impl.stringparsers.FloatParser;
+import com.alexgilleran.icesoap.parser.impl.stringparsers.IntegerParser;
+import com.alexgilleran.icesoap.parser.impl.stringparsers.LongParser;
+import com.alexgilleran.icesoap.parser.impl.stringparsers.StringParser;
 import com.alexgilleran.icesoap.parser.processor.Processor;
 import com.alexgilleran.icesoap.xpath.XPathRepository;
 import com.alexgilleran.icesoap.xpath.XPathRepository.XPathRecord;
@@ -72,14 +80,33 @@ public class IceSoapParserImpl<ReturnType> extends BaseIceSoapParserImpl<ReturnT
 	 */
 	private Class<ReturnType> targetClass;
 
-	/**
-	 * Types that can be parsed by simply getting the text value from a node or
-	 * attribute.
-	 */
-	@SuppressWarnings("unchecked")
-	private static final Set<Class<?>> TEXT_NODE_CLASSES = new HashSet<Class<?>>(Arrays.asList(long.class, float.class,
-			int.class, double.class, boolean.class, char.class, BigDecimal.class, String.class, Date.class, Long.class,
-			Float.class, Integer.class, Double.class, Boolean.class, Character.class));
+	private static final Map<Type, StringParser<?>> parserMap = new HashMap<Type, StringParser<?>>();
+	static {
+		StringParser<Integer> integerParser = new IntegerParser();
+		StringParser<Boolean> booleanParser = new BooleanParser();
+		StringParser<Date> dateParser = new DateParser();
+		StringParser<Character> characterParser = new CharacterParser();
+		StringParser<Double> doubleParser = new DoubleParser();
+		StringParser<Float> floatParser = new FloatParser();
+		StringParser<Long> longParser = new LongParser();
+		StringParser<BigDecimal> bigDecimalParser = new BigDecimalParser();
+
+		parserMap.put(Integer.class, integerParser);
+		parserMap.put(int.class, integerParser);
+		parserMap.put(boolean.class, booleanParser);
+		parserMap.put(Boolean.class, booleanParser);
+		parserMap.put(Date.class, dateParser);
+		parserMap.put(Character.class, characterParser);
+		parserMap.put(char.class, characterParser);
+		parserMap.put(double.class, doubleParser);
+		parserMap.put(Double.class, doubleParser);
+		parserMap.put(Long.class, longParser);
+		parserMap.put(long.class, longParser);
+		parserMap.put(Float.class, floatParser);
+		parserMap.put(float.class, floatParser);
+		parserMap.put(BigDecimal.class, bigDecimalParser);
+		parserMap.put(String.class, null);
+	}
 
 	/** Maintains a cache of instantiated parsers for reuse **/
 	private HashMap<XPathElement, BaseIceSoapParserImpl<?>> parserCache = new HashMap<XPathElement, BaseIceSoapParserImpl<?>>();
@@ -365,7 +392,7 @@ public class IceSoapParserImpl<ReturnType> extends BaseIceSoapParserImpl<ReturnT
 	 */
 	private boolean needsParser(Field fieldToSet) {
 		// Is it a text node?
-		if (TEXT_NODE_CLASSES.contains(fieldToSet.getType())) {
+		if (parserMap.containsKey(fieldToSet.getType())) {
 			return false;
 		}
 
@@ -377,7 +404,7 @@ public class IceSoapParserImpl<ReturnType> extends BaseIceSoapParserImpl<ReturnT
 
 		// Is it a list of text nodes?
 		if (List.class.isAssignableFrom(fieldToSet.getType())
-				&& TEXT_NODE_CLASSES.contains(getListItemClass(fieldToSet.getGenericType()))) {
+				&& parserMap.containsKey(getListItemClass(fieldToSet.getGenericType()))) {
 			return false;
 		}
 
@@ -504,30 +531,10 @@ public class IceSoapParserImpl<ReturnType> extends BaseIceSoapParserImpl<ReturnT
 	 * @throws XMLParseException
 	 */
 	private Object convertToFieldType(Field field, String valueString) throws XMLParsingException {
-		XMLField annotation = field.getAnnotation(XMLField.class);
+		StringParser<?> objectParser = parserMap.get(field.getType());
 
-		if (int.class.isAssignableFrom(field.getType()) || Integer.class.isAssignableFrom(field.getType())) {
-			return Integer.parseInt(valueString);
-		} else if (long.class.isAssignableFrom(field.getType()) || Long.class.isAssignableFrom(field.getType())) {
-			return Long.parseLong(valueString);
-		} else if (float.class.isAssignableFrom(field.getType()) || Float.class.isAssignableFrom(field.getType())) {
-			return Float.parseFloat(valueString);
-		} else if (double.class.isAssignableFrom(field.getType()) || Double.class.isAssignableFrom(field.getType())) {
-			return Double.parseDouble(valueString);
-		} else if (boolean.class.isAssignableFrom(field.getType()) || Boolean.class.isAssignableFrom(field.getType())) {
-			return Boolean.parseBoolean(valueString);
-		} else if (BigDecimal.class.isAssignableFrom(field.getType())) {
-			return new BigDecimal(valueString);
-		} else if (Date.class.isAssignableFrom(field.getType())) {
-			try {
-				return new SimpleDateFormat(annotation.dateFormat()).parse(valueString);
-			} catch (ParseException e) {
-				throw new XMLParsingException("Encountered date parsing exception when parsing " + field.toString()
-						+ " with format " + field.getAnnotation(XMLField.class).dateFormat() + " for value "
-						+ valueString, e);
-			}
-		} else if (char.class.isAssignableFrom(field.getType()) || Character.class.isAssignableFrom(field.getType())) {
-			return Character.valueOf(valueString.charAt(0));
+		if (objectParser != null) {
+			return objectParser.parse(valueString, field.getAnnotation(XMLField.class));
 		}
 
 		return valueString;
