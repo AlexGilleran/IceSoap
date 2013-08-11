@@ -10,10 +10,12 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.alexgilleran.icesoap.envelope.SOAPEnvelope;
 import com.alexgilleran.icesoap.exception.SOAPException;
 import com.alexgilleran.icesoap.exception.XMLParsingException;
 import com.alexgilleran.icesoap.observer.SOAP11Observer;
@@ -25,6 +27,7 @@ import com.alexgilleran.icesoap.request.impl.RequestFactoryImpl;
 import com.alexgilleran.icesoap.request.test.xmlclasses.CustomSOAP12Fault;
 import com.alexgilleran.icesoap.request.test.xmlclasses.Response;
 import com.alexgilleran.icesoap.soapfault.SOAP11Fault;
+import com.xtremelabs.robolectric.Robolectric;
 import com.xtremelabs.robolectric.RobolectricTestRunner;
 
 @RunWith(RobolectricTestRunner.class)
@@ -197,27 +200,6 @@ public class RequestTest extends BaseRequestTest<Response> {
 
 	@Test
 	public void test401InDebugMode() throws IOException {
-		// SOAPRequester soapRequester = new ApacheSOAPRequester() {
-		// @Override
-		// protected HttpClient buildHttpClient() {
-		// HttpClient mockClient = createMock(HttpClient.class);
-		// HttpResponse mockResponse = createMock(HttpResponse.class);
-		//
-		// try {
-		// HttpPost post = super.buildPostRequest("blah", envelope, "POST");
-		//
-		// expect(mockClient.execute(post)).andReturn(response);
-		// expect(mockResponse.getHttpStatus()).andReturn(401);
-		//
-		//
-		// } catch (Exception e) {
-		// throw new RuntimeException(e);
-		// }
-		//
-		// return mockClient;
-		// }
-		// };
-
 		SOAPRequester mockRequester = createMock(SOAPRequester.class);
 		com.alexgilleran.icesoap.request.impl.Response dummyResponse = new com.alexgilleran.icesoap.request.impl.Response(
 				new ByteArrayInputStream("".getBytes()), 401);
@@ -227,7 +209,7 @@ public class RequestTest extends BaseRequestTest<Response> {
 		SOAP11Request<Response> request = new RequestFactoryImpl(mockRequester).buildRequest("", getDummyEnvelope(),
 				"", Response.class);
 		request.setDebugMode(true);
-		
+
 		request.execute();
 	}
 }

@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Scanner;
+import java.util.concurrent.ExecutionException;
 
 import android.os.AsyncTask;
 
@@ -201,6 +202,11 @@ public class RequestImpl<ResultType, SOAPFaultType> implements Request<ResultTyp
 	public void execute(SOAPObserver<ResultType, SOAPFaultType> observer) {
 		registerObserver(observer);
 		execute();
+	}
+
+	@Override
+	public ResultType executeBlocking() throws InterruptedException, ExecutionException {
+		return createTask().get();
 	}
 
 	/**
