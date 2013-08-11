@@ -24,6 +24,7 @@ import com.alexgilleran.icesoap.request.Request;
 import com.alexgilleran.icesoap.request.SOAP11Request;
 import com.alexgilleran.icesoap.request.SOAPRequester;
 import com.alexgilleran.icesoap.request.impl.RequestFactoryImpl;
+import com.alexgilleran.icesoap.request.impl.RequestImpl;
 import com.alexgilleran.icesoap.request.test.xmlclasses.CustomSOAP12Fault;
 import com.alexgilleran.icesoap.request.test.xmlclasses.Response;
 import com.alexgilleran.icesoap.soapfault.SOAP11Fault;
@@ -77,6 +78,7 @@ public class RequestTest extends BaseRequestTest<Response> {
 		// come back with the request)
 		SOAP11Observer<Response> mockObserver = createMock(SOAP11Observer.class);
 		mockObserver.onException(eq(request), isA(SOAPException.class));
+		mockObserver.onCompletion(request);
 		replay(mockObserver);
 
 		// Register the observer to the request
@@ -124,6 +126,7 @@ public class RequestTest extends BaseRequestTest<Response> {
 		// come back with the request)
 		SOAP11Observer<Response> mockObserver = createMock(SOAP11Observer.class);
 		mockObserver.onException(eq(request), isA(SOAPException.class));
+		mockObserver.onCompletion(request);
 		replay(mockObserver);
 
 		// Register the observer to the request
@@ -148,6 +151,7 @@ public class RequestTest extends BaseRequestTest<Response> {
 
 		SOAP11Observer<Response> mockObserver = createMock(SOAP11Observer.class);
 		mockObserver.onException(eq(request), isA(SOAPException.class));
+		mockObserver.onCompletion(request);
 		replay(mockObserver);
 
 		// Register the observer to the request
@@ -171,6 +175,7 @@ public class RequestTest extends BaseRequestTest<Response> {
 		// come back with the request)
 		SOAPObserver<Response, CustomSOAP12Fault> mockObserver = createMock(SOAPObserver.class);
 		mockObserver.onException(eq(request), isA(SOAPException.class));
+		mockObserver.onCompletion(request);
 		replay(mockObserver);
 
 		// Register the observer to the request
