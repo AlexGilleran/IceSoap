@@ -43,4 +43,21 @@ public interface SOAPEnvelope extends XMLParentNode {
 	 *         {@code <?xml version="1.0" encoding="UTF-8"?>}.
 	 */
 	String getEncoding();
+
+	/**
+	 * Gets the mime type that will be passed in the content-type header when
+	 * making calls. E.g. <code>text/xml</code>.
+	 * 
+	 * @param The
+	 *            mime type to use.
+	 */
+	void setMimeType(String mimeType);
+
+	/**
+	 * Gets the mime type that will be passed in the content-type header when
+	 * making calls. E.g. <code>text/xml</code>.
+	 * 
+	 * @return The mime type to be used for this envelope.
+	 */
+	String getMimeType();
 }

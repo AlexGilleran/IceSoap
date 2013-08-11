@@ -26,58 +26,81 @@ import org.junit.Test;
 
 import com.alexgilleran.icesoap.envelope.SOAPEnvelope;
 import com.alexgilleran.icesoap.envelope.impl.BaseSOAP11Envelope;
+import com.alexgilleran.icesoap.envelope.impl.BaseSOAP12Envelope;
 import com.alexgilleran.icesoap.request.SOAPRequester;
 import com.alexgilleran.icesoap.request.impl.ApacheSOAPRequester;
 
 public class ApacheSOAPRequesterTest {
-	private String encoding;
-	private SOAPEnvelope envelope;
+	private static final String UTF_8 = "UTF-8";
+	private static final String UTF_16 = "UTF-16";
+	private static final String SOAP11_MIME_TYPE = "text/xml";
+	private static final String SOAP12_MIME_TYPE = "application/soap+xml";
+
+	// Default values, these can be overwritten later
+	private String expectedMimeType = SOAP11_MIME_TYPE;
+	private String expectedEncoding = UTF_8;
+	private MockHttpClient httpClient;
+	private SOAPEnvelope expectedEnvelope;
+	private SOAPRequester requester;
+
+	@Before
+	public void setUp() {
+		httpClient = new MockHttpClient();
+		requester = new TestApacheSOAPRequester();
+	}
 
 	@Test
 	public void testUtf8Encoding() throws ClientProtocolException, IOException {
-		encoding = "UTF-8";
-		envelope = buildDifficultEnvelope(encoding);
-		SOAPRequester requester = new TestApacheSOAPRequester();
-		requester.doSoapRequest(envelope, "http://target.com");
+		expectedEnvelope = buildDifficultEnvelope();
+
+		requester.doSoapRequest(expectedEnvelope, "http://target.com");
 	}
 
 	@Test
 	public void testUtf16Encoding() throws ClientProtocolException, IOException {
-		encoding = "UTF-16";
-		envelope = buildDifficultEnvelope(encoding);
-		SOAPRequester requester = new TestApacheSOAPRequester();
-		requester.doSoapRequest(envelope, "http://target.com");
+		expectedEncoding = UTF_16;
+		expectedEnvelope = buildDifficultEnvelope();
+
+		requester.doSoapRequest(expectedEnvelope, "http://target.com");
 	}
 
-	private SOAPEnvelope buildDifficultEnvelope(String encoding) {
+	@Test
+	public void testSoap11MimeType() throws ClientProtocolException, IOException {
+		expectedEnvelope = new BaseSOAP11Envelope();
+		SOAPRequester requester = new TestApacheSOAPRequester();
+		requester.doSoapRequest(expectedEnvelope, "http://target.com");
+	}
+
+	@Test
+	public void testSoap12MimeType() throws ClientProtocolException, IOException {
+		expectedEnvelope = new BaseSOAP12Envelope();
+		expectedMimeType = SOAP12_MIME_TYPE;
+		SOAPRequester requester = new TestApacheSOAPRequester();
+		requester.doSoapRequest(expectedEnvelope, "http://target.com");
+	}
+
+	private SOAPEnvelope buildDifficultEnvelope() {
 		SOAPEnvelope env = new BaseSOAP11Envelope();
-		env.setEncoding(encoding);
+		env.setEncoding(expectedEncoding);
 		env.getBody().addTextNode(null, "ÀÁÂÃÄÅÆÇÈÉýÿĂĄ", "ɑɔʥʣʨʪɯ");
 		env.getBody().addTextNode(null, "ѨѫѯРсшНЌЄЏ", "ڝڠڥکۛ٢شظڧ۞۸");
 		return env;
 	}
 
 	private class TestApacheSOAPRequester extends ApacheSOAPRequester {
+
 		@Override
 		protected HttpClient buildHttpClient() {
-			return new MockHttpClient(encoding, envelope);
+			return httpClient;
 		}
 	}
 
 	private class MockHttpClient implements HttpClient {
-		private String encoding;
-		private SOAPEnvelope envelope;
-
-		public MockHttpClient(String encoding, SOAPEnvelope envelope) {
-			this.encoding = encoding;
-			this.envelope = envelope;
-		}
-
 		@Override
 		public HttpResponse execute(HttpUriRequest httpUriRequest) throws IOException, ClientProtocolException {
 			HttpPost httpPost = (HttpPost) httpUriRequest;
 
-			Assert.assertEquals("text/xml; charset=" + ApacheSOAPRequesterTest.this.encoding,
+			Assert.assertEquals(expectedMimeType + "; charset=" + expectedEncoding,
 					httpPost.getHeaders(ApacheSOAPRequester.CONTENT_TYPE_LABEL)[0].getValue());
 
 			InputStream is = httpPost.getEntity().getContent();
@@ -88,8 +111,8 @@ public class ApacheSOAPRequesterTest {
 				i = is.read(streamOutput);
 			} while (i > 0);
 
-			String output = new String(streamOutput, encoding);
-			Assert.assertEquals(envelope.toString(), output);
+			String output = new String(streamOutput, expectedEncoding);
+			Assert.assertEquals(expectedEnvelope.toString(), output);
 
 			HttpResponse mockResponse = createMock(HttpResponse.class);
 			HttpEntity mockEntity = createMock(HttpEntity.class);

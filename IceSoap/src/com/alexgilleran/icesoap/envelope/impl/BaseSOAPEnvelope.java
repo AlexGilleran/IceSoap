@@ -34,6 +34,8 @@ public abstract class BaseSOAPEnvelope extends XMLParentNodeImpl implements SOAP
 	private XMLParentNode body;
 	/** The encoding type. */
 	private String encoding = DEFAULT_ENCODING;
+	/** The MIME type */
+	private String mimeType;
 
 	/**
 	 * Instantiates a new {@link BaseSOAPEnvelope}.
@@ -43,7 +45,7 @@ public abstract class BaseSOAPEnvelope extends XMLParentNodeImpl implements SOAP
 	 * @param encodingNs
 	 *            The URI of the encoding namespace.
 	 */
-	public BaseSOAPEnvelope(String envelopeNs, String encodingNs) {
+	public BaseSOAPEnvelope(String envelopeNs, String encodingNs, String mimeType) {
 		super(envelopeNs, NODE_NAME);
 
 		this.declarePrefix(NS_PREFIX_SOAPENV, envelopeNs);
@@ -53,6 +55,8 @@ public abstract class BaseSOAPEnvelope extends XMLParentNodeImpl implements SOAP
 
 		header = this.addNode(envelopeNs, "Header");
 		body = this.addNode(envelopeNs, "Body");
+
+		this.mimeType = mimeType;
 	}
 
 	/**
@@ -97,6 +101,22 @@ public abstract class BaseSOAPEnvelope extends XMLParentNodeImpl implements SOAP
 	@Override
 	public String getEncoding() {
 		return encoding;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setMimeType(String mimeType) {
+		this.mimeType = mimeType;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getMimeType() {
+		return mimeType;
 	}
 
 	@Override

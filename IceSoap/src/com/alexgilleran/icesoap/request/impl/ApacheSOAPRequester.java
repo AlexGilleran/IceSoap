@@ -43,7 +43,7 @@ public class ApacheSOAPRequester implements SOAPRequester {
 	/** Name of HTTP. */
 	private static final String HTTP_NAME = "http";
 	/** HTTP content type submitted in HTTP POST request for SOAP calls. */
-	private static final String XML_CONTENT_TYPE_PREFIX = "text/xml; charset=";
+	private static final String XML_CONTENT_TYPE_FORMAT = "%s; charset=%s";
 	/** Label for content-type header. */
 	public static final String CONTENT_TYPE_LABEL = "Content-type";
 	/** Key for SOAP action header. */
@@ -158,7 +158,7 @@ public class ApacheSOAPRequester implements SOAPRequester {
 		// Create a new HttpClient and Post Header
 		HttpPost httppost = new HttpPost(url);
 
-		httppost.setHeader(CONTENT_TYPE_LABEL, getXmlContentType(envelope.getEncoding()));
+		httppost.setHeader(CONTENT_TYPE_LABEL, getXmlContentType(envelope.getMimeType(), envelope.getEncoding()));
 		httppost.setHeader(HEADER_KEY_SOAP_ACTION, soapAction);
 
 		HttpEntity entity = new StringEntity(envelope.toString(), envelope.getEncoding());
@@ -174,8 +174,8 @@ public class ApacheSOAPRequester implements SOAPRequester {
 	 *            The encoding being used (e.g. UTF-8)
 	 * @return The full content type for the HTTP header.
 	 */
-	private String getXmlContentType(String encoding) {
-		return XML_CONTENT_TYPE_PREFIX + encoding;
+	private String getXmlContentType(String mimeType, String encoding) {
+		return String.format(XML_CONTENT_TYPE_FORMAT, mimeType, encoding);
 	}
 
 	/**

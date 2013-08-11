@@ -20,12 +20,14 @@ public class BaseSOAP12Envelope extends BaseSOAPEnvelope {
 	public static final String NS_URI_SOAPENV = "http://www.w3.org/2003/05/soap-envelope";
 	/** URI for the Soap 1.2 Encoding Namespace. */
 	public static final String NS_URI_SOAPENC = "http://www.w3.org/2003/05/soap-encoding";
+	/** Mime type */
+	private static final String MIME_TYPE = "application/soap+xml";
 
 	/**
 	 * Initialises the class - sets up the basic "soapenv", "soapenc", "xsd" and
 	 * "xsi" namespaces present in all SOAP messages.
 	 */
 	public BaseSOAP12Envelope() {
-		super(NS_URI_SOAPENV, NS_URI_SOAPENC);
+		super(NS_URI_SOAPENV, NS_URI_SOAPENC, MIME_TYPE);
 	}
 }
