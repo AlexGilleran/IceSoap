@@ -4,9 +4,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Scanner;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import android.os.AsyncTask;
 
@@ -207,7 +204,7 @@ public class RequestImpl<ResultType, SOAPFaultType> implements Request<ResultTyp
 	}
 
 	@Override
-	public ResultType executeBlocking() throws InterruptedException, ExecutionException {
+	public ResultType executeBlocking() throws SOAPException {
 		return run();
 	}
 
@@ -280,18 +277,16 @@ public class RequestImpl<ResultType, SOAPFaultType> implements Request<ResultTyp
 	/**
 	 * @return
 	 */
-	private ResultType run() {
-		Response response = null;
-		InputStream responseData = null;
-
+	private ResultType run() throws SOAPException {
+		executing = true;
 		try {
-			response = getResponse();
-		} catch (IOException ioException) {
-			throwException(new SOAPException(ioException));
-		}
+			Response response = getResponse();
 
-		if (response != null) {
-			responseData = response.getData();
+			if (response == null) {
+				return null;
+			}
+
+			InputStream responseData = response.getData();
 
 			if (debugMode) {
 				// \\A is a regex for the first character... putting that
@@ -304,44 +299,36 @@ public class RequestImpl<ResultType, SOAPFaultType> implements Request<ResultTyp
 				}
 
 				responseScanner.close();
-
 			}
 
 			switch (response.getHttpStatus()) {
 			case HTTP_OK_STATUS:
-				try {
-					return getParser().parse(responseData);
-				} catch (XMLParsingException e) {
-					throwException(new SOAPException(e));
-				}
-				break;
+				return getParser().parse(responseData);
 			case HTTP_ERROR_STATUS:
-				try {
-					soapFault = parseSoapFault(responseData);
+				soapFault = parseSoapFault(responseData);
 
-					// If we've successfully parsed a soap fault, toString()
-					// it as part of the message, otherwise just return an
-					// exception and say we couldn't parse one.
-					String soapFaultMessage = null;
-					if (soapFault != null) {
-						soapFaultMessage = MESSAGE_ERROR_500_SOAPFAULT + soapFault.toString();
-					} else {
-						soapFaultMessage = MESSAGE_ERROR_500_FAILED_SOAPFAULT;
-					}
-
-					throwException(new SOAPException(soapFaultMessage));
-				} catch (XMLParsingException e) {
-					throwException(new SOAPException(MESSAGE_ERROR_500_FAILED_SOAPFAULT, e));
+				// If we've successfully parsed a soap fault, toString()
+				// it as part of the message, otherwise just return an
+				// exception and say we couldn't parse one.
+				String soapFaultMessage = null;
+				if (soapFault != null) {
+					soapFaultMessage = MESSAGE_ERROR_500_SOAPFAULT + soapFault.toString();
+				} else {
+					soapFaultMessage = MESSAGE_ERROR_500_FAILED_SOAPFAULT;
 				}
 
-				break;
+				throw new SOAPException(soapFaultMessage);
 			default:
-				throwException(new SOAPException(MESSAGE_ERROR + " " + response.getHttpStatus()));
+				throw new SOAPException(MESSAGE_ERROR + " " + response.getHttpStatus());
 			}
-
+		} catch (IOException e) {
+			throw new SOAPException(e);
+		} catch (XMLParsingException e) {
+			throw new SOAPException(e);
+		} finally {
+			complete = true;
+			executing = false;
 		}
-
-		return null;
 	}
 
 	/**
@@ -386,9 +373,6 @@ public class RequestImpl<ResultType, SOAPFaultType> implements Request<ResultTyp
 		 */
 		@Override
 		protected void onPostExecute(ResultType returnedResult) {
-			complete = true;
-			executing = false;
-
 			if (caughtException != null) {
 				registry.notifyException(RequestImpl.this, caughtException);
 			}
@@ -402,9 +386,12 @@ public class RequestImpl<ResultType, SOAPFaultType> implements Request<ResultTyp
 		 */
 		@Override
 		protected ResultType doInBackground(Void... arg0) {
-			executing = true;
 			if (!isCancelled()) {
-				return run();
+				try {
+					return run();
+				} catch (SOAPException e) {
+					throwException(e);
+				}
 			}
 			return null;
 		}

@@ -5,6 +5,7 @@ import java.util.concurrent.ExecutionException;
 
 import android.os.AsyncTask;
 
+import com.alexgilleran.icesoap.exception.SOAPException;
 import com.alexgilleran.icesoap.observer.SOAPObserver;
 import com.alexgilleran.icesoap.observer.SOAP11Observer;
 
@@ -44,11 +45,8 @@ public interface Request<ResultType, SOAPFaultType> {
 	void execute(SOAPObserver<ResultType, SOAPFaultType> observer);
 
 	/**
-	 * Executes the request on the same thread it's called on, using
-	 * {@link AsyncTask#get()} in the underlying {@link AsyncTask}. Any
-	 * {@link SOAPObserver} that has been registered will have
-	 * {@link SOAPObserver#onCompletion(Request)} called before the ResultType
-	 * is returned from this method.
+	 * Executes the request on the same thread it's called on. This will not
+	 * result in registered {@link SOAPObserver}s being called.
 	 * 
 	 * <p>
 	 * Note: Only use this method when you're already on a background thread
@@ -57,13 +55,10 @@ public interface Request<ResultType, SOAPFaultType> {
 	 * exceptions being thrown.
 	 * 
 	 * @return The result of this request.
-	 * @throws InterruptedException
-	 *             If the request is interrupted while executing.
-	 * @throws ExecutionException
-	 *             If an exception is thrown during execution.
-	 * @see AsyncTask#get().
+	 * @throws SOAPException
+	 *             If an exception is thrown while executing.
 	 */
-	ResultType executeBlocking() throws InterruptedException, ExecutionException;
+	ResultType executeBlocking() throws SOAPException;
 
 	/**
 	 * Adds an observer to the request - the observer's methods will be called

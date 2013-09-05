@@ -6,12 +6,13 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.isA;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
+
+import junit.framework.Assert;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -63,7 +64,7 @@ public class RequestTest extends BaseRequestTest<Response> {
 	}
 
 	@Test
-	public void testRequestBlocking() throws IOException, XMLParsingException, InterruptedException, ExecutionException {
+	public void testRequestBlocking() throws SOAPException, IOException {
 		// Set up a parser for the response
 		SOAP11Request<Response> request = getRequestFactory().buildRequest(DUMMY_URL, getDummyEnvelope(), SOAP_ACTION,
 				Response.class);
@@ -103,6 +104,28 @@ public class RequestTest extends BaseRequestTest<Response> {
 
 		// Verify that it did what it was supposed to
 		verify(mockObserver);
+	}
+
+	@Test
+	public void testBlockingException() throws IOException, XMLParsingException {
+		// Set up a parser for the response
+		SOAP11Request<Response> request = getRequestFactory().buildRequest(DUMMY_URL, getDummyEnvelope(), SOAP_ACTION,
+				Response.class);
+
+		IOException ioException = new IOException("Test");
+
+		SOAPEnvelope envelope = getDummyEnvelope();
+
+		expect(mockRequester.doSoapRequest(envelope, DUMMY_URL, SOAP_ACTION)).andThrow(ioException);
+		replay(mockRequester);
+
+		try {
+			request.executeBlocking();
+			fail();
+		} catch (SOAPException exception) {
+			assertEquals(ioException, exception.getCause());
+			// yay
+		}
 	}
 
 	@SuppressWarnings("unchecked")
