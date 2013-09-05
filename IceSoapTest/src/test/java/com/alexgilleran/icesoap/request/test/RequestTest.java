@@ -7,6 +7,7 @@ import static org.easymock.EasyMock.isA;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -24,11 +25,9 @@ import com.alexgilleran.icesoap.request.Request;
 import com.alexgilleran.icesoap.request.SOAP11Request;
 import com.alexgilleran.icesoap.request.SOAPRequester;
 import com.alexgilleran.icesoap.request.impl.RequestFactoryImpl;
-import com.alexgilleran.icesoap.request.impl.RequestImpl;
 import com.alexgilleran.icesoap.request.test.xmlclasses.CustomSOAP12Fault;
 import com.alexgilleran.icesoap.request.test.xmlclasses.Response;
 import com.alexgilleran.icesoap.soapfault.SOAP11Fault;
-import com.xtremelabs.robolectric.Robolectric;
 import com.xtremelabs.robolectric.RobolectricTestRunner;
 
 @RunWith(RobolectricTestRunner.class)
@@ -61,6 +60,21 @@ public class RequestTest extends BaseRequestTest<Response> {
 
 		// Verify the parsed object was correct.
 		assertEquals(expectedResponse, request.getResult());
+	}
+
+	@Test
+	public void testRequestBlocking() throws IOException, XMLParsingException, InterruptedException, ExecutionException {
+		// Set up a parser for the response
+		SOAP11Request<Response> request = getRequestFactory().buildRequest(DUMMY_URL, getDummyEnvelope(), SOAP_ACTION,
+				Response.class);
+
+		SOAPEnvelope envelope = getDummyEnvelope();
+		expect(mockRequester.doSoapRequest(envelope, DUMMY_URL, SOAP_ACTION)).andReturn(
+				new com.alexgilleran.icesoap.request.impl.Response(SampleResponse.getSingleResponse(), 200));
+		replay(mockRequester);
+
+		// Verify the parsed object was correct.
+		assertEquals(expectedResponse, request.executeBlocking());
 	}
 
 	/**

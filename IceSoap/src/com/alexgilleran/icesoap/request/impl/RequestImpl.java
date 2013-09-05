@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Scanner;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import android.os.AsyncTask;
 
@@ -206,7 +208,7 @@ public class RequestImpl<ResultType, SOAPFaultType> implements Request<ResultTyp
 
 	@Override
 	public ResultType executeBlocking() throws InterruptedException, ExecutionException {
-		return createTask().get();
+		return run();
 	}
 
 	/**
@@ -276,6 +278,98 @@ public class RequestImpl<ResultType, SOAPFaultType> implements Request<ResultTyp
 	}
 
 	/**
+	 * @return
+	 */
+	private ResultType run() {
+		Response response = null;
+		InputStream responseData = null;
+
+		try {
+			response = getResponse();
+		} catch (IOException ioException) {
+			throwException(new SOAPException(ioException));
+		}
+
+		if (response != null) {
+			responseData = response.getData();
+
+			if (debugMode) {
+				// \\A is a regex for the first character... putting that
+				// into useDelimiter gets us the whole response as a String
+				Scanner responseScanner = new Scanner(responseData).useDelimiter("\\A");
+
+				if (responseScanner.hasNext()) {
+					responseXML = responseScanner.next();
+					responseData = new ByteArrayInputStream(responseXML.getBytes());
+				}
+
+				responseScanner.close();
+
+			}
+
+			switch (response.getHttpStatus()) {
+			case HTTP_OK_STATUS:
+				try {
+					return getParser().parse(responseData);
+				} catch (XMLParsingException e) {
+					throwException(new SOAPException(e));
+				}
+				break;
+			case HTTP_ERROR_STATUS:
+				try {
+					soapFault = parseSoapFault(responseData);
+
+					// If we've successfully parsed a soap fault, toString()
+					// it as part of the message, otherwise just return an
+					// exception and say we couldn't parse one.
+					String soapFaultMessage = null;
+					if (soapFault != null) {
+						soapFaultMessage = MESSAGE_ERROR_500_SOAPFAULT + soapFault.toString();
+					} else {
+						soapFaultMessage = MESSAGE_ERROR_500_FAILED_SOAPFAULT;
+					}
+
+					throwException(new SOAPException(soapFaultMessage));
+				} catch (XMLParsingException e) {
+					throwException(new SOAPException(MESSAGE_ERROR_500_FAILED_SOAPFAULT, e));
+				}
+
+				break;
+			default:
+				throwException(new SOAPException(MESSAGE_ERROR + " " + response.getHttpStatus()));
+			}
+
+		}
+
+		return null;
+	}
+
+	/**
+	 * Parses a SOAPFault from incoming data.
+	 * 
+	 * @param soapFaultData
+	 *            An input stream containing SOAPFault information to parse.
+	 * @return The parsed soapfault object
+	 * @throws XMLParsingException
+	 *             If an error occurs while parsing.
+	 */
+	private SOAPFaultType parseSoapFault(InputStream soapFaultData) throws XMLParsingException {
+		IceSoapParser<SOAPFaultType> parser = new IceSoapParserImpl<SOAPFaultType>(soapFaultClass);
+
+		return parser.parse(soapFaultData);
+	}
+
+	/**
+	 * Stores an exception that will be thrown on the UI thread.
+	 * 
+	 * @param exception
+	 *            The exception to throw.
+	 */
+	protected void throwException(SOAPException exception) {
+		caughtException = exception;
+	}
+
+	/**
 	 * Subclass of {@link AsyncTask} used for performing the request in a
 	 * background thread.
 	 * 
@@ -304,100 +398,17 @@ public class RequestImpl<ResultType, SOAPFaultType> implements Request<ResultTyp
 		}
 
 		/**
-		 * Stores an exception that will be thrown on the UI thread.
-		 * 
-		 * @param exception
-		 *            The exception to throw.
-		 */
-		protected void throwException(SOAPException exception) {
-			caughtException = exception;
-		}
-
-		/**
 		 * {@inheritDoc}
 		 */
 		@Override
 		protected ResultType doInBackground(Void... arg0) {
 			executing = true;
-			Response response = null;
-			InputStream responseData = null;
-
-			try {
-				if (!isCancelled()) {
-					response = getResponse();
-				}
-			} catch (IOException ioException) {
-				throwException(new SOAPException(ioException));
+			if (!isCancelled()) {
+				return run();
 			}
-
-			if (response != null) {
-				responseData = response.getData();
-
-				if (debugMode) {
-					// \\A is a regex for the first character... putting that
-					// into useDelimiter gets us the whole response as a String
-					Scanner responseScanner = new Scanner(responseData).useDelimiter("\\A");
-
-					if (responseScanner.hasNext()) {
-						responseXML = responseScanner.next();
-						responseData = new ByteArrayInputStream(responseXML.getBytes());
-					}
-
-					responseScanner.close();
-
-				}
-
-				switch (response.getHttpStatus()) {
-				case HTTP_OK_STATUS:
-					try {
-						return getParser().parse(responseData);
-					} catch (XMLParsingException e) {
-						throwException(new SOAPException(e));
-					}
-					break;
-				case HTTP_ERROR_STATUS:
-					try {
-						soapFault = parseSoapFault(responseData);
-
-						// If we've successfully parsed a soap fault, toString()
-						// it as part of the message, otherwise just return an
-						// exception and say we couldn't parse one.
-						String soapFaultMessage = null;
-						if (soapFault != null) {
-							soapFaultMessage = MESSAGE_ERROR_500_SOAPFAULT + soapFault.toString();
-						} else {
-							soapFaultMessage = MESSAGE_ERROR_500_FAILED_SOAPFAULT;
-						}
-
-						throwException(new SOAPException(soapFaultMessage));
-					} catch (XMLParsingException e) {
-						throwException(new SOAPException(MESSAGE_ERROR_500_FAILED_SOAPFAULT, e));
-					}
-
-					break;
-				default:
-					throwException(new SOAPException(MESSAGE_ERROR + " " + response.getHttpStatus()));
-				}
-
-			}
-
 			return null;
 		}
 
-		/**
-		 * Parses a SOAPFault from incoming data.
-		 * 
-		 * @param soapFaultData
-		 *            An input stream containing SOAPFault information to parse.
-		 * @return The parsed soapfault object
-		 * @throws XMLParsingException
-		 *             If an error occurs while parsing.
-		 */
-		private SOAPFaultType parseSoapFault(InputStream soapFaultData) throws XMLParsingException {
-			IceSoapParser<SOAPFaultType> parser = new IceSoapParserImpl<SOAPFaultType>(soapFaultClass);
-
-			return parser.parse(soapFaultData);
-		}
 	}
 
 	@Override
