@@ -6,6 +6,7 @@ com.alexgilleran.icesoap.observer
 com.alexgilleran.icesoap.observer.registry
 com.alexgilleran.icesoap.parser
 com.alexgilleran.icesoap.parser.impl
+com.alexgilleran.icesoap.parser.impl.stringparsers
 com.alexgilleran.icesoap.parser.processor
 com.alexgilleran.icesoap.request
 com.alexgilleran.icesoap.request.impl

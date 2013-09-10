@@ -4,7 +4,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -429,6 +428,7 @@ public class IceSoapParserImpl<ReturnType> extends BaseIceSoapParserImpl<ReturnT
 	 *            The pull parser used to do the parsing.
 	 * @return A new instance of {@link IceSoapParser}
 	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private BaseIceSoapParserImpl<?> getParserForField(Field field, XPathPullParser pullParser, XPathElement fieldXPath) {
 		Class<?> classForParser = field.getType();
 

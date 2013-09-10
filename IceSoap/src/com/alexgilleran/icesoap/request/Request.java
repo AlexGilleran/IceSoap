@@ -1,13 +1,12 @@
 package com.alexgilleran.icesoap.request;
 
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import android.os.AsyncTask;
 
 import com.alexgilleran.icesoap.exception.SOAPException;
-import com.alexgilleran.icesoap.observer.SOAPObserver;
 import com.alexgilleran.icesoap.observer.SOAP11Observer;
+import com.alexgilleran.icesoap.observer.SOAPObserver;
 
 /**
  * Encapsulates all the code for making a SOAP Request - to use, create an
