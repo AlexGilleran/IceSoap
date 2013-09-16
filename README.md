@@ -14,3 +14,17 @@ So [download IceSoap](http://code.google.com/p/icesoap/wiki/Installation), read 
 Github vs Google Code
 ---------------------
 Note that this isn't the primary repository for IceSoap - issue tracking and documentation is all kept in [Google Code](http://code.google.com/p/icesoap). The code is kept up-to-date on both, however, in order to facilitate forking/pull requests etc on Github for those who prefer it to Google Code.
+ 
+    Copyright 2012-2013 Alex Gilleran
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
