@@ -9,7 +9,7 @@ And so, IceSoap was born. IceSoap aims to get you up and connected to your web s
 
 IceSoap doesn't generate code to implement SOAP - rather its design is closer to that of JSON libraries like GSON - you simply create a Java POJO to represent the object you want to get from the web service, annotate it with XPaths so it can find the fields it needs, then let IceSoap parse it for you. Use of background threads is baked into the code, so all you have to worry about is what to send and what to do with it when it comes back.
 
-So [download IceSoap](http://code.google.com/p/icesoap/wiki/Installation), read the [Getting Started Guide](http://code.google.com/p/icesoap/wiki/GettingStarted_Contents), have a look at the [example](https://github.com/AlexGilleran/IceSoap/tree/master/IceSoapExample/src/main/java/com/alexgilleran/icesoap/example) and get going! Javadoc is [here](http://icesoap.googlecode.com/git-history/icesoap-1.0.6/IceSoap/javadoc/index.html).
+So [download IceSoap](http://code.google.com/p/icesoap/wiki/Installation), read the [Getting Started Guide](http://code.google.com/p/icesoap/wiki/GettingStarted_Contents), have a look at the [example](https://github.com/AlexGilleran/IceSoap/tree/master/IceSoapExample/src/main/java/com/alexgilleran/icesoap/example) and get going! Javadoc is [here](http://icesoap.googlecode.com/git-history/icesoap-1.0.7/IceSoap/javadoc/index.html).
 
 Github vs Google Code
 ---------------------
