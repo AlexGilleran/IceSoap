@@ -8,8 +8,10 @@ import static org.junit.Assert.assertFalse;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import com.alexgilleran.icesoap.xml.impl.XMLObjectBase;
+import com.xtremelabs.robolectric.RobolectricTestRunner;
 
 /**
  * Tests the basic functionality of the {@link XMLObjectBase} class.
@@ -17,6 +19,7 @@ import com.alexgilleran.icesoap.xml.impl.XMLObjectBase;
  * @author Alex Gilleran
  * 
  */
+@RunWith(RobolectricTestRunner.class)
 public abstract class XMLObjectTest<TypeUnderTest extends XMLObjectBase> {
 	/**
 	 * The namespace of the object, to be passed back to the extending class
@@ -58,8 +61,7 @@ public abstract class XMLObjectTest<TypeUnderTest extends XMLObjectBase> {
 	 *            The name to set in the new object.
 	 * @return A new instance of the type under test.
 	 */
-	protected abstract TypeUnderTest constructObject(String namespace,
-			String name);
+	protected abstract TypeUnderTest constructObject(String namespace, String name);
 
 	/**
 	 * Returns the current instance of the XML Object type under test - resets

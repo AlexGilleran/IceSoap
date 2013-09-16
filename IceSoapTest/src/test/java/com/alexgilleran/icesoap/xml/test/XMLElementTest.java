@@ -11,11 +11,13 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import com.alexgilleran.icesoap.xml.XMLAttribute;
 import com.alexgilleran.icesoap.xml.XMLNode;
 import com.alexgilleran.icesoap.xml.impl.XMLAttributeImpl;
 import com.alexgilleran.icesoap.xml.impl.XMLNodeBase;
+import com.xtremelabs.robolectric.RobolectricTestRunner;
 
 /**
  * Runs a number of tests on the XMLElement object, asserting that the base code
@@ -25,8 +27,8 @@ import com.alexgilleran.icesoap.xml.impl.XMLNodeBase;
  * @author Alex Gilleran
  * 
  */
-public abstract class XMLElementTest<TypeUnderTest extends XMLNodeBase>
-		extends XMLObjectTest<TypeUnderTest> {
+@RunWith(RobolectricTestRunner.class)
+public abstract class XMLElementTest<TypeUnderTest extends XMLNodeBase> extends XMLObjectTest<TypeUnderTest> {
 	public XMLElementTest(String namespace, String name) {
 		super(namespace, name);
 	}
@@ -44,8 +46,8 @@ public abstract class XMLElementTest<TypeUnderTest extends XMLNodeBase>
 	}
 
 	/**
-	 * Constructs a new class that extends {@link XMLNodeBase}. The object
-	 * that is returned from this method should:
+	 * Constructs a new class that extends {@link XMLNodeBase}. The object that
+	 * is returned from this method should:
 	 * 
 	 * <ul>
 	 * <li>Use the namespace and name passed</li>
@@ -61,8 +63,7 @@ public abstract class XMLElementTest<TypeUnderTest extends XMLNodeBase>
 	 *            The name to set on the new {@link XMLNodeBase}
 	 * @return An instance of an {@link XMLNodeBase} extending class.
 	 */
-	protected abstract TypeUnderTest constructElement(String namespace,
-			String name);
+	protected abstract TypeUnderTest constructElement(String namespace, String name);
 
 	/**
 	 * Test the that the basic XMLElement toStrings as we expect.
@@ -73,10 +74,8 @@ public abstract class XMLElementTest<TypeUnderTest extends XMLNodeBase>
 
 		String asString = getXMLObject().toString();
 
-		assertTrue(asString,
-				asString.startsWith("<" + getXMLObject().getName() + ">"));
-		assertTrue(asString,
-				asString.endsWith("</" + getXMLObject().getName() + ">"));
+		assertTrue(asString, asString.startsWith("<" + getXMLObject().getName() + ">"));
+		assertTrue(asString, asString.endsWith("</" + getXMLObject().getName() + ">"));
 	}
 
 	/**
@@ -94,13 +93,9 @@ public abstract class XMLElementTest<TypeUnderTest extends XMLNodeBase>
 
 		assertTrue(
 				asString,
-				asString.startsWith("<" + prefix + ":"
-						+ getXMLObject().getName() + " xmlns:" + prefix + "=\""
+				asString.startsWith("<" + prefix + ":" + getXMLObject().getName() + " xmlns:" + prefix + "=\""
 						+ getXMLObject().getNamespace() + "\">"));
-		assertTrue(
-				asString,
-				asString.endsWith("</" + prefix + ":"
-						+ getXMLObject().getName() + ">"));
+		assertTrue(asString, asString.endsWith("</" + prefix + ":" + getXMLObject().getName() + ">"));
 	}
 
 	/**
@@ -149,18 +144,9 @@ public abstract class XMLElementTest<TypeUnderTest extends XMLNodeBase>
 		// Make sure the attributes are toStringing properly
 		String asString = getXMLObject().toString();
 
-		assertTrue(
-				asString,
-				asString.contains(testNsPrefix1 + ":" + testName1 + "=\""
-						+ testValue1 + "\""));
-		assertTrue(
-				asString,
-				asString.contains(testNsPrefix2 + ":" + testName2 + "=\""
-						+ testValue2 + "\""));
-		assertTrue(
-				asString,
-				asString.contains(testNsPrefix3 + ":" + testName3 + "=\""
-						+ testValue3 + "\""));
+		assertTrue(asString, asString.contains(testNsPrefix1 + ":" + testName1 + "=\"" + testValue1 + "\""));
+		assertTrue(asString, asString.contains(testNsPrefix2 + ":" + testName2 + "=\"" + testValue2 + "\""));
+		assertTrue(asString, asString.contains(testNsPrefix3 + ":" + testName3 + "=\"" + testValue3 + "\""));
 	}
 
 	/**
@@ -178,8 +164,7 @@ public abstract class XMLElementTest<TypeUnderTest extends XMLNodeBase>
 		assertEquals(0, getXMLObject().getAttributes().size());
 
 		// Declare the xsi namespace
-		getXMLObject().declarePrefix(XMLNode.NS_PREFIX_XSI,
-				XMLNode.NS_URI_XSI);
+		getXMLObject().declarePrefix(XMLNode.NS_PREFIX_XSI, XMLNode.NS_URI_XSI);
 
 		// Set the type - this will create an attribute for xsi:type
 		getXMLObject().setType(type);
@@ -196,10 +181,7 @@ public abstract class XMLElementTest<TypeUnderTest extends XMLNodeBase>
 
 		// Test the type is toStringing properly
 		String asString = getXMLObject().toString();
-		assertTrue(
-				asString,
-				asString.contains(XMLNode.NS_PREFIX_XSI + ":" + typeName
-						+ "=\"" + type + "\""));
+		assertTrue(asString, asString.contains(XMLNode.NS_PREFIX_XSI + ":" + typeName + "=\"" + type + "\""));
 
 		// Set the type again
 		getXMLObject().setType(anotherType);
@@ -215,8 +197,7 @@ public abstract class XMLElementTest<TypeUnderTest extends XMLNodeBase>
 		assertEquals(typeName, typeAtt.getName());
 
 		asString = getXMLObject().toString();
-		assertTrue(asString.contains(XMLNode.NS_PREFIX_XSI + ":" + typeName
-				+ "=\"" + anotherType + "\""));
+		assertTrue(asString.contains(XMLNode.NS_PREFIX_XSI + ":" + typeName + "=\"" + anotherType + "\""));
 	}
 
 	/**
@@ -228,18 +209,14 @@ public abstract class XMLElementTest<TypeUnderTest extends XMLNodeBase>
 		String prefixName1 = "prefix";
 		String prefixName2 = "prefix2";
 		String testNamespace2 = "http://www.prefix2.com";
-		getXMLObject()
-				.declarePrefix(prefixName1, getXMLObject().getNamespace());
+		getXMLObject().declarePrefix(prefixName1, getXMLObject().getNamespace());
 		getXMLObject().declarePrefix(prefixName2, testNamespace2);
 
 		String asString = getXMLObject().toString();
 
 		// There's no method for getting prefixes, so look at the text output.
-		assertTrue(asString.contains("<" + prefixName1 + ":"
-				+ getXMLObject().getName()));
-		assertTrue(asString.contains(prefixName1 + "=\""
-				+ getXMLObject().getNamespace() + "\""));
-		assertTrue(asString.contains(prefixName2 + "=\"" + testNamespace2
-				+ "\""));
+		assertTrue(asString.contains("<" + prefixName1 + ":" + getXMLObject().getName()));
+		assertTrue(asString.contains(prefixName1 + "=\"" + getXMLObject().getNamespace() + "\""));
+		assertTrue(asString.contains(prefixName2 + "=\"" + testNamespace2 + "\""));
 	}
 }
