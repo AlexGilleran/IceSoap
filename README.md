@@ -11,6 +11,8 @@ IceSoap doesn't generate code to implement SOAP - rather its design is closer to
 
 So [download IceSoap](https://github.com/AlexGilleran/IceSoap/wiki/Installation), read the [Getting Started Guide](https://github.com/AlexGilleran/IceSoap/wiki/Getting-Started-Contents), have a look at the [example](https://github.com/AlexGilleran/IceSoap/tree/master/IceSoapExample) and get going! Javadoc is [here](http://alexgilleran.github.io/IceSoap/javadoc/).
 
+This project is now in maintenance mode - the code is stable and I'll fix happily bugs if they come up, but I won't be developing new features. That said, if you want to develop it, feel free to send me a pull request on Github or just fork the project altogether. I've seen downloads dwindle as time has gone on, which hopefully means that SOAP is declining as a messaging format, and hence there's not much point enhancing this library much further.
+
 Github vs Google Code
 ---------------------
 This used to be hosted on Google Code until Google did their thing and dumped it like an unwanted Christmas puppy. As a result the old issues that have been raised since the first release aren't actually on this repo, instead they're on the one that got converted here: https://github.com/AlexGilleran/icesoap-gcode-import/issues. This project also lost its 42 google code stars :(.
