@@ -1,10 +1,7 @@
 package com.alexgilleran.icesoap.xpath;
 
 import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import com.alexgilleran.icesoap.xpath.elements.XPathElement;
 
@@ -31,8 +28,7 @@ import com.alexgilleran.icesoap.xpath.elements.XPathElement;
 public class XPathRepository<T> {
 
 	/**
-	 * Holds an index of XPathElements against their names to facilitate faster
-	 * lookups.
+	 * Holds an index of XPathElements against their names to facilitate faster lookups.
 	 */
 	private Map<String, Set<XPathElement>> lookupMap = new HashMap<String, Set<XPathElement>>();
 	/** Holds the values stored against XPathElements. */
@@ -79,7 +75,7 @@ public class XPathRepository<T> {
 	/**
 	 * Removes the record with the supplied key from the repository. Note that
 	 * this does not attempt to match the XPathElement passed in - the key
-	 * supplied to {@link #remove(XPathElement)} must exactly match the one in
+	 * supplied to {@link #remove(XPathElement)} must exactly equal the one in
 	 * the repository.
 	 * 
 	 * @param key
@@ -91,9 +87,18 @@ public class XPathRepository<T> {
 	public T remove(XPathElement key) {
 		T returnValue = valueMap.remove(key);
 
+		if (returnValue == null) {
+			return null;
+		}
+
 		Set<XPathElement> elements = lookupMap.get(key.getName());
 		if (elements != null) {
-			elements.remove(key);
+			Iterator<XPathElement> it = elements.iterator();
+			while (it.hasNext()) {
+				if (it.next().equals(key)) {
+					it.remove();
+				}
+			}
 
 			if (elements.isEmpty()) {
 				lookupMap.remove(key);
@@ -151,13 +156,17 @@ public class XPathRepository<T> {
 	 */
 	public XPathRecord<T> getFullRecord(XPathElement key) {
 		// Look for the set of elements with this name
-		Set<XPathElement> possibleElements = lookupMap.get(key.getName());
+		Set<XPathElement> possibleElementsSet = lookupMap.get(key.getName());
 
-		if (possibleElements != null) {
+		if (possibleElementsSet != null) {
 			// If there's a set of elements here, loop through them and return
-			// the first one that matches the passed XPath
+			// the most specific one that matches the passed XPath
+			List<XPathElement> possibleElements = new LinkedList<XPathElement>(possibleElementsSet);
+			Collections.sort(possibleElements, specificityComparator);
 
 			for (XPathElement possElement : possibleElements) {
+				// Note that possElement is generally a simple xpath specified in an annotation and key is the full-on
+				// absolute, all-information-included xpath.
 				if (possElement.matches(key)) {
 					return new XPathRecord<T>(possElement, valueMap.get(possElement));
 				}
@@ -241,6 +250,16 @@ public class XPathRepository<T> {
 			return key;
 		}
 	}
+
+	/**
+	 * Sorts {@link XPathRecord}s by specificity in descending order.
+	 */
+	private Comparator<XPathElement> specificityComparator = new Comparator<XPathElement>() {
+		@Override
+		public int compare(XPathElement o1, XPathElement o2) {
+			return Integer.compare(o2.getSpecificity(), o1.getSpecificity());
+		}
+	};
 
 	@Override
 	public int hashCode() {

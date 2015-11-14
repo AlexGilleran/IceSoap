@@ -16,3 +16,5 @@ gen
 default-soapui-workspace.xml
 pom.xml.releaseBackup
 release.properties
+.idea
+*.iml

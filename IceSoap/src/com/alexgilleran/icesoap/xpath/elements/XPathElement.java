@@ -5,44 +5,41 @@ package com.alexgilleran.icesoap.xpath.elements;
  * <code>this//is/an/@xpath</code>", "<code>this</code>", "<code>is</code>", "
  * <code>an</code>" and "<code>@xpath</code>" would all be XPathElements of
  * various types.
- * 
+ * <p>
  * Within IceSoap there is no holistic "XPath" type - rather, an XPath as a
  * whole is represented by its last element. Hence, if someone wanted to
  * determine whether one XPath expression matched another, they would find the
  * XPathElement instance representing the final element of each and execute the
  * <code>matches</code> operation.
- * 
+ *
  * @author Alex Gilleran
- * 
  */
 public interface XPathElement extends Cloneable {
 	/**
 	 * Gets the name of the element. E.g.
-	 * 
+	 * <p>
 	 * <li>"<code>/name</code>" returns "name"</li> <li>"<code>//name</code>
 	 * " returns "name"</li> <li>"<code>name</code>" returns "name"</li> <li>"
 	 * <code>/@name</code>" returns "name"</li>
-	 * 
+	 *
 	 * @return The name of the element.
-	 * 
 	 */
 	String getName();
 
 	/**
 	 * Performs a deep-copy of this {@link XPathElement} instance - this
 	 * includes deep copies of the entire previous element chain.
-	 * 
+	 *
 	 * @return A new copy of the XPathElement.
 	 */
 	XPathElement clone();
 
 	/**
 	 * Gets the value of a predicate with the name passed in.
-	 * 
-	 * @param predicateName
-	 *            The name of the predicate (e.g. to get the value of the
-	 *            predicate expression <code>[@name="value"]</code>,
-	 *            <code>predicateName</code> would be "name").
+	 *
+	 * @param predicateName The name of the predicate (e.g. to get the value of the
+	 *                      predicate expression <code>[@name="value"]</code>,
+	 *                      <code>predicateName</code> would be "name").
 	 * @return The value of the predicate - "value" in the example above.
 	 */
 	String getPredicate(String predicateName);
@@ -52,19 +49,22 @@ public interface XPathElement extends Cloneable {
 	 * Adds a predicate to this XPath element. Currently, any predicates added
 	 * will act as "and" rather than "or" when matching with another elements.
 	 * </p>
-	 * 
+	 * <p>
 	 * <p>
 	 * <b>e.g.</b> In the XPath expression
 	 * <code>/xpath/example[@predname="predvalue"]</code>, "predname" would be
 	 * the name passed into this operation, and "predvalue" would be the value.
 	 * </p>
-	 * 
-	 * @param name
-	 *            The name of the predicate.
-	 * @param value
-	 *            The value for the predicate.
+	 *
+	 * @param name  The name of the predicate.
+	 * @param value The value for the predicate.
 	 */
 	void addPredicate(String name, String value);
+
+	/**
+	 * <p>Gets the number of predicates in this XPathElement</p>
+	 */
+	int getPredicateCount();
 
 	/**
 	 * <p>
@@ -83,31 +83,30 @@ public interface XPathElement extends Cloneable {
 	 * Then I'm querying whether <code>xpathElementB</code> matches everything
 	 * specified by <code>xpathElementB</code>. So if <code>xpathElementB</code>
 	 * is horrendously complicated like
-	 * 
+	 * <p>
 	 * <blockquote>
 	 * <code>/this[@pred="value"]/is/a[@anotherpred="anothervalue" and @yetanotherpred="yetanothervalue"]/very/complicated/xpath</code>
 	 * </blockquote>
-	 * 
+	 * <p>
 	 * but <code>xpathElementA</code> is something very simple like
-	 * 
+	 * <p>
 	 * <blockquote> <code>//xpath</code> </blockquote>
-	 * 
+	 * <p>
 	 * <code>xpathElementA.matches(xpathElementB)</code> will return
 	 * <code>true</code>. In this case,
 	 * <code>xpathElementB.matches(xpathElementA)</code> will return
 	 * <code>false</code>.
 	 * </p>
-	 * 
-	 * @param otherElement
-	 *            Another element to try to match.
+	 *
+	 * @param otherElement Another element to try to match.
 	 * @return Whether the passed element matches all the information
-	 *         represented by this xpath.
+	 * represented by this xpath.
 	 */
 	boolean matches(XPathElement otherElement);
 
 	/**
 	 * Gets the element previous to this one in the XPath expression.
-	 * 
+	 *
 	 * @return Either an XPath element, or null if this is the first expression.
 	 */
 	XPathElement getPreviousElement();
@@ -117,7 +116,7 @@ public interface XPathElement extends Cloneable {
 	 * E.g. in the XPath expression <code>/example/xpath</code>, invoking
 	 * <code>isFirstElement()</code> on the <code>example</code> element will
 	 * return true, whereas on the <code>xpath</code> node it will return false.
-	 * 
+	 *
 	 * @return true if the first element, otherwise false.
 	 */
 	boolean isFirstElement();
@@ -125,41 +124,40 @@ public interface XPathElement extends Cloneable {
 	/**
 	 * Returns the toString() representation of this XPathElement as a
 	 * StringBuilder.
-	 * 
-	 * @see {@link XPathElement.toString()}
-	 * 
+	 *
 	 * @return the toString() representation of this XPathElement as a
-	 *         StringBuilder
+	 * StringBuilder
+	 * @see {@link XPathElement.toString()}
 	 */
 	StringBuilder toStringBuilder();
 
 	/**
 	 * Returns this element and all previous elements in standard XPath
 	 * notation.
-	 * 
+	 *
 	 * @return this element and all previous elements in standard XPath
-	 *         notation.
+	 * notation.
 	 */
 	String toString();
 
 	/**
 	 * Determines whether this is an attribute.
-	 * 
+	 *
 	 * @return true if this XPathElement represents an attribute, otherwise
-	 *         false.
+	 * false.
 	 */
 	boolean isAttribute();
 
 	/**
 	 * Determines whether this element is relative (i.e. starts with no slashes)
-	 * 
+	 *
 	 * @return true if element is relative, otherwise false.
 	 */
 	boolean isRelative();
 
 	/**
 	 * Gets the prefix of the element... e.g. "/", "//" etc.
-	 * 
+	 *
 	 * @return The prefix of the element as a string.
 	 */
 	String getPrefix();
@@ -181,17 +179,21 @@ public interface XPathElement extends Cloneable {
 	 * <code>allnode/xpath</code> and set <code>allnode</code>'s previous
 	 * element to <code>/element</code> as above, the resulting entire XPath
 	 * will become <code>/element/allnode/xpath</code>.
-	 * 
-	 * @param previousElement
-	 *            The element to set as the previous element to this one.
+	 *
+	 * @param previousElement The element to set as the previous element to this one.
 	 */
 	void setPreviousElement(XPathElement previousElement);
 
 	/**
 	 * Gets the first element of the XPath associated with this XPath.
-	 * 
+	 *
 	 * @return The first XPathElement in the associated XPath.
 	 */
 	XPathElement getFirstElement();
+
+	/**
+	 * Gets a naive representation of how specific this element is by counting the number of elements along the way
+	 */
+	int getSpecificity();
 
 }

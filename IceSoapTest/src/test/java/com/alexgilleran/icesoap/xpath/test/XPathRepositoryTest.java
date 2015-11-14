@@ -40,17 +40,17 @@ public class XPathRepositoryTest extends XPathTest {
 
 	@Test
 	public void testPredicateSelection() throws XPathParsingException {
-		final String xpath1 = "/xpath1/xpath2";
-		final String xpath2 = "/xpath1/xpath2[@predicate=\"wrongvalue\"]";
-		final String xpath3 = "/xpath1/xpath2[@predicate=\"rightvalue\"]";
+		final String xpathNoPred = "/xpath1/xpath2";
+		final String xpathWrongValuePred = "/xpath1/xpath2[@predicate=\"wrongvalue\"]";
+		final String xpathRightValuePred = "/xpath1/xpath2[@predicate=\"rightvalue\"]";
 
-		repo.put(XPathFactory.getInstance().compile(xpath1).keySet().iterator().next(), xpath1);
-		repo.put(XPathFactory.getInstance().compile(xpath2).keySet().iterator().next(), xpath2);
-		repo.put(XPathFactory.getInstance().compile(xpath3).keySet().iterator().next(), xpath3);
+		repo.put(XPathFactory.getInstance().compile(xpathNoPred).keySet().iterator().next(), xpathNoPred);
+		repo.put(XPathFactory.getInstance().compile(xpathWrongValuePred).keySet().iterator().next(), xpathWrongValuePred);
+		repo.put(XPathFactory.getInstance().compile(xpathRightValuePred).keySet().iterator().next(), xpathRightValuePred);
 
-		assertEquals(repo.get(XPathFactory.getInstance().compile(xpath1).keySet().iterator().next()), xpath1);
-		assertEquals(repo.get(XPathFactory.getInstance().compile(xpath2).keySet().iterator().next()), xpath2);
-		assertEquals(repo.get(XPathFactory.getInstance().compile(xpath3).keySet().iterator().next()), xpath3);
+		assertEquals(xpathNoPred, repo.get(XPathFactory.getInstance().compile(xpathNoPred).keySet().iterator().next()));
+		assertEquals(xpathWrongValuePred, repo.get(XPathFactory.getInstance().compile(xpathWrongValuePred).keySet().iterator().next()));
+		assertEquals(xpathRightValuePred, repo.get(XPathFactory.getInstance().compile(xpathRightValuePred).keySet().iterator().next()));
 	}
 
 	@Test
@@ -84,6 +84,22 @@ public class XPathRepositoryTest extends XPathTest {
 
 		assertEquals(xpath1.toString(), repo.get(xpath1));
 		assertNull(repo.get(xpath2));
+		assertEquals(xpath3.toString(), repo.get(xpath3));
+	}
+
+	@Test
+	public void testRemoveEnsureExactMatch() throws XPathParsingException {
+		XPathElement xpath1 = XPathFactory.getInstance().compile("//test/is/a/this").keySet().iterator().next();
+		XPathElement xpath2 = XPathFactory.getInstance().compile("/a/this").keySet().iterator().next();
+		XPathElement xpath3 = XPathFactory.getInstance().compile("//this").keySet().iterator().next();
+
+		repo.put(xpath1, xpath1.toString());
+		repo.put(xpath2, xpath2.toString());
+		repo.put(xpath3, xpath3.toString());
+
+		repo.remove(xpath1);
+
+		assertEquals(xpath2.toString(), repo.get(xpath2));
 		assertEquals(xpath3.toString(), repo.get(xpath3));
 	}
 

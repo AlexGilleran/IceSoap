@@ -1,20 +1,5 @@
 package com.alexgilleran.icesoap.request.test;
 
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.eq;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.isA;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
 import com.alexgilleran.icesoap.envelope.SOAPEnvelope;
 import com.alexgilleran.icesoap.exception.SOAPException;
 import com.alexgilleran.icesoap.exception.XMLParsingException;
@@ -27,7 +12,16 @@ import com.alexgilleran.icesoap.request.impl.RequestFactoryImpl;
 import com.alexgilleran.icesoap.request.test.xmlclasses.CustomSOAP12Fault;
 import com.alexgilleran.icesoap.request.test.xmlclasses.Response;
 import com.alexgilleran.icesoap.soapfault.SOAP11Fault;
-import com.xtremelabs.robolectric.RobolectricTestRunner;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.robolectric.RobolectricTestRunner;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+
+import static org.easymock.EasyMock.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 @RunWith(RobolectricTestRunner.class)
 public class RequestTest extends BaseRequestTest<Response> {

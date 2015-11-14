@@ -2,6 +2,7 @@ package com.alexgilleran.icesoap.xpath.elements.impl;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import com.alexgilleran.icesoap.xpath.elements.XPathElement;
@@ -26,7 +27,7 @@ public abstract class BaseXPathElement implements XPathElement {
 	 * A map representing all the predicates for this element, mapping from name
 	 * to value.
 	 */
-	private Map<String, String> predicates = new HashMap<String, String>();
+	private Map<String, String> predicates = new LinkedHashMap<String, String>();
 
 	/**
 	 * Instantiates a new BaseXPathElement.
@@ -213,6 +214,34 @@ public abstract class BaseXPathElement implements XPathElement {
 		for (String key : predicates.keySet()) {
 			newElement.predicates.put(new String(key), new String(predicates.get(key)));
 		}
+	}
+
+	@Override
+	public int getSpecificity() {
+		XPathElement thisElement = this;
+		int specificity = 0;
+
+		while (!thisElement.isFirstElement()) {
+			// One specificity point per element
+			specificity++;
+
+			// One specificity point per predicate
+			specificity += thisElement.getPredicateCount();
+
+			// One specificity point for being absolute
+			if (!thisElement.isRelative()) {
+				specificity++;
+			}
+
+			thisElement = thisElement.getPreviousElement();
+		}
+
+		return specificity;
+	}
+
+	@Override
+	public int getPredicateCount() {
+		return predicates.size();
 	}
 
 	@Override

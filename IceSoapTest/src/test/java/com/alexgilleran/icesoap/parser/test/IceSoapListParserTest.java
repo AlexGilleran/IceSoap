@@ -9,6 +9,8 @@ import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.robolectric.RobolectricTestRunner;
 import org.xmlpull.v1.XmlPullParserException;
 
 import com.alexgilleran.icesoap.exception.ClassDefException;
@@ -25,6 +27,8 @@ import com.alexgilleran.icesoap.parser.test.xmlclasses.NonAnnotatedObjectList;
 import com.alexgilleran.icesoap.parser.test.xmlclasses.Order;
 import com.alexgilleran.icesoap.parser.test.xmlclasses.SingleField;
 
+
+@RunWith(RobolectricTestRunner.class)
 public class IceSoapListParserTest {
 	private final static SimpleDateFormat FORMAT = new SimpleDateFormat(
 			"yyyy-MM-dd");

@@ -29,7 +29,10 @@ import com.alexgilleran.icesoap.envelope.impl.BaseSOAP11Envelope;
 import com.alexgilleran.icesoap.envelope.impl.BaseSOAP12Envelope;
 import com.alexgilleran.icesoap.request.SOAPRequester;
 import com.alexgilleran.icesoap.request.impl.ApacheSOAPRequester;
+import org.junit.runner.RunWith;
+import org.robolectric.RobolectricTestRunner;
 
+@RunWith(RobolectricTestRunner.class)
 public class ApacheSOAPRequesterTest {
 	private static final String UTF_8 = "UTF-8";
 	private static final String UTF_16 = "UTF-16";

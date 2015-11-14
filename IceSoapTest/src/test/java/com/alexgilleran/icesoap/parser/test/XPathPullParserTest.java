@@ -6,6 +6,8 @@ package com.alexgilleran.icesoap.parser.test;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.robolectric.RobolectricTestRunner;
 import org.xmlpull.v1.XmlPullParserException;
 
 import com.alexgilleran.icesoap.exception.XMLParsingException;
@@ -21,6 +23,7 @@ import com.alexgilleran.icesoap.xpath.elements.impl.SingleSlashXPathElement;
  * @author Alex Gilleran
  * 
  */
+@RunWith(RobolectricTestRunner.class)
 public class XPathPullParserTest {
 	/**
 	 * Holistic test - tests xml nodes, text elements, attributes and

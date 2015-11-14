@@ -3,21 +3,20 @@
  */
 package com.alexgilleran.icesoap.xml.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import com.alexgilleran.icesoap.xml.XMLAttribute;
+import com.alexgilleran.icesoap.xml.XMLNode;
+import com.alexgilleran.icesoap.xml.impl.XMLAttributeImpl;
+import com.alexgilleran.icesoap.xml.impl.XMLNodeBase;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.robolectric.RobolectricTestRunner;
 
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import com.alexgilleran.icesoap.xml.XMLAttribute;
-import com.alexgilleran.icesoap.xml.XMLNode;
-import com.alexgilleran.icesoap.xml.impl.XMLAttributeImpl;
-import com.alexgilleran.icesoap.xml.impl.XMLNodeBase;
-import com.xtremelabs.robolectric.RobolectricTestRunner;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Runs a number of tests on the XMLElement object, asserting that the base code

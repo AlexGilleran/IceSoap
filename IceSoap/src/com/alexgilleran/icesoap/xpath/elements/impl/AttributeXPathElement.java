@@ -71,6 +71,15 @@ public class AttributeXPathElement implements XPathElement {
 	}
 
 	/**
+	 * This element is overridden for attribute elements, as they cannot have
+	 * predicates - this does nothing.
+	 */
+	@Override
+	public int getPredicateCount() {
+		return 0;
+	}
+
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
@@ -173,6 +182,11 @@ public class AttributeXPathElement implements XPathElement {
 	@Override
 	public XPathElement getFirstElement() {
 		return wrappedElement.getFirstElement();
+	}
+
+	@Override
+	public int getSpecificity() {
+		return wrappedElement.getSpecificity() + 1;
 	}
 
 	@Override

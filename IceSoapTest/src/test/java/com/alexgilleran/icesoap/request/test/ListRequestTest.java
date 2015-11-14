@@ -16,7 +16,7 @@ import com.alexgilleran.icesoap.exception.XMLParsingException;
 import com.alexgilleran.icesoap.observer.SOAP11ListObserver;
 import com.alexgilleran.icesoap.request.SOAP11ListRequest;
 import com.alexgilleran.icesoap.request.test.xmlclasses.Response;
-import com.xtremelabs.robolectric.RobolectricTestRunner;
+import org.robolectric.RobolectricTestRunner;
 
 @RunWith(RobolectricTestRunner.class)
 public class ListRequestTest extends BaseRequestTest<List<Response>> {
