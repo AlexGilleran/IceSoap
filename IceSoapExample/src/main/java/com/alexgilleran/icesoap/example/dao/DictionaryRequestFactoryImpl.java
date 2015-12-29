@@ -36,7 +36,7 @@ public class DictionaryRequestFactoryImpl implements DictionaryRequestFactory {
 
 	/**
 	 * Factory for making basic requests - if you want to use some other way of
-	 * retrieving XML from the web service (apart from the Apache HTTP Client)
+	 * retrieving XML from the web service (apart from {@link java.net.HttpURLConnection})
 	 * you can extend this and put in your own implementation of
 	 * {@link SOAPRequester}.
 	 */

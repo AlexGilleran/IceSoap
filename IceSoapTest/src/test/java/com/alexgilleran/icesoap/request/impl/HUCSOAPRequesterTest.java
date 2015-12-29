@@ -66,13 +66,14 @@ public class HUCSOAPRequesterTest extends BaseSOAPRequesterTest {
 		InputStream is = createMock(InputStream.class);
 
 		expect(mockConn.getOutputStream()).andReturn(mockStream);
-		expect(mockConn.getInputStream()).andReturn(is);
-		expect(mockConn.getResponseCode()).andReturn(500);
+		expect(mockConn.getErrorStream()).andReturn(is);
+		expect(mockConn.getResponseCode()).andReturn(500).anyTimes();
 		replay(mockConn);
 
 		Response response = requester.doSoapRequest(new BaseSOAP11Envelope(), TARGET_URL);
 
 		assertEquals(Response.Status.SOAP_FAULT, response.getStatus());
+		assertEquals(is, response.getData());
 	}
 
 	private void doTest(SOAPEnvelope expectedEnvelope, String expectedEncoding, String mimeType) throws IOException {
@@ -92,9 +93,8 @@ public class HUCSOAPRequesterTest extends BaseSOAPRequesterTest {
 		EasyMock.expectLastCall();
 
 		InputStream is = createMock(InputStream.class);
+		expect(mockConn.getResponseCode()).andReturn(200).anyTimes();
 		expect(mockConn.getInputStream()).andReturn(is);
-
-		expect(mockConn.getResponseCode()).andReturn(200);
 
 		replay(mockConn);
 		replay(mockStream);

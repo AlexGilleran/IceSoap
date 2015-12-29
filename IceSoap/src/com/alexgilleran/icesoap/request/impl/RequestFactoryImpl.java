@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.alexgilleran.icesoap.request.impl;
 
@@ -10,9 +10,9 @@ import com.alexgilleran.icesoap.request.*;
  * Factory for requests - retains a single instance of {@link SOAPRequester} to
  * save object creation. Doesn't retain state besides the {@link SOAPRequester},
  * so can be used as a Singleton if desired.
- * 
+ *
  * @author Alex Gilleran
- * 
+ *
  */
 public class RequestFactoryImpl implements RequestFactory {
 	/** Requester to perform soap requests. */
@@ -29,7 +29,7 @@ public class RequestFactoryImpl implements RequestFactory {
 	/**
 	 * Instantiates a new RequestFactoryImpl, which will build requests and pass
 	 * the supplied SOAPRequester
-	 * 
+	 *
 	 * @param requester
 	 *            The requester to use.
 	 */

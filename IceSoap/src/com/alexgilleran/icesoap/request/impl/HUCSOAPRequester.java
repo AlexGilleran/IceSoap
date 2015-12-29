@@ -6,6 +6,7 @@ import com.alexgilleran.icesoap.request.SOAPRequester;
 
 import java.io.BufferedOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -46,7 +47,14 @@ public class HUCSOAPRequester implements SOAPRequester, HTTPDefaults {
 			out.flush();
 			out.close();
 
-			return new HttpResponse(conn.getInputStream(), conn.getResponseCode(), new HttpResponse.Connection() {
+			InputStream stream;
+			if (conn.getResponseCode() == 200) {
+				stream = conn.getInputStream();
+			} else {
+				stream = conn.getErrorStream();
+			}
+
+			return new HttpResponse(stream, conn.getResponseCode(), new HttpResponse.Connection() {
 				@Override
 				public void close() {
 					conn.disconnect();
