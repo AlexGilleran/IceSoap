@@ -12,7 +12,7 @@
 		<dependency>
 			<groupId>android</groupId>
 			<artifactId>android</artifactId>
-			<version>1.5_r4</version>
+			<version>2.2_r3</version>
 			<scope>provided</scope>
 		</dependency>
 
@@ -20,7 +20,7 @@
 			<groupId>com.alexgilleran</groupId>
 			<artifactId>icesoap</artifactId>
 			<type>jar</type>
-			<version>1.0.7</version>
+			<version>2.0.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>com.google.inject</groupId>
@@ -48,7 +48,6 @@
 					<sdk>
 						<platform>3</platform>
 					</sdk>
-					<deleteConflictingFiles>true</deleteConflictingFiles>
 					<undeployBeforeDeploy>true</undeployBeforeDeploy>
 				</configuration>
 				<extensions>true</extensions>

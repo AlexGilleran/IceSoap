@@ -13,5 +13,7 @@
     <activity android:name=".activities.DefineActivity"></activity>
   </application>
 
+  <uses-sdk android:minSdkVersion="8" />
+
 </manifest>
 

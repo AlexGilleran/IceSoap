@@ -1,12 +1,6 @@
 package com.alexgilleran.icesoap.request.impl;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Scanner;
-
 import android.os.AsyncTask;
-
 import com.alexgilleran.icesoap.envelope.SOAPEnvelope;
 import com.alexgilleran.icesoap.exception.SOAPException;
 import com.alexgilleran.icesoap.exception.XMLParsingException;
@@ -15,61 +9,92 @@ import com.alexgilleran.icesoap.observer.registry.ObserverRegistry;
 import com.alexgilleran.icesoap.parser.IceSoapParser;
 import com.alexgilleran.icesoap.parser.impl.IceSoapParserImpl;
 import com.alexgilleran.icesoap.request.Request;
+import com.alexgilleran.icesoap.request.Response;
 import com.alexgilleran.icesoap.request.SOAPRequester;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Scanner;
 
 /**
  * Implementation of {@link Request}
- * 
+ * <p>
  * A {@link RequestImpl}, in essence, is a composition of a {@link SOAPEnvelope}
  * for the request, a {@link IceSoapParser} for the response, and some code to
  * to the post.
- * 
- * @author Alex Gilleran
- * 
+ *
  * @param <ResultType>
+ * @author Alex Gilleran
  */
 public class RequestImpl<ResultType, SOAPFaultType> implements Request<ResultType, SOAPFaultType> {
 
-	/** Unknown response from server. */
+	/**
+	 * Unknown response from server.
+	 */
 	private static final String MESSAGE_ERROR = "Request returned with error code ";
-	/** Status returned if SOAP Request has executed successfully. */
-	private static final int HTTP_OK_STATUS = 200;
-	/** Status returned if there's an error that returns a soap fault. */
-	private static final int HTTP_ERROR_STATUS = 500;
-	/** Message for 500 error exception. */
-	private static final String MESSAGE_ERROR_500 = MESSAGE_ERROR + HTTP_ERROR_STATUS;
-	/** Message for 500 error exception, including SOAPFault. */
+	/**
+	 * Message for 500 error exception.
+	 */
+	private static final String MESSAGE_ERROR_500 = MESSAGE_ERROR + HTTPDefaults.HTTP_ERROR_STATUS;
+	/**
+	 * Message for 500 error exception, including SOAPFault.
+	 */
 	private static final String MESSAGE_ERROR_500_SOAPFAULT = MESSAGE_ERROR_500 + ". SOAPFault: ";
-	/** Message for 500 error exception, if no SOAPFault was parsed. */
+	/**
+	 * Message for 500 error exception, if no SOAPFault was parsed.
+	 */
 	public static final String MESSAGE_ERROR_500_FAILED_SOAPFAULT = MESSAGE_ERROR_500
 			+ ". No returned soapfault could be parsed.";
 
-	/** Registry of observers to send events to. */
+	/**
+	 * Registry of observers to send events to.
+	 */
 	private ObserverRegistry<ResultType, SOAPFaultType> registry = new ObserverRegistry<ResultType, SOAPFaultType>();
-	/** Parser to use to parse the response. */
+	/**
+	 * Parser to use to parse the response.
+	 */
 	private IceSoapParser<ResultType> parser;
-	/** The URL to post the request to. */
+	/**
+	 * The URL to post the request to.
+	 */
 	private String url;
-	/** The envelope to serialize and POST. */
+	/**
+	 * The envelope to serialize and POST.
+	 */
 	private SOAPEnvelope soapEnv;
-	/** The {@link AsyncTask} that the request will be performed within. */
+	/**
+	 * The {@link AsyncTask} that the request will be performed within.
+	 */
 	private RequestTask<?> currentTask = null;
-	/** The result of the request. */
+	/**
+	 * The result of the request.
+	 */
 	private ResultType result;
-	/** Flag - is the request complete? */
+	/**
+	 * Flag - is the request complete?
+	 */
 	private boolean complete = false;
-	/** Flag - is the request currently executing? */
+	/**
+	 * Flag - is the request currently executing?
+	 */
 	private boolean executing = false;
-	/** Class to perform SOAP requests. */
+	/**
+	 * Class to perform SOAP requests.
+	 */
 	private SOAPRequester soapRequester;
-	/** The SOAPAction to perform. */
+	/**
+	 * The SOAPAction to perform.
+	 */
 	private String soapAction;
 	/**
 	 * A class representing the SOAP Fault that will be encountered in the event
 	 * of a fault occuring.
 	 */
 	private Class<SOAPFaultType> soapFaultClass;
-	/** A SOAPFault, if one has been encountered. */
+	/**
+	 * A SOAPFault, if one has been encountered.
+	 */
 	private SOAPFaultType soapFault;
 	/**
 	 * If an exception is caught, it is stored here until it can be thrown on
@@ -77,56 +102,50 @@ public class RequestImpl<ResultType, SOAPFaultType> implements Request<ResultTyp
 	 */
 	private SOAPException caughtException = null;
 
-	/** Whether this request is in debug mode. **/
+	/**
+	 * Whether this request is in debug mode.
+	 **/
 	private boolean debugMode = false;
-	/** Request XML to be stored in debug mode. **/
+	/**
+	 * Request XML to be stored in debug mode.
+	 **/
 	private String requestXML;
-	/** Response XML to be stored in debug mode. **/
+	/**
+	 * Response XML to be stored in debug mode.
+	 **/
 	private String responseXML;
 
 	/**
 	 * Creates a new request, automatically creating the parser.
-	 * 
-	 * @param url
-	 *            The URL to post the request to.
-	 * @param soapEnv
-	 *            The SOAP envelope to send, as a {@link SOAPEnvelope}.
-	 * @param soapAction
-	 *            The SOAP Action to pass in the HTTP header - can be null.
-	 * @param resultClass
-	 *            The class of the type to return from the request.
-	 * @param soapFaultClass
-	 *            The class of the SOAPFault that will be returned if one is
-	 *            encountered.
-	 * @param requester
-	 *            The implementation of {@link SOAPRequester} to use for
-	 *            requests.
+	 *
+	 * @param url            The URL to post the request to.
+	 * @param soapEnv        The SOAP envelope to send, as a {@link SOAPEnvelope}.
+	 * @param soapAction     The SOAP Action to pass in the HTTP header - can be null.
+	 * @param resultClass    The class of the type to return from the request.
+	 * @param soapFaultClass The class of the SOAPFault that will be returned if one is
+	 *                       encountered.
+	 * @param requester      The implementation of {@link SOAPRequester} to use for
+	 *                       requests.
 	 */
 	protected RequestImpl(String url, SOAPEnvelope soapEnv, String soapAction, Class<ResultType> resultClass,
-			Class<SOAPFaultType> soapFaultClass, SOAPRequester requester) {
+						  Class<SOAPFaultType> soapFaultClass, SOAPRequester requester) {
 		this(url, soapEnv, soapAction, new IceSoapParserImpl<ResultType>(resultClass), soapFaultClass, requester);
 	}
 
 	/**
 	 * Creates a new request.
-	 * 
-	 * @param url
-	 *            The URL to post the request to.
-	 * @param soapEnv
-	 *            The SOAP envelope to send, as a {@link SOAPEnvelope}.
-	 * @param soapAction
-	 *            The SOAP Action to pass in the HTTP header - can be null.
-	 * @param parser
-	 *            The {@link IceSoapParser} to use to parse the response.
-	 * @param soapFaultClass
-	 *            The class of the SOAPFault that will be returned if one is
-	 *            encountered.
-	 * @param requester
-	 *            The implementation of {@link SOAPRequester} to use for
-	 *            requests.
+	 *
+	 * @param url            The URL to post the request to.
+	 * @param soapEnv        The SOAP envelope to send, as a {@link SOAPEnvelope}.
+	 * @param soapAction     The SOAP Action to pass in the HTTP header - can be null.
+	 * @param parser         The {@link IceSoapParser} to use to parse the response.
+	 * @param soapFaultClass The class of the SOAPFault that will be returned if one is
+	 *                       encountered.
+	 * @param requester      The implementation of {@link SOAPRequester} to use for
+	 *                       requests.
 	 */
 	protected RequestImpl(String url, SOAPEnvelope soapEnv, String soapAction, IceSoapParser<ResultType> parser,
-			Class<SOAPFaultType> soapFaultClass, SOAPRequester requester) {
+						  Class<SOAPFaultType> soapFaultClass, SOAPRequester requester) {
 		this.parser = parser;
 		this.url = url;
 		this.soapEnv = soapEnv;
@@ -137,7 +156,7 @@ public class RequestImpl<ResultType, SOAPFaultType> implements Request<ResultTyp
 
 	/**
 	 * Creates a new extension of {@link AsyncTask} to execute.
-	 * 
+	 *
 	 * @return The appropriate {@link AsyncTask}
 	 */
 	protected AsyncTask<Void, ?, ResultType> createTask() {
@@ -165,7 +184,7 @@ public class RequestImpl<ResultType, SOAPFaultType> implements Request<ResultTyp
 	/**
 	 * Uses the {@link SOAPRequester} to post the SOAP request, and get the
 	 * response.
-	 * 
+	 *
 	 * @return The response, as an {@link InputStream}
 	 * @throws SOAPException
 	 */
@@ -179,7 +198,7 @@ public class RequestImpl<ResultType, SOAPFaultType> implements Request<ResultTyp
 
 	/**
 	 * Gets the parser to use for parsing the response.
-	 * 
+	 *
 	 * @return the parser to use.
 	 */
 	protected IceSoapParser<ResultType> getParser() {
@@ -256,19 +275,25 @@ public class RequestImpl<ResultType, SOAPFaultType> implements Request<ResultTyp
 		return soapFault;
 	}
 
-	/** {@inheritDoc} */
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void setDebugMode(boolean activated) {
 		this.debugMode = activated;
 	}
 
-	/** {@inheritDoc} */
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String getRequestXML() {
 		return requestXML;
 	}
 
-	/** {@inheritDoc} */
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String getResponseXML() {
 		return responseXML;
@@ -279,8 +304,10 @@ public class RequestImpl<ResultType, SOAPFaultType> implements Request<ResultTyp
 	 */
 	private ResultType run() throws SOAPException {
 		executing = true;
+		Response response = null;
+
 		try {
-			Response response = getResponse();
+			response = getResponse();
 
 			if (response == null) {
 				return null;
@@ -301,25 +328,25 @@ public class RequestImpl<ResultType, SOAPFaultType> implements Request<ResultTyp
 				responseScanner.close();
 			}
 
-			switch (response.getHttpStatus()) {
-			case HTTP_OK_STATUS:
-				return getParser().parse(responseData);
-			case HTTP_ERROR_STATUS:
-				soapFault = parseSoapFault(responseData);
+			switch (response.getStatus()) {
+				case OK:
+					return getParser().parse(responseData);
+				case SOAP_FAULT:
+					soapFault = parseSoapFault(responseData);
 
-				// If we've successfully parsed a soap fault, toString()
-				// it as part of the message, otherwise just return an
-				// exception and say we couldn't parse one.
-				String soapFaultMessage = null;
-				if (soapFault != null) {
-					soapFaultMessage = MESSAGE_ERROR_500_SOAPFAULT + soapFault.toString();
-				} else {
-					soapFaultMessage = MESSAGE_ERROR_500_FAILED_SOAPFAULT;
-				}
+					// If we've successfully parsed a soap fault, toString()
+					// it as part of the message, otherwise just return an
+					// exception and say we couldn't parse one.
+					String soapFaultMessage = null;
+					if (soapFault != null) {
+						soapFaultMessage = MESSAGE_ERROR_500_SOAPFAULT + soapFault.toString();
+					} else {
+						soapFaultMessage = MESSAGE_ERROR_500_FAILED_SOAPFAULT;
+					}
 
-				throw new SOAPException(soapFaultMessage);
-			default:
-				throw new SOAPException(MESSAGE_ERROR + " " + response.getHttpStatus());
+					throw new SOAPException(soapFaultMessage);
+				default:
+					throw new SOAPException(MESSAGE_ERROR + " " + response.getStatus());
 			}
 		} catch (IOException e) {
 			throw new SOAPException(e);
@@ -328,17 +355,23 @@ public class RequestImpl<ResultType, SOAPFaultType> implements Request<ResultTyp
 		} finally {
 			complete = true;
 			executing = false;
+
+			try {
+				if (response != null) {
+					response.closeConnection();
+				}
+			} catch (IOException e) {
+				throw new SOAPException(e);
+			}
 		}
 	}
 
 	/**
 	 * Parses a SOAPFault from incoming data.
-	 * 
-	 * @param soapFaultData
-	 *            An input stream containing SOAPFault information to parse.
+	 *
+	 * @param soapFaultData An input stream containing SOAPFault information to parse.
 	 * @return The parsed soapfault object
-	 * @throws XMLParsingException
-	 *             If an error occurs while parsing.
+	 * @throws XMLParsingException If an error occurs while parsing.
 	 */
 	private SOAPFaultType parseSoapFault(InputStream soapFaultData) throws XMLParsingException {
 		IceSoapParser<SOAPFaultType> parser = new IceSoapParserImpl<SOAPFaultType>(soapFaultClass);
@@ -348,9 +381,8 @@ public class RequestImpl<ResultType, SOAPFaultType> implements Request<ResultTyp
 
 	/**
 	 * Stores an exception that will be thrown on the UI thread.
-	 * 
-	 * @param exception
-	 *            The exception to throw.
+	 *
+	 * @param exception The exception to throw.
 	 */
 	protected void throwException(SOAPException exception) {
 		caughtException = exception;
@@ -359,12 +391,10 @@ public class RequestImpl<ResultType, SOAPFaultType> implements Request<ResultTyp
 	/**
 	 * Subclass of {@link AsyncTask} used for performing the request in a
 	 * background thread.
-	 * 
+	 *
+	 * @param <ProgressReportObject> The object passed on progress reports - not used in the base
+	 *                               class.
 	 * @author Alex Gilleran
-	 * 
-	 * @param <ProgressReportObject>
-	 *            The object passed on progress reports - not used in the base
-	 *            class.
 	 */
 	protected class RequestTask<ProgressReportObject> extends AsyncTask<Void, ProgressReportObject, ResultType> {
 

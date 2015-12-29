@@ -1,4 +1,4 @@
-package com.alexgilleran.icesoap.request.test;
+package com.alexgilleran.icesoap.request.impl;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;

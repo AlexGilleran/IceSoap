@@ -1,4 +1,4 @@
-package com.alexgilleran.icesoap.request.test;
+package com.alexgilleran.icesoap.request.impl;
 
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.replay;
@@ -9,13 +9,13 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
+import com.alexgilleran.icesoap.request.SOAP11ListRequest;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.alexgilleran.icesoap.exception.XMLParsingException;
 import com.alexgilleran.icesoap.observer.SOAP11ListObserver;
-import com.alexgilleran.icesoap.request.SOAP11ListRequest;
-import com.alexgilleran.icesoap.request.test.xmlclasses.Response;
+import com.alexgilleran.icesoap.request.impl.xmlclasses.Response;
 import org.robolectric.RobolectricTestRunner;
 
 @RunWith(RobolectricTestRunner.class)

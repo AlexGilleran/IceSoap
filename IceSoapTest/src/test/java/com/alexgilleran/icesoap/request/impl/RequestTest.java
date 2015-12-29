@@ -1,4 +1,4 @@
-package com.alexgilleran.icesoap.request.test;
+package com.alexgilleran.icesoap.request.impl;
 
 import com.alexgilleran.icesoap.envelope.SOAPEnvelope;
 import com.alexgilleran.icesoap.exception.SOAPException;
@@ -8,10 +8,10 @@ import com.alexgilleran.icesoap.observer.SOAPObserver;
 import com.alexgilleran.icesoap.request.Request;
 import com.alexgilleran.icesoap.request.SOAP11Request;
 import com.alexgilleran.icesoap.request.SOAPRequester;
-import com.alexgilleran.icesoap.request.impl.RequestFactoryImpl;
-import com.alexgilleran.icesoap.request.test.xmlclasses.CustomSOAP12Fault;
-import com.alexgilleran.icesoap.request.test.xmlclasses.Response;
+import com.alexgilleran.icesoap.request.impl.xmlclasses.CustomSOAP12Fault;
+import com.alexgilleran.icesoap.request.impl.xmlclasses.Response;
 import com.alexgilleran.icesoap.soapfault.SOAP11Fault;
+import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
@@ -53,6 +53,9 @@ public class RequestTest extends BaseRequestTest<Response> {
 
 		// Verify the parsed object was correct.
 		assertEquals(expectedResponse, request.getResult());
+
+		// Verify connection was closed
+		verify(connection);
 	}
 
 	@Test
@@ -63,11 +66,14 @@ public class RequestTest extends BaseRequestTest<Response> {
 
 		SOAPEnvelope envelope = getDummyEnvelope();
 		expect(mockRequester.doSoapRequest(envelope, DUMMY_URL, SOAP_ACTION)).andReturn(
-				new com.alexgilleran.icesoap.request.impl.Response(SampleResponse.getSingleResponse(), 200));
+				new com.alexgilleran.icesoap.request.impl.HttpResponse(SampleResponse.getSingleResponse(), 200, connection));
 		replay(mockRequester);
 
 		// Verify the parsed object was correct.
 		assertEquals(expectedResponse, request.executeBlocking());
+
+		// Verify connection was closed
+		verify(connection);
 	}
 
 	/**
@@ -92,7 +98,7 @@ public class RequestTest extends BaseRequestTest<Response> {
 		request.registerObserver(mockObserver);
 
 		// Do the request
-		doExceptionRequest(request, SampleResponse.getSingleResponse());
+		doExceptionRequest(request);
 
 		// Verify that it did what it was supposed to
 		verify(mockObserver);
@@ -142,6 +148,9 @@ public class RequestTest extends BaseRequestTest<Response> {
 		// Make sure the response/request were correctly collected
 		assertEquals(getDummyEnvelope().toString(), request.getRequestXML());
 		assertEquals(SampleResponse.SINGLE_RESPONSE, request.getResponseXML());
+
+		// Verify connection was closed
+		verify(connection);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -169,6 +178,9 @@ public class RequestTest extends BaseRequestTest<Response> {
 
 		// Verify the parsed object was correct.
 		assertEquals(fault, request.getSOAPFault());
+
+		// Verify connection was closed
+		verify(connection);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -191,6 +203,9 @@ public class RequestTest extends BaseRequestTest<Response> {
 
 		// Verify that it did what it was supposed to
 		verify(mockObserver);
+
+		// Verify connection was closed
+		verify(connection);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -230,13 +245,16 @@ public class RequestTest extends BaseRequestTest<Response> {
 		assertEquals(fault.getNumber(), SampleResponse.SQL_MESSAGE_NUMBER);
 		assertEquals(fault.getSource(), SampleResponse.SQL_MESSAGE_SOURCE);
 		assertEquals(fault.getState(), SampleResponse.SQL_MESSAGE_STATE);
+
+		// Verify connection was closed
+		verify(connection);
 	}
 
 	@Test
 	public void test401InDebugMode() throws IOException {
 		SOAPRequester mockRequester = createMock(SOAPRequester.class);
-		com.alexgilleran.icesoap.request.impl.Response dummyResponse = new com.alexgilleran.icesoap.request.impl.Response(
-				new ByteArrayInputStream("".getBytes()), 401);
+		com.alexgilleran.icesoap.request.Response dummyResponse = new com.alexgilleran.icesoap.request.impl.HttpResponse(
+				new ByteArrayInputStream("".getBytes()), 401, connection);
 		expect(mockRequester.doSoapRequest(getDummyEnvelope(), "", "")).andReturn(dummyResponse);
 		replay(mockRequester);
 
@@ -245,5 +263,13 @@ public class RequestTest extends BaseRequestTest<Response> {
 		request.setDebugMode(true);
 
 		request.execute();
+
+		// Verify connection was closed
+		verify(connection);
+	}
+
+	@After
+	public void after() {
+
 	}
 }

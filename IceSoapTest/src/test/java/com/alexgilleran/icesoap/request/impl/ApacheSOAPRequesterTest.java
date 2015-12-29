@@ -1,4 +1,4 @@
-package com.alexgilleran.icesoap.request.test;
+package com.alexgilleran.icesoap.request.impl;
 
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
@@ -7,6 +7,7 @@ import static org.easymock.EasyMock.replay;
 import java.io.IOException;
 import java.io.InputStream;
 
+import com.alexgilleran.icesoap.request.SOAPRequester;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpRequest;
@@ -27,17 +28,11 @@ import org.junit.Test;
 import com.alexgilleran.icesoap.envelope.SOAPEnvelope;
 import com.alexgilleran.icesoap.envelope.impl.BaseSOAP11Envelope;
 import com.alexgilleran.icesoap.envelope.impl.BaseSOAP12Envelope;
-import com.alexgilleran.icesoap.request.SOAPRequester;
-import com.alexgilleran.icesoap.request.impl.ApacheSOAPRequester;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 
 @RunWith(RobolectricTestRunner.class)
-public class ApacheSOAPRequesterTest {
-	private static final String UTF_8 = "UTF-8";
-	private static final String UTF_16 = "UTF-16";
-	private static final String SOAP11_MIME_TYPE = "text/xml";
-	private static final String SOAP12_MIME_TYPE = "application/soap+xml";
+public class ApacheSOAPRequesterTest extends BaseSOAPRequesterTest {
 
 	// Default values, these can be overwritten later
 	private String expectedMimeType = SOAP11_MIME_TYPE;
@@ -53,14 +48,14 @@ public class ApacheSOAPRequesterTest {
 	}
 
 	@Test
-	public void testUtf8Encoding() throws ClientProtocolException, IOException {
+	public void testUtf8Encoding() throws IOException {
 		expectedEnvelope = buildDifficultEnvelope();
 
 		requester.doSoapRequest(expectedEnvelope, "http://target.com");
 	}
 
 	@Test
-	public void testUtf16Encoding() throws ClientProtocolException, IOException {
+	public void testUtf16Encoding() throws IOException {
 		expectedEncoding = UTF_16;
 		expectedEnvelope = buildDifficultEnvelope();
 
@@ -68,34 +63,29 @@ public class ApacheSOAPRequesterTest {
 	}
 
 	@Test
-	public void testSoap11MimeType() throws ClientProtocolException, IOException {
+	public void testSoap11MimeType() throws IOException {
 		expectedEnvelope = new BaseSOAP11Envelope();
 		SOAPRequester requester = new TestApacheSOAPRequester();
 		requester.doSoapRequest(expectedEnvelope, "http://target.com");
 	}
 
 	@Test
-	public void testSoap12MimeType() throws ClientProtocolException, IOException {
+	public void testSoap12MimeType() throws IOException {
 		expectedEnvelope = new BaseSOAP12Envelope();
 		expectedMimeType = SOAP12_MIME_TYPE;
 		SOAPRequester requester = new TestApacheSOAPRequester();
 		requester.doSoapRequest(expectedEnvelope, "http://target.com");
 	}
 
-	private SOAPEnvelope buildDifficultEnvelope() {
-		SOAPEnvelope env = new BaseSOAP11Envelope();
-		env.setEncoding(expectedEncoding);
-		env.getBody().addTextNode(null, "ÀÁÂÃÄÅÆÇÈÉýÿĂĄ", "ɑɔʥʣʨʪɯ");
-		env.getBody().addTextNode(null, "ѨѫѯРсшНЌЄЏ", "ڝڠڥکۛ٢شظڧ۞۸");
-		return env;
-	}
-
 	private class TestApacheSOAPRequester extends ApacheSOAPRequester {
-
 		@Override
 		protected HttpClient buildHttpClient() {
 			return httpClient;
 		}
+	}
+
+	protected SOAPEnvelope buildDifficultEnvelope() {
+		return super.buildDifficultEnvelope(expectedEncoding);
 	}
 
 	private class MockHttpClient implements HttpClient {
@@ -193,5 +183,7 @@ public class ApacheSOAPRequesterTest {
 			return null;
 		}
 
-	};
+	}
+
+	;
 }

@@ -4,12 +4,7 @@
 package com.alexgilleran.icesoap.request.impl;
 
 import com.alexgilleran.icesoap.envelope.SOAPEnvelope;
-import com.alexgilleran.icesoap.request.ListRequest;
-import com.alexgilleran.icesoap.request.Request;
-import com.alexgilleran.icesoap.request.SOAP11ListRequest;
-import com.alexgilleran.icesoap.request.SOAP11Request;
-import com.alexgilleran.icesoap.request.RequestFactory;
-import com.alexgilleran.icesoap.request.SOAPRequester;
+import com.alexgilleran.icesoap.request.*;
 
 /**
  * Factory for requests - retains a single instance of {@link SOAPRequester} to
@@ -24,11 +19,11 @@ public class RequestFactoryImpl implements RequestFactory {
 	private SOAPRequester soapRequester;
 
 	/**
-	 * Instantiates a new {@link RequestFactoryImpl} with the default Apache
-	 * HTTP SOAP Requester implementation.
+	 * Instantiates a new {@link RequestFactoryImpl} with the default {@link HUCSOAPRequester}
+	 * {@link SOAPRequester} implementation.
 	 */
 	public RequestFactoryImpl() {
-		this(new ApacheSOAPRequester());
+		this(new HUCSOAPRequester());
 	}
 
 	/**
@@ -47,8 +42,8 @@ public class RequestFactoryImpl implements RequestFactory {
 	 */
 	@Override
 	public <ReturnType, SOAPFaultType> Request<ReturnType, SOAPFaultType> buildRequest(String url,
-			SOAPEnvelope soapEnvelope, String soapAction, Class<ReturnType> resultClass,
-			Class<SOAPFaultType> soapFaultType) {
+																					   SOAPEnvelope soapEnvelope, String soapAction, Class<ReturnType> resultClass,
+																					   Class<SOAPFaultType> soapFaultType) {
 		return new RequestImpl<ReturnType, SOAPFaultType>(url, soapEnvelope, soapAction, resultClass, soapFaultType,
 				soapRequester);
 	}
@@ -69,7 +64,7 @@ public class RequestFactoryImpl implements RequestFactory {
 	 */
 	@Override
 	public <ReturnType> SOAP11Request<ReturnType> buildRequest(String url, SOAPEnvelope soapEnvelope,
-			String soapAction, Class<ReturnType> resultClass) {
+															   String soapAction, Class<ReturnType> resultClass) {
 		return new SOAP11RequestImpl<ReturnType>(url, soapEnvelope, soapAction, resultClass, soapRequester);
 	}
 
@@ -78,7 +73,7 @@ public class RequestFactoryImpl implements RequestFactory {
 	 */
 	@Override
 	public <ReturnType> SOAP11ListRequest<ReturnType> buildListRequest(String url, SOAPEnvelope soapEnvelope,
-			String soapAction, Class<ReturnType> resultClass) {
+																	   String soapAction, Class<ReturnType> resultClass) {
 		return new SOAP11ListRequestImpl<ReturnType>(url, soapEnvelope, soapAction, resultClass, soapRequester);
 	}
 

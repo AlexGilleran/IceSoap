@@ -1,9 +1,8 @@
 package com.alexgilleran.icesoap.request.impl;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-
+import com.alexgilleran.icesoap.envelope.SOAPEnvelope;
+import com.alexgilleran.icesoap.request.Response;
+import com.alexgilleran.icesoap.request.SOAPRequester;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -13,7 +12,6 @@ import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.conn.scheme.SocketFactory;
 import org.apache.http.conn.ssl.SSLSocketFactory;
-import org.apache.http.entity.BufferedHttpEntity;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
@@ -21,39 +19,21 @@ import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 
-import com.alexgilleran.icesoap.envelope.SOAPEnvelope;
-import com.alexgilleran.icesoap.request.SOAPRequester;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 
 /**
  * Singleton implementation of {@link SOAPRequester}, using the Apache HTTP
  * Client.
- * 
+ *
  * @author Alex Gilleran
- * 
  */
-public class ApacheSOAPRequester implements SOAPRequester {
-	/** Soap action to use if none is specified. */
-	private static final String BLANK_SOAP_ACTION = "";
-	/** Port for HTTPS communication. */
-	private static final int DEFAULT_HTTPS_PORT = 443;
-	/** Port for HTTP communicatio.n */
-	private static final int DEFAULT_HTTP_PORT = 80;
-	/** Name of HTTPS. */
-	private static final String HTTPS_NAME = "https";
-	/** Name of HTTP. */
-	private static final String HTTP_NAME = "http";
-	/** HTTP content type submitted in HTTP POST request for SOAP calls. */
-	private static final String XML_CONTENT_TYPE_FORMAT = "%s; charset=%s";
-	/** Label for content-type header. */
-	public static final String CONTENT_TYPE_LABEL = "Content-type";
-	/** Key for SOAP action header. */
-	private static final String HEADER_KEY_SOAP_ACTION = "SOAPAction";
-	/** Timeout for making a connection. */
-	private static final int DEFAULT_CONN_TIMEOUT = 5000;
-	/** Timeout for recieving data. */
-	private static final int DEFAULT_SOCKET_TIMEOUT = 20000;
+public class ApacheSOAPRequester implements SOAPRequester, HTTPDefaults {
 
-	/** Apache HTTP Client for making HTTP requests. */
+	/**
+	 * Apache HTTP Client for making HTTP requests.
+	 */
 	private HttpClient httpClient;
 
 	/**
@@ -73,26 +53,30 @@ public class ApacheSOAPRequester implements SOAPRequester {
 
 	/**
 	 * Performs an HTTP POST request
-	 * 
-	 * @param httpPost
-	 *            The {@link HttpPost} to perform.
+	 *
+	 * @param httpPost The {@link HttpPost} to perform.
 	 * @return An {@link InputStream} of the response.
-	 * @throws IOException
-	 *             If there's an IO error.
+	 * @throws IOException If there's an IO error.
 	 */
 	private Response doHttpPost(HttpPost httpPost) throws IOException {
 		// Execute HTTP Post Request
-		HttpResponse response = getHttpClient().execute(httpPost);
+		final HttpResponse response = getHttpClient().execute(httpPost);
 
-		HttpEntity res = new BufferedHttpEntity(response.getEntity());
-
-		return new Response(res.getContent(), response.getStatusLine().getStatusCode());
+		return new com.alexgilleran.icesoap.request.impl.HttpResponse(
+				response.getEntity().getContent(), response.getStatusLine().getStatusCode(),
+				new com.alexgilleran.icesoap.request.impl.HttpResponse.Connection() {
+					@Override
+					public void close() throws IOException {
+						response.getEntity().consumeContent();
+					}
+				}
+		);
 	}
 
 	/**
 	 * Gets the HTTP Client for this requester, building one with
 	 * {@link #buildHttpClient()} if one has not already been built.
-	 * 
+	 *
 	 * @return The instance of {@link HttpClient}
 	 */
 	private HttpClient getHttpClient() {
@@ -105,7 +89,7 @@ public class ApacheSOAPRequester implements SOAPRequester {
 
 	/**
 	 * Builds an Apache {@link HttpClient} from defaults.
-	 * 
+	 *
 	 * @return An implementation of {@link HttpClient}
 	 */
 	protected HttpClient buildHttpClient() {
@@ -123,13 +107,13 @@ public class ApacheSOAPRequester implements SOAPRequester {
 	/**
 	 * Builds a {@link SchemeRegistry}, which determines the
 	 * {@link SocketFactory} that will be used for different ports.
-	 * 
+	 * <p>
 	 * This is very important because it will need to be overridden by an
 	 * extension class if custom ports or factories (which are used for
 	 * self-signed certificates) are to be used.
-	 * 
+	 *
 	 * @return A {@link SchemeRegistry} with the necessary port and factories
-	 *         registered.
+	 * registered.
 	 */
 	protected SchemeRegistry getSchemeRegistry() {
 		SchemeRegistry schemeRegistry = new SchemeRegistry();
@@ -142,16 +126,12 @@ public class ApacheSOAPRequester implements SOAPRequester {
 
 	/**
 	 * Builds an {@link HttpPost} request.
-	 * 
-	 * @param url
-	 *            the URL to POST to
-	 * @param envelope
-	 *            The envelope to post
-	 * @param soapAction
-	 *            SOAPAction for the header.
+	 *
+	 * @param url        the URL to POST to
+	 * @param envelope   The envelope to post
+	 * @param soapAction SOAPAction for the header.
 	 * @return An {@link HttpPost} object representing the supplied information.
-	 * @throws UnsupportedEncodingException
-	 *             If the character encoding for the envelope is unsupported.
+	 * @throws UnsupportedEncodingException If the character encoding for the envelope is unsupported.
 	 */
 	protected HttpPost buildPostRequest(String url, SOAPEnvelope envelope, String soapAction)
 			throws UnsupportedEncodingException {
@@ -169,9 +149,8 @@ public class ApacheSOAPRequester implements SOAPRequester {
 
 	/**
 	 * Gets the content type to put in the HTTP header
-	 * 
-	 * @param encoding
-	 *            The encoding being used (e.g. UTF-8)
+	 *
+	 * @param encoding The encoding being used (e.g. UTF-8)
 	 * @return The full content type for the HTTP header.
 	 */
 	private String getXmlContentType(String mimeType, String encoding) {

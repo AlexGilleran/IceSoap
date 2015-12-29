@@ -1,4 +1,4 @@
-package com.alexgilleran.icesoap.request.test.xmlclasses;
+package com.alexgilleran.icesoap.request.impl.xmlclasses;
 
 import com.alexgilleran.icesoap.annotation.XMLField;
 import com.alexgilleran.icesoap.soapfault.SOAP12Fault;
