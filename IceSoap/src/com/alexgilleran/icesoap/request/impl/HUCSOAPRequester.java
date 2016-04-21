@@ -4,7 +4,6 @@ import com.alexgilleran.icesoap.envelope.SOAPEnvelope;
 import com.alexgilleran.icesoap.request.Response;
 import com.alexgilleran.icesoap.request.SOAPRequester;
 
-import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
